@@ -49,7 +49,7 @@ function maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extr
             query += " AS KEY1 "
 
             //FROM ... database . schema . name
-            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + dataform.projectConfig.schemaSuffix + "." + sources[s].name + "` "
+            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
@@ -107,7 +107,7 @@ function getStats(){
             query += "FROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "`) AS stats"
 
             //JOIN
-            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit" + dataform.projectConfig.schemaSuffix + ".dk_maxReceivedon` as maxdate ON "
+            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_maxReceivedon` as maxdate ON "
 
             query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
 
@@ -142,7 +142,7 @@ function setHealthRapport() {
     query += "SELECT CURRENT_DATE() AS DATE, * "
 
     query += "FROM "
-    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit" + dataform.projectConfig.schemaSuffix + ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
+    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
 
     return query;
 }
