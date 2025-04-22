@@ -142,7 +142,7 @@ function setHealthRapport() {
     query += "SELECT CURRENT_DATE() AS DATE, * "
 
     query += "FROM "
-    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit.dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
+    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit" + dataform.projectConfig.schemaSuffix + ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
 
     return query;
 }
