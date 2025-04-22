@@ -20,7 +20,7 @@ function maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extr
             } else {
                 query += sources[s].freshnessDays
             }
-            query += ", 0, "
+            query += ", NULL, "
 
             //if the noWeekend is set the true statement of the recency if is always 0
             if(sources[s].noWeekend == true){
