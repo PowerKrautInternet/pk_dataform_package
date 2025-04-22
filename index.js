@@ -148,7 +148,8 @@ function setHealthRapport() {
 }
 
 function alertSources() {
-	return sources.filter((source) => source.name.endsWith("DataProducer"));
+	let alertSourcesArray sources.filter((source) => source.name.endsWith("DataProducer"))
+	return alertSourcesArray.map(({ name }) => name)
 }
 
 module.exports = { setSources, maxReceivedon, getStats, setHealthRapport, alertSources };
