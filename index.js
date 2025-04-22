@@ -107,7 +107,7 @@ function getStats(){
             query += "FROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "`) AS stats"
 
             //JOIN
-            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit.dk_maxReceivedon` as maxdate ON "
+            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit" + dataform.projectConfig.schemaSuffix + ".dk_maxReceivedon` as maxdate ON "
 
             query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
 
