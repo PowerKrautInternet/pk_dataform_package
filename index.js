@@ -49,7 +49,7 @@ function maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extr
             query += " AS KEY1 "
 
             //FROM ... database . schema . name
-            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + dataform.projectConfig.schemaSuffix + "." + sources[s].name + "` "
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
@@ -104,7 +104,7 @@ function getStats(){
             }
             query += " AS KEY1 "
 
-            query += "FROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "`) AS stats"
+            query += "FROM `" + sources[s].database + "." + sources[s].schema + dataform.projectConfig.schemaSuffix + "." + sources[s].name + "`) AS stats"
 
             //JOIN
             query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit" + dataform.projectConfig.schemaSuffix + ".dk_maxReceivedon` as maxdate ON "
