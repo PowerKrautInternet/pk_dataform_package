@@ -148,7 +148,7 @@ function setHealthRapport() {
 }
 
 function alertSources() {
-	let alertSourcesArray sources.filter((source) => source.name.endsWith("DataProducer"))
+	let alertSourcesArray = sources.filter((source) => source.name.endsWith("DataProducer"))
 	return alertSourcesArray.map(({ name }) => name)
 }
 
