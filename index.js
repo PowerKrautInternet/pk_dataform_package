@@ -150,7 +150,7 @@ function getHealthQuery() {
 function getErrorQuery() {
 	let query = ""
 	
-	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: hubspot data has potential data quality issues: %t. Check dataChecks.check_user_transaction_failed_v for more info.', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '.; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT('Missing hubspot data; ', type), NULL) as alert from "
+	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: hubspot data has potential data quality issues: %t. Check dataChecks.check_user_transaction_failed_v for more info.', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '.; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT('Missing hubspot data; ', key1), NULL) as alert from "
 	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
 	query += " ) as row_conditions ) as alerts"
 	
