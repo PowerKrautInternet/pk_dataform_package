@@ -4,7 +4,7 @@ function setSources(varSource){
     sources = varSource;
 }
 
-function maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
+function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
@@ -69,7 +69,7 @@ function maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extr
     return query
 }
 
-function getStats(){
+function getStatsQuery(){
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
@@ -136,7 +136,7 @@ function getStats(){
     return query
 }
 
-function setHealthRapport() {
+function getHealthQuery() {
     let query = ""
 
     query += "SELECT CURRENT_DATE() AS DATE, * "
@@ -147,8 +147,14 @@ function setHealthRapport() {
     return query;
 }
 
-function alertSources() {
-	return sources.filter((source) => source.name.endsWith("DataProducer"))
+function getErrorQuery() {
+	let query = ""
+	
+	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: hubspot data has potential data quality issues: %t. Check dataChecks.check_user_transaction_failed_v for more info.', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '.; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT('Missing hubspot data; ', type), NULL) as alert from "
+	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
+	query += " ) as row_conditions ) as alerts"
+	
+	return query;
 }
 
-module.exports = { setSources, maxReceivedon, getStats, setHealthRapport, alertSources };
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery };
