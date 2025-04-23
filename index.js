@@ -150,7 +150,7 @@ function getHealthQuery() {
 function getErrorQuery() {
 	let query = ""
 	
-	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential  quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '.; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), 'days old); ' ), NULL) as alert from "
+	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential  quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '.; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron,':',key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old); ' ), NULL) as alert from "
 	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
 	query += " ) as row_conditions ) as alerts"
 	
