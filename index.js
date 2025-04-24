@@ -107,7 +107,9 @@ function getStatsQuery(){
             query += "FROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "`) AS stats"
 
             //JOIN
-            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_maxReceivedon` as maxdate ON "
+            query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
+            if(dataform.projectConfig.schemaSuffix!= undefined) { query += "_" + dataform.projectConfig.schemaSuffix }
+            query += ".dk_maxReceivedon` as maxdate ON "
 
             query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
 
@@ -142,7 +144,9 @@ function getHealthQuery() {
     query += "SELECT CURRENT_DATE() AS DATE, * "
 
     query += "FROM "
-    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
+    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
+    if(dataform.projectConfig.schemaSuffix!= undefined) { query += "_" + dataform.projectConfig.schemaSuffix }
+    query += ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
 
     return query;
 }
@@ -150,8 +154,10 @@ function getHealthQuery() {
 function getErrorQuery() {
 	let query = ""
 	
-	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron,':',key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
-	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit_" + dataform.projectConfig.schemaSuffix + ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
+	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron, ':', key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
+	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
+    if(dataform.projectConfig.schemaSuffix!= undefined) { query += "_" + dataform.projectConfig.schemaSuffix }
+    query += ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
 	query += " ) as row_conditions ) as alerts"
 	
 	return query;
