@@ -54,7 +54,13 @@ function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extra
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
                 query += "\nWHERE "
-                query += "JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') IN ('" + sources[s].crm_id.join("','") + "') "
+                query += "JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') IN ('"
+                if(Array.isArray(sources[s].crm_id)) {
+                    query += sources[s].crm_id.join("','")
+                } else {
+                    query += sources[s].crm_id
+                }
+                query += "') "
             }
 
             //GROUP BY ...
