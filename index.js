@@ -1,5 +1,5 @@
 let sources = []
-let fs = require('fs')
+//let fs = require('fs')
 
 function setSources(varSource){
     sources = varSource;
