@@ -190,16 +190,14 @@ function get_ga4_events() {
 }
 
 function ga4_events() {
-    publish("ga4_events",
-        {
-            type: "view",
-            schema: "df_rawdata"
-        }
-    ).query(ctx => get_ga4_events());
+    return {
+        "name":"ga4_events",
+        "config":{
+            "type":"view", 
+            "schema":"df_rawdata"
+        },
+        "query":get_ga4_events()
+    }
 }
 
-function ga4_events_function() {
-    return ga4_events;
-}
-
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events, ga4_events_function };
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events };
