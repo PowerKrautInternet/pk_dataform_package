@@ -169,7 +169,7 @@ function getErrorQuery() {
 	return query;
 }
 
-function get_ga4_events() {
+function ga4_events() {
     let ga4_select_query = " ( SELECT * FROM "
     let sourceCount = 0;
     for (let s in sources) {
@@ -189,13 +189,15 @@ function get_ga4_events() {
     return ga4_events;
 }
 
-let ga4_events = {
+ga4_events = {
+
         "name":"ga4_events",
         "config":{
-            "type":"view",
+        "type":"view",
             "schema":"df_rawdata"
-        },
+    },
         "query":get_ga4_events()
-    }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events, ga4_events};
+}
+
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events};
