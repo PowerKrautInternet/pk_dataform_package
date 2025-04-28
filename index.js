@@ -176,4 +176,4 @@ function get_ga4_events() {
     return stdQuery
 }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events };
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery };
