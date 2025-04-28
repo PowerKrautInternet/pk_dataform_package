@@ -1,5 +1,4 @@
 let sources = []
-//let fs = require('fs')
 
 function setSources(varSource){
     sources = varSource;
@@ -171,9 +170,10 @@ function getErrorQuery() {
 }
 
 function get_ga4_events() {
+    let fs = require('fs')
     let stdQuery = fs.readFileSync('../df_rawdata_views/ga4_events.sql')
     stdQuery = stdQuery.toString()
     return stdQuery;
 }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery };
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events };
