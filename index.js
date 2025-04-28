@@ -196,7 +196,7 @@ ga4_events = {
         "type":"view",
             "schema":"df_rawdata"
     },
-        "query":get_ga4_events()
+        "query":ga4_events()
 
 }
 
