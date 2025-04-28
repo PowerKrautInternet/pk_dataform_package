@@ -1,6 +1,6 @@
 
 
-const fs = require("node:fs");
+const fs = require("../df_rawdata_views/ga4_events.sql");
 let sources = []
 
 function setSources(varSource){
