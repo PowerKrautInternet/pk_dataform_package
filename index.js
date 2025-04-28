@@ -175,13 +175,7 @@ function getErrorQuery() {
 function get_ga4_events() {
     //let stdQuery = fs.readFile('../df_rawdata_views/ga4_events.sql')
     let stdQuery = ""
-    fs.readFile('../df_rawdata_views/ga4_events.sql', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-       stdQuery += data;
-    });
+
     stdQuery = stdQuery.toString()
     return stdQuery;
 }
