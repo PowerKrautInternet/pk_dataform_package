@@ -1,6 +1,3 @@
-
-
-const fs = require("./ga4_events.sql");
 let sources = []
 
 function setSources(varSource){
@@ -173,11 +170,23 @@ function getErrorQuery() {
 }
 
 function get_ga4_events() {
-    //let stdQuery = fs.readFile('../df_rawdata_views/ga4_events.sql')
-    let stdQuery = ""
+    let ga4_select_query = " ( SELECT * FROM "
+    let sourceCount = 0;
+    for (let s in sources) {
+        //for each data source
+        if (sources[s].type == "GA4") {
+            if(sourceCount > 0){
+                ga4_select_query += " UNION ALL SELECT * FROM "
+            }
+            ga4_select_query += "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+            sourceCount++;
+        }
+    }
+    ga4_select_query += ")"
 
-    stdQuery = stdQuery.toString()
-    return stdQuery;
+    let ga4_events = require('./df_rawdata_views/ga4_events.js');
+    ga4_events = ga4_events.replace('GA4_BRON', ga4_select_query)
+    return ga4_events;
 }
 
 module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, get_ga4_events };

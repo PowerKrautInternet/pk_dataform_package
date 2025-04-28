@@ -1,3 +1,5 @@
+ga4_events = `
+
 SELECT
     event_date,
     CONCAT(IFNULL(user_pseudo_id, ""), "_", CAST(event_timestamp AS STRING), "_", event_name) AS unique_event_id,
@@ -110,3 +112,6 @@ SELECT
     publisher.ad_unit_id as publisher_ad_unit_id
 
 FROM GA4_BRON
+
+`
+module.exports = ga4_events
