@@ -1,3 +1,6 @@
+
+
+const fs = require("fs");
 let sources = []
 
 function setSources(varSource){
@@ -170,7 +173,6 @@ function getErrorQuery() {
 }
 
 function get_ga4_events() {
-    let fs = require("fs");
     let stdQuery = fs.readFileSync('../df_rawdata_views/ga4_events.sql')
     stdQuery = stdQuery.toString()
     return stdQuery;
