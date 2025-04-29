@@ -1,3 +1,6 @@
+const pk = require("./index");
+let sources = pk.getSources();
+
 function ref(name) {
     for(let s in sources) {
         if(s.name == name){
