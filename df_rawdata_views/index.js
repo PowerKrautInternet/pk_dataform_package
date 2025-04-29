@@ -1,4 +1,4 @@
-let sources = require('../index')
+let sources = require('../index.js').getSources();
 
 function ga4_events_query() {
     let ga4_select_query = " ( SELECT * FROM "

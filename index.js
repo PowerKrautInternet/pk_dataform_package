@@ -7,6 +7,10 @@ function Query(){
     this.query = "";
 }
 
+function getSources() {
+    return sources;
+}
+
 function setSources(varSource){
     sources = varSource;
     setQuerys();
@@ -210,4 +214,4 @@ function set_ga4_events() {
     return ga4_events;
 }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys};
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources};
