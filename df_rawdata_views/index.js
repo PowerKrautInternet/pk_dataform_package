@@ -26,8 +26,8 @@ function ga4_events(){
             "type": "view",
             "schema": "df_rawdata_views"
         },
-        "query": ga4_events_query()
+        "query": ga4_events_query
     }
 }
 
-module.exports = { ga4_events }
+module.exports = { ga4_events, ga4_events_query }
