@@ -1,5 +1,5 @@
 let sources = []
-let ga4_events = new Query("ga4_events", );
+let ga4_events = new Query();
 
 function Query(){
     this.name = "";
