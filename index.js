@@ -1,5 +1,11 @@
 let sources = []
-let ga4_events;
+let ga4_events = new Query();
+
+function Query(){
+    this.name = "";
+    this.config = {};
+    this.query = "";
+}
 
 function setSources(varSource){
     sources = varSource;
@@ -198,7 +204,7 @@ function set_ga4_events() {
     ga4_select_query += ")"
 
     let ga4_events = require('./df_rawdata_views/ga4_events.js');
-    ga4_events = ga4_events.replace('GA4_BRON', ga4_select_query)
+    ga4_events = ga4_events.replace('GA4_BRON', ga4_select_query);
     return ga4_events;
 }
 
