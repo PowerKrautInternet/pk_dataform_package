@@ -1,7 +1,20 @@
 let sources = []
+let ga4_events;
 
 function setSources(varSource){
     sources = varSource;
+    setQuerys();
+}
+
+function setQuerys() {
+    ga4_events = {
+        "name":"ga4_events",
+        "config":{
+            "type":"view",
+            "schema":"df_rawdata"
+        },
+        "query":set_ga4_events()
+    }
 }
 
 function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
@@ -169,7 +182,7 @@ function getErrorQuery() {
 	return query;
 }
 
-function ga4_events() {
+function set_ga4_events() {
     let ga4_select_query = " ( SELECT * FROM "
     let sourceCount = 0;
     for (let s in sources) {
@@ -189,15 +202,4 @@ function ga4_events() {
     return ga4_events;
 }
 
-ga4_events = {
-
-        "name":"ga4_events",
-        "config":{
-        "type":"view",
-            "schema":"df_rawdata"
-    },
-        "query":ga4_events()
-
-}
-
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events};
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events};
