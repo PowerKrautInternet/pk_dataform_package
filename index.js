@@ -1,5 +1,5 @@
 let sources = []
-let ga4_events = new Query();
+let ga4_events = new Query("ga4_events", );
 
 function Query(){
     this.name = "";
@@ -21,6 +21,8 @@ function setQuerys() {
         },
         "query":set_ga4_events()
     }
+
+    return {"ga4_events": ga4_events};
 }
 
 function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
@@ -208,4 +210,4 @@ function set_ga4_events() {
     return ga4_events;
 }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events};
+module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys};
