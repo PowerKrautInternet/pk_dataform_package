@@ -30,4 +30,4 @@ function ga4_events(){
     }
 }
 
-module.exports (ga4_events())
+module.exports = { ga4_events }
