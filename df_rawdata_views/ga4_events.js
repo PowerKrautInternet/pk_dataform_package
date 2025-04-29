@@ -1,4 +1,7 @@
-ga4_events = `
+/*config*/
+function ref () {}
+ref = require("../index").ref()
+module.exports = `
 
 SELECT
     event_date,
@@ -114,4 +117,3 @@ SELECT
 FROM GA4_BRON
 
 `
-module.exports = ga4_events

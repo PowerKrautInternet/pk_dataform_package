@@ -1,4 +1,5 @@
-let sources = require('../index.js').getSources();
+let pk = require('../index.js');
+let sources = pk.getSources();
 
 function ga4_events_query() {
     let ga4_select_query = " ( SELECT * FROM "
@@ -20,7 +21,7 @@ function ga4_events_query() {
 }
 
 function ga4_events(){
-    return {
+    let table = {
         "name": "ga4_events",
         "config": {
             "type": "view",
@@ -28,6 +29,8 @@ function ga4_events(){
         },
         "query": ga4_events_query
     }
+    pk.addSource(table);
+    return table;
 }
 
 module.exports = { ga4_events, ga4_events_query }

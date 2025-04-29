@@ -1,6 +1,47 @@
 let sources = []
 let ga4_events = new Query();
 
+function addSource(source) {
+    sources.push(source);
+}
+
+function lookupTable(needle, haystack) {
+    const lookupTable = JSON.parse(haystack);
+
+
+    for (var item in lookupTable) {
+        let normalizedValue = removeAccents(lookupTable[item]);
+        let normalizedNeedle = removeAccents(needle);
+        normalizedNeedle = normalizedNeedle.replace(/[^a-zA-Z0-9]/gi, " ");
+        normalizedValue = normalizedValue.replace(/[^a-zA-Z0-9]/gi, " ");
+        normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
+        normalizedValue = normalizedValue.replace(/\s+/gi, " ");
+
+        if (normalizedNeedle.match(new RegExp('.*\\b' + normalizedValue + '\\b.*', 'gi'))) {
+            return lookupTable[item];
+        }
+    }
+
+    return null;
+}
+
+function removeAccents(strAccents) {
+    var strAccents = strAccents.split('');
+    var strAccentsOut = new Array();
+    var strAccentsLen = strAccents.length;
+    var accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+    var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
+    for (var y = 0; y < strAccentsLen; y++) {
+        if (accents.indexOf(strAccents[y]) != -1) {
+            strAccentsOut[y] = accentsOut.substr(accents.indexOf(strAccents[y]), 1);
+        } else
+            strAccentsOut[y] = strAccents[y];
+    }
+    strAccentsOut = strAccentsOut.join('');
+
+    return strAccentsOut;
+}
+
 function Query(){
     this.name = "";
     this.config = {};
@@ -214,4 +255,13 @@ function set_ga4_events() {
     return ga4_events;
 }
 
-module.exports = { setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources};
+function ref(name){
+    for(let s in sources) {
+        if(s.name == name){
+            return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+        }
+    }
+    return null
+}
+
+module.exports = { addSource, setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources, lookupTable, ref};
