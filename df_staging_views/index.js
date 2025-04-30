@@ -30,4 +30,17 @@ function stg_ga4_mappings_targets () {
     return table;
 }
 
-module.exports = { stg_ga4_mappings_targets, stg_ga4_events_sessies_query }
+function stg_ga4_sessie_assignment () {
+    let table = {
+        "name": "stg_ga4_sessie_assignment",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views"
+        },
+        "query": require('./stg_ga4_sessie_assignment')
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = { stg_ga4_mappings_targets, stg_ga4_events_sessies_query, stg_ga4_sessie_assignment }
