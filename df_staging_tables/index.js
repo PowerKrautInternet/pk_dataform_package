@@ -5,7 +5,7 @@ function stg_ga4_events_sessies () {
         "name": "stg_ga4_events_sessies",
         "config": {
             "type": "table",
-            "schema": "df_staging_views"
+            "schema": "df_staging_tables"
         },
         "query": require('./stg_ga4_events_sessies')
     }
