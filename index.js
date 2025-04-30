@@ -261,7 +261,7 @@ function ref(name){
             return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
         }
     }
-    return null
+    return "`" + name + "` "
 }
 
 module.exports = { addSource, setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources, lookupTable, ref};
