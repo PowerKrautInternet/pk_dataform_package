@@ -4,7 +4,9 @@ function ref(name) {
     let sources = pk.getSources();
     for(let s in sources) {
         if(sources[s].name == name){
-            return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+            let ref = "`" + sources[s].database + "." + sources[s].schema
+            if(dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
+            ref += "." + sources[s].name + "` "
         }
     }
     return "`" + name + "` "
