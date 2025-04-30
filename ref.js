@@ -38,7 +38,9 @@ function ref(p1, p2) {
 }
 
 function getRefs(){
-    return refs
+    let bufferRefs = refs;
+    refs = []
+    return bufferRefs
 }
 
 module.exports = {ref, getRefs};
