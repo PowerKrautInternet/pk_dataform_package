@@ -1,6 +1,4 @@
 /*config*/
-function ref () {}
-ref = require("../index").ref()
 module.exports = `
 
 SELECT
