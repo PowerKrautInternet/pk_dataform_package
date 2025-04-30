@@ -5,9 +5,10 @@ function stg_ga4_events_sessies () {
         "name": "stg_ga4_events_sessies",
         "config": {
             "type": "view",
-            "schema": "df_staging_views"
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_events_sessies').refs
         },
-        "query": require('./stg_ga4_events_sessies')
+        "query": require('./stg_ga4_events_sessies').query
     }
     pk.addSource(table);
     return table;
@@ -18,9 +19,10 @@ function stg_ga4_mappings_targets () {
         "name": "stg_ga4_mappings_targets",
         "config": {
             "type": "view",
-            "schema": "df_staging_views"
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_events_sessies').refs
         },
-        "query": require('./stg_ga4_mappings_targets')
+        "query": require('./stg_ga4_events_sessies').query
     }
     pk.addSource(table);
     return table;
@@ -31,9 +33,10 @@ function stg_ga4_sessie_assignment () {
         "name": "stg_ga4_sessie_assignment",
         "config": {
             "type": "view",
-            "schema": "df_staging_views"
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_events_sessies').refs
         },
-        "query": require('./stg_ga4_sessie_assignment')
+        "query": require('./stg_ga4_events_sessies').query
     }
     pk.addSource(table);
     return table;
@@ -44,9 +47,10 @@ function stg_pivot_targets () {
         "name": "stg_pivot_targets",
         "config": {
             "type": "view",
-            "schema": "df_staging_views"
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_events_sessies').refs
         },
-        "query": require('./stg_pivot_targets')
+        "query": require('./stg_ga4_events_sessies').query
     }
     pk.addSource(table);
     return table;
