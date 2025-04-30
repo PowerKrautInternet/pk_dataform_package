@@ -1,7 +1,7 @@
 const pk = require("./index");
-let sources = pk.getSources();
 
 function ref(name) {
+    let sources = pk.getSources();
     for(let s in sources) {
         if(s.name == name){
             return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
