@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../ref.js")
 let ref = pk.ref
-module.exports = `
+let query = `
     
 SELECT
     *
