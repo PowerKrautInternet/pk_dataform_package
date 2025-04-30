@@ -5,7 +5,7 @@ function ref(name) {
     for(let s in sources) {
         if(sources[s].name == name){
             let ref = "`" + sources[s].database + "." + sources[s].schema
-            if((sources[s].schema != "rawdata" || sources[s].schema != "googleSheets") && dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
+            if(sources[s].schema != "rawdata" && sources[s].schema != "googleSheets" && dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
             ref += "." + sources[s].name + "` "
             return ref
         }
