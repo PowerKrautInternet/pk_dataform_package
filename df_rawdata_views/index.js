@@ -25,7 +25,8 @@ function ga4_events(){
         "name": "ga4_events",
         "config": {
             "type": "view",
-            "schema": "df_rawdata_views"
+            "schema": "df_rawdata_views",
+            "dependencies": ["events_*"]
         },
         "query": ga4_events_query
     }

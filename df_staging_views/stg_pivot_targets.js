@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../ref.js")
 let ref = pk.ref
-module.exports = `
+let query = `
     
     
  SELECT 
@@ -61,5 +61,7 @@ module.exports = `
  ) as date_mapping
  CROSS JOIN
   UNNEST(dates) as date
-    
-    `
+
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}

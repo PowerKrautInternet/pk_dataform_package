@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../ref.js")
 let ref = pk.ref
-module.exports = `
+let query = `
     
 
 SELECT 
@@ -77,3 +77,5 @@ LEFT JOIN
 ON
   ac.session_campaign = ga4.session_campaign
 `
+let refs = pk.getRefs()
+module.exports = {query, refs}

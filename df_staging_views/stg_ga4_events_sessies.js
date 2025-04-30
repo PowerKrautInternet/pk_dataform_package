@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../ref.js")
 let ref = pk.ref
-module.exports = `
+let query = `
 
 SELECT
 * EXCEPT(merk_event, merk_session),
@@ -127,4 +127,6 @@ unique_event_id,
 LEFT JOIN ${ref("stg_ga4_sessie_assignment")} sessie_assignment
 ON events.user_pseudo_id = sessie_assignment.user_pseudo_id AND events.event_ga_session_id = sessie_assignment.ga_session_id)))
 
-/*dont delete this*/`
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}

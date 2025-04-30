@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../ref.js")
 let ref = pk.ref
-module.exports = `
+let query = `
     
 SELECT
     user_pseudo_id,
@@ -150,5 +150,7 @@ FROM ${ref("ga4_events")}
 WHERE user_pseudo_id <> "" AND CAST(event_ga_session_id AS STRING) <> ""
 AND event_name = 'session_start'
 )
-    
-    `
+
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}
