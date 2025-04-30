@@ -7,6 +7,7 @@ function ref(name) {
             let ref = "`" + sources[s].database + "." + sources[s].schema
             if(dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
             ref += "." + sources[s].name + "` "
+            return ref
         }
     }
     return "`" + dataform.projectConfig.defaultDataset + "." + name + "` "
