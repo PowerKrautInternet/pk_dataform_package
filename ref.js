@@ -10,7 +10,7 @@ function ref(name) {
             return ref
         }
     }
-    return "`" + dataform.projectConfig.defaultDataset + "." + name + "` "
+    return "`" + dataform.projectConfig.defaultDatabase + "." + dataform.projectConfig.defaultSchema + "." + name + "` "
 }
 
 module.exports = ref;
