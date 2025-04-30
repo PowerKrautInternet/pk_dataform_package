@@ -9,7 +9,7 @@ function ref(name) {
             ref += "." + sources[s].name + "` "
         }
     }
-    return "`" + name + "` "
+    return "`" + dataform.projectConfig.defaultDataset + "." + name + "` "
 }
 
 module.exports = ref;
