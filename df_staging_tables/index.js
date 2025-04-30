@@ -5,9 +5,10 @@ function stg_ga4_events_sessies () {
         "name": "stg_ga4_events_sessies",
         "config": {
             "type": "table",
-            "schema": "df_staging_tables"
+            "schema": "df_staging_tables",
+            "dependencies": require('./stg_ga4_events_sessies').refs
         },
-        "query": require('./stg_ga4_events_sessies')
+        "query": require('./stg_ga4_events_sessies').query
     }
     pk.addSource(table);
     return table;
