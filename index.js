@@ -1,7 +1,12 @@
 let sources = []
 let ga4_events = new Query();
 
-function addSource(source) {
+function addSource(varsource) {
+    let source = {
+        "name": varsource.name,
+        "schema": varsource.config.schema,
+        "database": dataform.projectConfig.defaultDatabase
+    }
     sources.push(source);
 }
 
