@@ -7,7 +7,7 @@ function ref(name) {
             return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
         }
     }
-    return null
+    return "`" + name + "` "
 }
 
 module.exports = ref;

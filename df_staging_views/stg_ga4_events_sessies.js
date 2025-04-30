@@ -1,5 +1,5 @@
 /*config*/
-let ref = require("../ref")
+let ref = require("../ref.js")
 module.exports = `
 
 SELECT

@@ -255,13 +255,5 @@ function set_ga4_events() {
     return ga4_events;
 }
 
-function ref(name){
-    for(let s in sources) {
-        if(s.name == name){
-            return "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
-        }
-    }
-    return "`" + name + "` "
-}
 
-module.exports = { addSource, setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources, lookupTable, ref};
+module.exports = { addSource, setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources, lookupTable};

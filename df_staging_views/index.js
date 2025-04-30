@@ -1,5 +1,4 @@
 let pk = require('../index.js');
-let sources = pk.getSources();
 
 function stg_ga4_events_sessies () {
     return require('./stg_ga4_events_sessies')
