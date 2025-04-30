@@ -11,9 +11,9 @@ SELECT
 FROM(
     SELECT
     * EXCEPT(session_default_channel_group),
-    pk-datalake-apoint.analyticsTables.lookupTable(event_merk_concat,
+    ${"`" +dataform.projectConfig.defaultDatabase + "`"}.analyticsTables.lookupTable(event_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken_apoint")}))) as merk_event,
-    pk-datalake-apoint.analyticsTables.lookupTable(session_merk_concat,
+    ${"`" +dataform.projectConfig.defaultDatabase + "`"}.analyticsTables.lookupTable(session_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken_apoint")}))) as merk_session,
     session_default_channel_group,
     CASE
