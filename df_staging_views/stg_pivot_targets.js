@@ -1,4 +1,6 @@
-let ref = require("../ref.js")
+/*config*/
+let pk = require("../ref.js")
+let ref = pk.ref
 module.exports = `
     
     
