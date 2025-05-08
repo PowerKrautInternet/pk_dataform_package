@@ -1,81 +1,4 @@
-let sources = []
-let ga4_events = new Query();
-
-function addSource(varsource) {
-    let source = {
-        "name": varsource.name,
-        "schema": varsource.config.schema,
-        "database": dataform.projectConfig.defaultDatabase
-    }
-    sources.push(source);
-}
-
-function lookupTable(needle, haystack) {
-    const lookupTable = JSON.parse(haystack);
-
-
-    for (var item in lookupTable) {
-        let normalizedValue = removeAccents(lookupTable[item]);
-        let normalizedNeedle = removeAccents(needle);
-        normalizedNeedle = normalizedNeedle.replace(/[^a-zA-Z0-9]/gi, " ");
-        normalizedValue = normalizedValue.replace(/[^a-zA-Z0-9]/gi, " ");
-        normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
-        normalizedValue = normalizedValue.replace(/\s+/gi, " ");
-
-        if (normalizedNeedle.match(new RegExp('.*\\b' + normalizedValue + '\\b.*', 'gi'))) {
-            return lookupTable[item];
-        }
-    }
-
-    return null;
-}
-
-function removeAccents(strAccents) {
-    var strAccents = strAccents.split('');
-    var strAccentsOut = new Array();
-    var strAccentsLen = strAccents.length;
-    var accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-    var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
-    for (var y = 0; y < strAccentsLen; y++) {
-        if (accents.indexOf(strAccents[y]) != -1) {
-            strAccentsOut[y] = accentsOut.substr(accents.indexOf(strAccents[y]), 1);
-        } else
-            strAccentsOut[y] = strAccents[y];
-    }
-    strAccentsOut = strAccentsOut.join('');
-
-    return strAccentsOut;
-}
-
-function Query(){
-    this.name = "";
-    this.config = {};
-    this.query = "";
-}
-
-function getSources() {
-    return sources;
-}
-
-function setSources(varSource){
-    sources = varSource;
-    setQuerys();
-}
-
-function setQuerys() {
-    ga4_events = {
-        "name":"ga4_events",
-        "config":{
-            "type":"view",
-            "schema":"df_rawdata"
-        },
-        "query":set_ga4_events()
-    }
-
-    return {"ga4_events": ga4_events};
-}
-
-function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
+function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
@@ -85,7 +8,7 @@ function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extra
                 query += "\nUNION ALL\n\n"
             }
 
-            query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-" 
+            query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
             if(sources[s].freshnessDays == undefined){
                 query += 1
             } else {
@@ -142,11 +65,11 @@ function getLastQuery(extraSelect = "", extraSource = "", extraWhere = "", extra
             query += "\n)\n"
             rowNr += 1
         }
-    }    
+    }
     return query
 }
 
-function getStatsQuery(){
+function dk_monitor(){
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
@@ -198,7 +121,7 @@ function getStatsQuery(){
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
-                query += "\nWHERE JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') = '" + sources[s].crm_id + "' "            
+                query += "\nWHERE JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') = '" + sources[s].crm_id + "' "
             }
 
             query += "GROUP BY "
@@ -211,11 +134,11 @@ function getStatsQuery(){
             query += "\n"
             rowNr += 1
         }
-    }    
+    }
     return query
 }
 
-function getHealthQuery() {
+function dk_healthRapport() {
     let query = ""
 
     query += "SELECT CURRENT_DATE() AS DATE, * "
@@ -228,37 +151,16 @@ function getHealthQuery() {
     return query;
 }
 
-function getErrorQuery() {
-	let query = ""
-	
-	query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron, ':', key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
-	query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
+function dk_errormessages() {
+    let query = ""
+
+    query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron, ':', key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
+    query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
     if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
     query += ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
-	query += " ) as row_conditions ) as alerts"
-	
-	return query;
+    query += " ) as row_conditions ) as alerts"
+
+    return query;
 }
 
-function set_ga4_events() {
-    let ga4_select_query = " ( SELECT * FROM "
-    let sourceCount = 0;
-    for (let s in sources) {
-        //for each data source
-        if (sources[s].type == "GA4") {
-            if(sourceCount > 0){
-                ga4_select_query += " UNION ALL SELECT * FROM "
-            }
-            ga4_select_query += "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
-            sourceCount++;
-        }
-    }
-    ga4_select_query += ")"
-
-    let ga4_events = require('./df_rawdata_views/ga4_events.js');
-    ga4_events = ga4_events.replace('GA4_BRON', ga4_select_query);
-    return ga4_events;
-}
-
-
-module.exports = { addSource, setSources, getLastQuery, getStatsQuery, getHealthQuery, getErrorQuery, ga4_events, set_ga4_events, setQuerys, getSources, lookupTable};
+module.exports = (dk_maxReceivedon,dk_monitor,dk_healthRapport,dk_errormessages);

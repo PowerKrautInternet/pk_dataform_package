@@ -16,7 +16,7 @@
   "license": "ISC",
   "author": "Stijn Holtus",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "sources/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

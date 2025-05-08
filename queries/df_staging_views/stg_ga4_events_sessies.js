@@ -1,5 +1,5 @@
 /*config*/
-let pk = require("../ref.js")
+let pk = require("../../functions")
 let ref = pk.ref
 let query = `
 

@@ -1,4 +1,4 @@
-let pk = require('../index.js');
+let pk = require('../../sources');
 let sources = pk.getSources();
 
 function ga4_events_query() {
@@ -34,4 +34,4 @@ function ga4_events(){
     return table;
 }
 
-module.exports = { ga4_events, ga4_events_query }
+module.exports = { ga4_events }

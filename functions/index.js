@@ -1,12 +1,17 @@
-const pk = require("./index");
+const pk = require("../sources");
 let refs = []
 
-function ref(p1, p2) {
+function index(p1, p2) {
     let sources = pk.getSources();
     let ref = ""
     for(let s in sources) {
-        if(sources[s].name == p1 || (typeof p2 != "undefined" && sources[s].name == p2 && sources[s].schema == p1)){
+        if( //if the index has only one parameter it has to be the name, when there are 2 parameter the second wil be the name.
+            (typeof p2 == "undefined" &&sources[s].name == p1)
+            ||
+            (typeof p2 != "undefined" && sources[s].name == p2 && sources[s].schema == p1)
+        ){
             ref = "`" + sources[s].database + "." + sources[s].schema
+            //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(sources[s].schema != "rawdata" && sources[s].schema != "googleSheets" && dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
             ref += "." + sources[s].name + "` "
             refs.push({
@@ -43,4 +48,4 @@ function getRefs(){
     return bufferRefs
 }
 
-module.exports = {ref, getRefs};
+module.exports = {ref: index, getRefs};
