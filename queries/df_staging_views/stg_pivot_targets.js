@@ -54,7 +54,7 @@ let query = `
         kanaal,
         categorie
 
-    FROM ${ref("gs_conversie_targets_nieuw")} 
+    FROM ${ref("gs_conversie_targets")} 
   ) as conversie_mapping
   CROSS JOIN
     UNNEST(conversie_mapping.row) AS r
