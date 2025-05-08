@@ -12,11 +12,11 @@ SELECT
 FROM(
     SELECT
     * EXCEPT(session_default_channel_group),
-    ${"`" +dataform.projectConfig.defaultDatabase + "`"}.analyticsTables.lookupTable(
+    ${ref("lookupTable")}(
         event_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken_apoint")}))
     ) as merk_event,
-    ${"`" +dataform.projectConfig.defaultDatabase + "`"}.analyticsTables.lookupTable(session_merk_concat,
+    ${ref("lookupTable")}(session_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken_apoint")}))) as merk_session,
     session_default_channel_group,
     CASE

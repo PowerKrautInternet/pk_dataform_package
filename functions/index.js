@@ -1,4 +1,5 @@
 const pk = require("../sources");
+const {addSource} = require("../sources");
 let refs = []
 
 function ref(p1, p2) {
@@ -64,7 +65,9 @@ function getRefs(){
 }
 
 function getLookup(){
-    return `
+    addSource({"database": dataform.projectConfig.defaultDatabase, "schema": "rawdat", "name": "lookupTable"})
+    return {
+        "query": `
         CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
         function lookupTable(needle, haystack) {
             const lookupTable = JSON.parse(haystack);
@@ -105,7 +108,8 @@ function getLookup(){
     
         return lookupTable(arg_needle, arg_table_as_json);
         """;
-    `
+    `, "name": "lookupTable"
+    }
 }
 
 module.exports = {ref, getRefs, getLookup};
