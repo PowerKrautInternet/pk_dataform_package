@@ -20,6 +20,7 @@ function ref(p1, p2) {
                 "schema": sources[s].schema,
                 "database": sources[s].database
             })
+            NrFound++;
         }
     }
 
