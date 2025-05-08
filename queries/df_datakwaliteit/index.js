@@ -1,4 +1,7 @@
+const {getSources} = require("../../sources");
+
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
+    let sources = require("../../sources").getSources();
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
