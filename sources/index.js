@@ -13,15 +13,15 @@ let sources = []
 function addSource(varsource) {
     //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
     if (varsource.type != "function") {
-        varsource.config.noSuffix = "false"
+        varsource.noSuffix = "false"
     } else {
-        varsource.config.noSuffix = "true"
+        varsource.noSuffix = "true"
     }
     let source = {
         "name": varsource.name,
         "schema": varsource.config.schema,
         "database": dataform.projectConfig.defaultDatabase,
-        "noSuffix": varsource.config.noSuffix
+        "noSuffix": varsource.noSuffix
     }
     sources.push(source);
 }
