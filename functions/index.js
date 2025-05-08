@@ -1,27 +1,41 @@
 const pk = require("../sources");
 let refs = []
 
-function index(p1, p2) {
+function ref(p1, p2) {
     let sources = pk.getSources();
-    let ref = ""
+    let ref = []
+    let NrFound = 0;
     for(let s in sources) {
-        if( //if the index has only one parameter it has to be the name, when there are 2 parameter the second wil be the name.
+        if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name.
             (typeof p2 == "undefined" &&sources[s].name == p1)
             ||
             (typeof p2 != "undefined" && sources[s].name == p2 && sources[s].schema == p1)
         ){
-            ref = "`" + sources[s].database + "." + sources[s].schema
+            ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(sources[s].schema != "rawdata" && sources[s].schema != "googleSheets" && dataform.projectConfig.schemaSuffix != "") { ref += "_" + dataform.projectConfig.schemaSuffix }
-            ref += "." + sources[s].name + "` "
+            if(sources[s].schema != "rawdata" && sources[s].schema != "googleSheets" && dataform.projectConfig.schemaSuffix != "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
+            ref[NrFound] += "." + sources[s].name + "` "
             refs.push({
                 "name": sources[s].name,
                 "schema": sources[s].schema,
                 "database": sources[s].database
             })
-            return ref
         }
     }
+
+    //if a ref was found than return al the refs that where found in an query that will be implemented in an 'from'
+    if(NrFound > 0) {
+        let refQuery = "";
+        for (let r in ref) {
+            if (r > 0) {
+                refQuery += "UNION ALL "
+            }
+            refQuery = ref[r];
+        }
+        return refQuery;
+    }
+
+    //If none is found the following will try and give an estimated source with default values
     ref += "`" + dataform.projectConfig.defaultDatabase + "."
     if(typeof p2 == "undefined") {
         ref += dataform.projectConfig.defaultSchema + "." + p1
@@ -48,4 +62,4 @@ function getRefs(){
     return bufferRefs
 }
 
-module.exports = {ref: index, getRefs};
+module.exports = {ref, getRefs};
