@@ -64,8 +64,8 @@ function getRefs(){
 }
 
 function getLookup(){
-    let query = `
-        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".analyticsTables.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
+    return `
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
         function lookupTable(needle, haystack) {
             const lookupTable = JSON.parse(haystack);
     
@@ -106,7 +106,6 @@ function getLookup(){
         return lookupTable(arg_needle, arg_table_as_json);
         """;
     `
-    return query
 }
 
 module.exports = {ref, getRefs, getLookup};
