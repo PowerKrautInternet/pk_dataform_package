@@ -6,7 +6,7 @@ function ga4_events_query() {
     let sourceCount = 0;
     for (let s in sources) {
         //for each data source
-        if (sources[s].alias == "GA4") {
+        if (sources[s].alias === "GA4") {
             if(sourceCount > 0){
                 ga4_select_query += " UNION ALL SELECT * FROM "
             }
