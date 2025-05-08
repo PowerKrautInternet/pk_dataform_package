@@ -6,10 +6,10 @@ function ref(p1, p2) {
     let ref = []
     let NrFound = 0;
     for(let s in sources) {
-        if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name.
-            (typeof p2 == "undefined" &&sources[s].name == p1)
+        if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
+            (typeof p2 == "undefined" && (sources[s].name == p1 || sources[s].type == p1) )
             ||
-            (typeof p2 != "undefined" && sources[s].name == p2 && sources[s].schema == p1)
+            (typeof p2 != "undefined" && (sources[s].name == p2 || sources[s].type == p2) && sources[s].schema == p1)
         ){
             ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
