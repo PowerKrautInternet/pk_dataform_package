@@ -165,4 +165,4 @@ function dk_errormessages() {
     return query;
 }
 
-module.exports = (dk_maxReceivedon() , dk_monitor(), dk_healthRapport(), dk_errormessages());
+module.exports = (dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages);
