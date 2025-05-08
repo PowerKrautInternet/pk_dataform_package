@@ -1,4 +1,5 @@
-const pk = require("../sources");
+let pk = require("../sources");
+
 const {addSource} = require("../sources");
 let refs = []
 
@@ -108,7 +109,10 @@ function getLookup(){
     
         return lookupTable(arg_needle, arg_table_as_json);
         """;
-    `, "name": "lookupTable"
+    `, "config": {
+            "name": "lookupTable",
+            "noSuffix": "false"
+        }
     }
 }
 
