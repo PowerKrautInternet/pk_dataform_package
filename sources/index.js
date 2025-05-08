@@ -11,8 +11,11 @@ let sources = []
 //noSuffix -> If it is a static source, then it should not have the _dev suffix.
 
 function addSource(varsource) {
-    if (varsource.config.noSuffix === "undefined") {
+    //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
+    if (varsource.type != "function") {
         varsource.config.noSuffix = "false"
+    } else {
+        varsource.config.noSuffix = "true"
     }
     let source = {
         "name": varsource.name,

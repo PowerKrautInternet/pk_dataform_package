@@ -60,13 +60,18 @@ function ref(p1, p2) {
 }
 
 function getRefs(){
-    let bufferRefs = refs;
+    let dependencies = [];
+    for (let r in refs) {
+        if(refs[r].type !== "function") {
+            dependencies.push(refs[r]);
+        }
+    }
     refs = []
-    return bufferRefs
+    return dependencies
 }
 
 function getLookup(){
-    addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable"})
+    addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
     return {
         "query": `
         CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
