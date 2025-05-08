@@ -17,11 +17,13 @@ function ref(p1, p2) {
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
             ref[NrFound] += "." + sources[s].name + "` "
-            refs.push({
-                "name": sources[s].name,
-                "schema": sources[s].schema,
-                "database": sources[s].database
-            })
+            if(sources[s].type !== "function") {
+                refs.push({
+                    "name": sources[s].name,
+                    "schema": sources[s].schema,
+                    "database": sources[s].database
+                })
+            }
             NrFound++;
         }
     }
@@ -60,12 +62,7 @@ function ref(p1, p2) {
 }
 
 function getRefs(){
-    let dependencies = [];
-    for (let r in refs) {
-        if(refs[r].type !== "function") {
-            dependencies.push(refs[r]);
-        }
-    }
+    let dependencies = refs;
     refs = []
     return dependencies
 }
