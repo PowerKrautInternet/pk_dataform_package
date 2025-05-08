@@ -66,7 +66,7 @@ function getRefs(){
 }
 
 function getLookup(){
-    addSource({"database": dataform.projectConfig.defaultDatabase, "schema": "rawdat", "name": "lookupTable"})
+    addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable"})
     return {
         "query": `
         CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
@@ -109,10 +109,7 @@ function getLookup(){
     
         return lookupTable(arg_needle, arg_table_as_json);
         """;
-    `, "config": {
-            "name": "lookupTable",
-            "noSuffix": "false"
-        }
+    `, "name": "lookupTable"
     }
 }
 
