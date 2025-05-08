@@ -63,4 +63,50 @@ function getRefs(){
     return bufferRefs
 }
 
-module.exports = {ref, getRefs};
+function getLookup(){
+    let query = `
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".analyticsTables.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
+        function lookupTable(needle, haystack) {
+            const lookupTable = JSON.parse(haystack);
+    
+    
+            for (var item in lookupTable) {
+                let normalizedValue = removeAccents(lookupTable[item]);
+                let normalizedNeedle = removeAccents(needle);
+                normalizedNeedle = normalizedNeedle.replace(/[^a-zA-Z0-9]/gi, " ");
+                normalizedValue = normalizedValue.replace(/[^a-zA-Z0-9]/gi, " ");
+                normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
+                normalizedValue = normalizedValue.replace(/\s+/gi, " ");
+    
+                if (normalizedNeedle.match(new RegExp('.*\\b' + normalizedValue + '\\b.*', 'gi'))) {
+                    return lookupTable[item];
+                }
+            }
+    
+            return null;
+        }
+    
+        function removeAccents(strAccents) {
+            var strAccents = strAccents.split('');
+            var strAccentsOut = new Array();
+            var strAccentsLen = strAccents.length;
+            var accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+            var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
+            for (var y = 0; y < strAccentsLen; y++) {
+                if (accents.indexOf(strAccents[y]) != -1) {
+                    strAccentsOut[y] = accentsOut.substr(accents.indexOf(strAccents[y]), 1);
+                } else
+                    strAccentsOut[y] = strAccents[y];
+            }
+            strAccentsOut = strAccentsOut.join('');
+    
+            return strAccentsOut;
+        }
+    
+        return lookupTable(arg_needle, arg_table_as_json);
+        """;
+    `
+    return query
+}
+
+module.exports = {ref, getRefs, getLookup};
