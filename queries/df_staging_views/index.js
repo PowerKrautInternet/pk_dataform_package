@@ -188,7 +188,7 @@ function stg_activecampaign_workflow_edm() {
         "config": {
             "type": "view",
             "schema": "df_staging_views",
-            "dependecies": require('./stg_activecampaign_workflow_edm').refs
+            "dependencies": require('./stg_activecampaign_workflow_edm').refs
         },
         "query": require('./stg_activecampaign_workflow_edm').query
     }
