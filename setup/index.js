@@ -117,7 +117,7 @@ function getLookup(){
     `
 }
 
-function setup(){
+function setupFunctions(){
     let query = []
     query[0] = getLookup();
     let sources = pk.getSources();
@@ -130,4 +130,4 @@ function setup(){
     return query
 }
 
-module.exports = {ref, setup, getRefs};
+module.exports = {ref, setupFunctions, getRefs};
