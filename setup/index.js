@@ -32,14 +32,15 @@ function ref(p1, p2) {
 
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
-        let refQuery = "(SELECT * FROM \t";
+        let refQuery = ""
+        refQuery = "\n(SELECT * FROM \n";
         for (let r in ref) {
             if (r > 0) {
                 refQuery += "UNION ALL "
             }
             refQuery = ref[r];
         }
-        refQuery +=" \t)"
+        refQuery +=" \n)"
         return refQuery;
     }
 
