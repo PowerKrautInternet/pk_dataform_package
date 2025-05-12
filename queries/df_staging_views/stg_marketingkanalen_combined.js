@@ -7,7 +7,7 @@ SELECT
 *,
     ${ref("lookupTable")}(
         campaign_name, 
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken_apoint")}))
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("GS_MERKEN")}))
     ) as merk,
 
 FROM(

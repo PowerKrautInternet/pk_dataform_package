@@ -14,20 +14,6 @@ function stg_ga4_events_sessies () {
     return table;
 }
 
-function stg_ga4_mappings_targets () {
-    let table = {
-        "name": "stg_ga4_mappings_targets",
-        "config": {
-            "type": "view",
-            "schema": "df_staging_views",
-            "dependencies": require('./stg_ga4_mappings_targets').refs
-        },
-        "query": require('./stg_ga4_mappings_targets').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
 function stg_ga4_sessie_assignment () {
     let table = {
         "name": "stg_ga4_sessie_assignment",
@@ -65,20 +51,6 @@ function stg_marketingkanalen_combined () {
             "dependencies": require('./stg_marketingkanalen_combined').refs
         },
         "query": require('./stg_marketingkanalen_combined').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
-function stg_marketingdashboard_searchconsole () {
-    let table = {
-        "name": "stg_marketingdashboard_searchconsole",
-        "config": {
-            "type": "view",
-            "schema": "df_staging_views",
-            "dependencies": require('./stg_marketingdashboard_searchconsole').refs
-        },
-        "query": require('./stg_marketingdashboard_searchconsole').query
     }
     pk.addSource(table);
     return table;
@@ -126,8 +98,35 @@ function stg_ga4_marketing_kanalen_combined () {
     return table;
 }
 
+function stg_ga4_mappings_targets(){
+    let table = {
+        "name": "stg_ga4_mappings_targets",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_mappings_targets').refs
+        },
+        "query": require('./stg_ga4_mappings_targets').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_marketingdashboard_searchconsole() {
+    let table = {
+        "name": "stg_marketingdashboard_searchconsole",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_marketingdashboard_searchconsole').refs
+        }
+        "query": require('./stg_marketingdashboard_searchconsole').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
-    stg_ga4_mappings_targets,
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
     stg_pivot_targets,
@@ -135,5 +134,6 @@ module.exports = {
     stg_marketingdashboard_searchconsole,
     stg_syntec_leads_orders_combined,
     stg_activecampaign_ga4_sheets,
-    stg_ga4_marketing_kanalen_combined
+    stg_ga4_marketing_kanalen_combined,
+    stg_ga4_mappings_targets
 }
