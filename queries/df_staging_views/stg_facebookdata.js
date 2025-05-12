@@ -23,26 +23,26 @@ SELECT
   MAX(date_stop) AS date_stop,
   MAX(objective) AS objective,
   MAX(
-  IF(JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "page_engagement", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), 0)
+  IF(JSON_VALUE(actions_nieuw,'$.action_type') = "page_engagement", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), 0)
     ) AS page_engagement,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "post_engagement", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS post_engagement,
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "post_engagement", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS post_engagement,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "lead", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS lead,
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "lead", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS lead,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "leadgen_grouped", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS leadgen_grouped,
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "leadgen_grouped", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS leadgen_grouped,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "onsite_conversion.lead_grouped", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS onsite_lead_grouped,
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "onsite_conversion.lead_grouped", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS onsite_lead_grouped,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "post_reaction", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS post_reaction,
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "post_reaction", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS post_reaction,
   MAX(
   IF
-    (JSON_EXTRACT_SCALAR(actions_nieuw,'$.action_type') = "link_click", CAST(JSON_EXTRACT_SCALAR(actions_nieuw,'$.value') AS INT64), NULL)) AS link_click
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "link_click", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS link_click
 FROM
     ${ref("df_rawdata_views", "facebookdata")}
 

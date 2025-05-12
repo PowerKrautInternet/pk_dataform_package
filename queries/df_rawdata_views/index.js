@@ -62,4 +62,23 @@ function syntec_orders () {
     return table;
 }
 
-module.exports = { ga4_events, syntec_orders, syntec_leads }
+function dv360_data () {
+    let table = {
+        "name": "dv360_data",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./dv360_data').refs
+        },
+        "query": require('./dv360_data').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = { 
+    ga4_events,
+    syntec_orders,
+    syntec_leads,
+    dv360_data
+}

@@ -126,6 +126,62 @@ function stg_marketingdashboard_searchconsole() {
     return table;
 }
 
+function stg_google_ads_adgroup_combined() {
+    let table = {
+        "name": "stg_ads_adgroup_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ads_adgroup_combined').refs
+        },
+        "query": require('./stg_ads_adgroup_combined').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_facebookdata () {
+    let table = {
+        "name": "stg_facebookdata",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_facebookdata').refs
+        },
+        "query": require('./stg_facebookdata').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_bing_ad_group_performance () {
+    let table = {
+        "name": "stg_bing_ad_group_performance",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_bing_ad_group_performance').refs
+        },
+        "query": require('./stg_bing_ad_group_performance').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_linkedin_ads_combined () {
+    let table = {
+        "name": "stg_linkedin_ads_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_linkedin_ads_combined').refs
+        },
+        "query": require('./stg_linkedin_ads_combined').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -135,5 +191,9 @@ module.exports = {
     stg_syntec_leads_orders_combined,
     stg_activecampaign_ga4_sheets,
     stg_ga4_marketing_kanalen_combined,
-    stg_ga4_mappings_targets
+    stg_ga4_mappings_targets,
+    stg_google_ads_adgroup_combined,
+    stg_facebookdata,
+    stg_bing_ad_group_performance,
+    stg_linkedin_ads_combined
 }
