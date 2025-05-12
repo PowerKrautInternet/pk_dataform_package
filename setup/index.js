@@ -23,6 +23,8 @@ function ref(p1, p2) {
                     "schema": sources[s].schema,
                     "database": sources[s].database
                 })
+            } else {
+                return "`" + sources[s].database + "`.rawdata." + p1
             }
             NrFound++;
         }
@@ -117,4 +119,4 @@ function setup(){
     return getLookup;
 }
 
-module.exports = {ref, setup, getRefs};
+module.exports = {ref, setup, getRefs, getLookup};
