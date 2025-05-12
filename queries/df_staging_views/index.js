@@ -122,6 +122,8 @@ function stg_ga4_marketing_kanalen_combined () {
         },
         "query": require('./stg_ga4_marketing_kanalen_combined').query
     }
+    pk.addSource(table);
+    return table;
 }
 
 module.exports = {
