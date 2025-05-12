@@ -182,6 +182,20 @@ function stg_linkedin_ads_combined () {
     return table;
 }
 
+function stg_activecampaign_workflow_edm() {
+    let table = {
+        "name": "stg_activecampaign_workflow_edm",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependecies": require('./stg_activecampaign_workflow_edm').refs
+        },
+        "query": require('./stg_activecampaign_workflow_edm').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -195,5 +209,6 @@ module.exports = {
     stg_google_ads_adgroup_combined,
     stg_facebookdata,
     stg_bing_ad_group_performance,
-    stg_linkedin_ads_combined
+    stg_linkedin_ads_combined,
+    stg_activecampaign_workflow_edm
 }
