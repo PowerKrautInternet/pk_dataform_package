@@ -1,5 +1,5 @@
 /*config*/
-let pk = require("../../functions")
+let pk = require("../../setup")
 let ref = pk.ref
 module.exports = `
 

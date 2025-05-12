@@ -34,4 +34,32 @@ function ga4_events(){
     return table;
 }
 
-module.exports = { ga4_events }
+function syntec_leads () {
+    let table = {
+        "name": "syntec_leads",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./syntec_leads').refs
+        },
+        "query": require('./syntec_leads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function syntec_orders () {
+    let table = {
+        "name": "syntec_orders",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./syntec_orders').refs
+        },
+        "query": require('./syntec_orders').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = { ga4_events, syntec_orders, syntec_leads }

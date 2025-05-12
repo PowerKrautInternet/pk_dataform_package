@@ -28,16 +28,16 @@ function ref(p1, p2) {
         }
     }
 
-    //if a ref was found than return al the refs that where found in an query that will be implemented in an 'from'
+    //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
-        let refQuery = "";
+        let refQuery = "(SELECT * FROM ";
         for (let r in ref) {
             if (r > 0) {
                 refQuery += "UNION ALL "
             }
             refQuery = ref[r];
         }
-        return refQuery;
+        return refQuery + ")";
     }
 
     //If none is found the following will try and give an estimated source with default values
@@ -115,4 +115,4 @@ function getLookup(){
     }
 }
 
-module.exports = {ref, getRefs, getLookup};
+module.exports = {getLookup};
