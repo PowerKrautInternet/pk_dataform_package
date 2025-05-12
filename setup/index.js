@@ -38,7 +38,7 @@ function ref(p1, p2) {
             if (r > 0) {
                 refQuery += "UNION ALL "
             }
-            refQuery = ref[r];
+            refQuery += ref[r];
         }
         refQuery +=" \n)"
         return refQuery;
