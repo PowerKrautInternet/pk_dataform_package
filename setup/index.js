@@ -120,7 +120,7 @@ function getLookup(){
 function setupFunctions(){
     let query = []
     query[0] = getLookup();
-    let sources = pk.getSources();
+    let sources = require("../sources").getSources();
     let lasttransaction = require("./lasttransaction")
     for(let s in sources){
         if(sources[s].name.endsWith("DataProducer")){
