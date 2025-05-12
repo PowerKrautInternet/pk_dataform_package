@@ -112,6 +112,18 @@ function stg_activecampaign_ga4_sheets () {
     return table;
 }
 
+function stg_ga4_marketing_kanalen_combined () {
+    let table = {
+        "name": "stg_ga4_marketing_kanalen_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_marketing_kanalen_combined').refs
+        },
+        "query": require('./stg_ga4_marketing_kanalen_combined').query
+    }
+}
+
 module.exports = {
     stg_ga4_mappings_targets,
     stg_ga4_events_sessies,
@@ -120,5 +132,6 @@ module.exports = {
     stg_marketingkanalen_combined,
     stg_marketingdashboard_searchconsole,
     stg_syntec_leads_orders_combined,
-    stg_activecampaign_ga4_sheets
+    stg_activecampaign_ga4_sheets,
+    stg_ga4_marketing_kanalen_combined
 }
