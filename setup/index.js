@@ -118,7 +118,16 @@ function getLookup(){
 }
 
 function setup(){
-    return getLookup;
+    let query = ""
+    query += getLookup();
+    let sources = pk.getSources();
+    let lasttransaction = require("lasttransaction")
+    for(let s in sources){
+        if(sources[s].name.endsWith("DataProducer")){
+            query += lasttransaction(sources[s].name);
+        }
+    }
+    return query
 }
 
-module.exports = {ref, setup, getRefs, getLookup};
+module.exports = {ref, setup, getRefs};
