@@ -1,7 +1,7 @@
 let pk = require("../setup")
 let ref = pk.ref
 
-module.exports = (ref) => {
+module.exports = (refVal) => {
     return `
     
         BEGIN
@@ -18,16 +18,16 @@ END;
       DECLARE dataform_table_type DEFAULT (
   SELECT ANY_VALUE(table_type)
   FROM \`pk-datalake-apoint.df_rawdata_views_dev.INFORMATION_SCHEMA.TABLES\`
-  WHERE table_name = '${ref(ref)}'
+  WHERE table_name = '${ref(refVal)}'
 );
           IF dataform_table_type IS NOT NULL THEN
-      IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`pk-datalake-apoint.df_rawdata_views_dev.${ref(ref)}\`;
-ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`pk-datalake-apoint.df_rawdata_views_dev.${ref(ref)}\`;
+      IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`pk-datalake-apoint.df_rawdata_views_dev.${ref(refVal)}\`;
+ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`pk-datalake-apoint.df_rawdata_views_dev.${ref(refVal)}\`;
 END IF;
     END IF;
       BEGIN
         
-            CREATE OR REPLACE VIEW \`pk-datalake-apoint.df_rawdata_views_dev.${ref(ref)}\`
+            CREATE OR REPLACE VIEW \`pk-datalake-apoint.df_rawdata_views_dev.${ref(refVal)}\`
     OPTIONS()
     AS (
       
@@ -42,13 +42,13 @@ FROM (
     SCHEMA,
     PRIMARYFIELDHASH
   FROM
-    \`rawdata.${ref(ref)}\` AS FIRST
+    \`rawdata.${ref(refVal)}\` AS FIRST
   WHERE
     RECEIVEDON = (
     SELECT
       MAX(RECEIVEDON)
     FROM
-      \`rawdata.${ref(ref)}\` AS second
+      \`rawdata.${ref(refVal)}\` AS second
     WHERE
       first.schema = second.schema
       AND first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH )
