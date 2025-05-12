@@ -115,4 +115,8 @@ function getLookup(){
     }
 }
 
-module.exports = {getLookup};
+function setup(){
+    return getLookup;
+}
+
+module.exports = {getLookup, ref, setup};
