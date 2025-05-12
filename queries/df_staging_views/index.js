@@ -119,7 +119,7 @@ function stg_marketingdashboard_searchconsole() {
             "type": "view",
             "schema": "df_staging_views",
             "dependencies": require('./stg_marketingdashboard_searchconsole').refs
-        }
+        },
         "query": require('./stg_marketingdashboard_searchconsole').query
     }
     pk.addSource(table);
