@@ -30,6 +30,7 @@ function ref(p1, p2) {
         }
     }
 
+
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
         let refQuery = ""
