@@ -1,7 +1,7 @@
 let pk = require("../setup")
 let ref = pk.ref
 
-module.exports = (refVal) => {
+function lasstransaction (refVal) {
     return `
     
         BEGIN
@@ -65,3 +65,5 @@ WHERE
         
     `
 }
+
+module.exports = lasstransaction;

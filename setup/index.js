@@ -121,10 +121,9 @@ function getLookup(){
 function setupFunctions(sources){
     let query = []
     query[0] = getLookup();
-    let lasttransaction = require("./lasttransaction")
     for(let s in sources){
         if(sources[s].name.endsWith("DataProducer")){
-            query[s+1] = lasttransaction(sources[s].name);
+            query[s+1] = require("./lasttransaction")(sources[s].name);
         }
     }
     return query
