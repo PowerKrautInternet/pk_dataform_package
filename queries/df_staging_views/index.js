@@ -128,13 +128,13 @@ function stg_marketingdashboard_searchconsole() {
 
 function stg_google_ads_adgroup_combined() {
     let table = {
-        "name": "stg_ads_adgroup_combined",
+        "name": "stg_google_ads_adgroup_combined",
         "config": {
             "type": "view",
             "schema": "df_staging_views",
-            "dependencies": require('./stg_ads_adgroup_combined').refs
+            "dependencies": require('./stg_google_ads_adgroup_combined').refs
         },
-        "query": require('./stg_ads_adgroup_combined').query
+        "query": require('./stg_google_ads_adgroup_combined').query
     }
     pk.addSource(table);
     return table;
