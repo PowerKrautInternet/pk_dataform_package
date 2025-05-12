@@ -119,4 +119,4 @@ function setup(){
     return getLookup;
 }
 
-module.exports = {getLookup, ref, setup};
+module.exports = {ref, setup, getRefs};
