@@ -76,7 +76,7 @@ let query = `
         json_value(PAYLOAD, '$.response.first_remark_internet_employee') AS first_remark_internet_employee,
         json_value(PAYLOAD, '$.response.date_first_assigned_showroom') AS date_first_assigned_showroom,
     FROM
-        ${ref("df_rawdata_views", "csv_dataproducer_lasttransaction")}
+        ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}
     WHERE
         json_value(PAYLOAD, '$.type') = "csvSyntecDumpLeadsTotaalApointPublisher"
       AND json_value(PAYLOAD, '$.dtcmedia_crm_id') = "982"

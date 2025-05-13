@@ -22,7 +22,7 @@ let query = `
         json_value(PAYLOAD, '$.response.model') AS model,
         json_value(PAYLOAD, '$.response.salesperson') AS salesperson
 
-    FROM ${ref("df_rawdata_views", "csv_dataproducer_lasttransaction")}
+    FROM ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}
     WHERE
         json_value(PAYLOAD, '$.type') = "csvSyntecDumpApAlleOrdersPublisher"
       AND json_value(PAYLOAD, '$.dtcmedia_crm_id') = "982"

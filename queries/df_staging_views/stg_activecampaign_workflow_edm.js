@@ -29,9 +29,9 @@ SELECT
   IFNULL(workflows.bron, edm.bron) AS bron,
 
 FROM
-  ${ref("df_rawdata_views", "stg_activecampaign_workflows")} workflows
+  ${ref("df_rawdata_views", "activecampaign_workflows")} workflows
 FULL OUTER JOIN
-  ${ref("df_rawdata_views", "stg_activecampaign_edm")} edm
+  ${ref("df_rawdata_views", "activecampaign_edm")} edm
 ON
   1=0
 

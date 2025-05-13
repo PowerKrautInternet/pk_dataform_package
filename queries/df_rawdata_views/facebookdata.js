@@ -137,7 +137,7 @@ WITH sequences AS(
     json_value(PAYLOAD, '$.response.wish_bid') AS wish_bid,
     json_value(PAYLOAD, '$.response.actions') AS actions
   FROM
-    ${ref("df_rawdata_views", "facebook_dataproducer_lasttransaction")})
+    ${ref("df_rawdata_views", "facebookDataProducer_lasttransaction")})
 
   SELECT 
     sequences.*,

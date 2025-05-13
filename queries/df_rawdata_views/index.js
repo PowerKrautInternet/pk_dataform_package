@@ -76,9 +76,54 @@ function dv360_data () {
     return table;
 }
 
+function activecampagin_edm () {
+    let table = {
+        "name": "activecampagin_edm",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./activecampagin_edm').refs
+        },
+        "query": require('./activecampagin_edm').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function activecampaign_workflows () {
+    let table = {
+        "name": "activecampaign_workflows",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./activecampaign_workflows').refs
+        },
+        "query": require('./activecampaign_workflows').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function bing_ad_group_performance () {
+    let table = {
+        "name": "bing_ad_group_performance",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./bing_ad_group_performance').refs
+        },
+        "query": require('./bing_ad_group_performance').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = { 
     ga4_events,
     syntec_orders,
     syntec_leads,
-    dv360_data
+    dv360_data,
+    activecampagin_edm,
+    activecampaign_workflows,
+    bing_ad_group_performance
 }
