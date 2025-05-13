@@ -48,7 +48,7 @@ let query = `
         JSON_VALUE(PAYLOAD, '$.response.Spend') AS spend,
         JSON_VALUE(PAYLOAD, '$.response.BaseCampaignId') AS base_campaign_id
 
-    FROM ${ref("bingDataProducer_lasttransaction")}
+    FROM ${ref("bingAdsDataProducer_lasttransaction")}
     WHERE JSON_VALUE(PAYLOAD, '$.type') = 'AdGroupPerformanceReportPublisher'
     
 `

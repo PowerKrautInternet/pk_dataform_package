@@ -3,7 +3,7 @@ let ref = pk.ref
 
 function lasttransaction (refVal) {
     pk.addSource({
-        "name": refVal.name,
+        "name": refVal.name+"_lasttransaction",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views"
