@@ -52,7 +52,7 @@ function setupFunctions(sources){
     query[0] = getLookup();
     for(let s in sources){
         if(sources[s].name.endsWith("DataProducer")){
-            query.push(lasttransaction(sources[s].name));
+            query.push(lasttransaction(sources[s]));
         }
     }
     return query
