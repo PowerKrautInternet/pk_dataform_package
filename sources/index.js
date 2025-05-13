@@ -43,7 +43,7 @@ function setSources(varSource){
 }
 
 function ref(p1, p2) {
-    let sources = pk.getSources();
+    let sources = getSources();
     let ref = []
     let NrFound = 0;
     for(let s in sources) {
