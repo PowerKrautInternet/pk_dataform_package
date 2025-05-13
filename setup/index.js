@@ -1,4 +1,5 @@
 let pk = require("../sources");
+let lasttransaction = require("../setup/lasttransaction");
 
 const {addSource} = require("../sources");
 let refs = []
@@ -123,7 +124,7 @@ function setupFunctions(sources){
     query[0] = getLookup();
     for(let s in sources){
         if(sources[s].name.endsWith("DataProducer")){
-            query[s+1] = require("./lasttransaction")(sources[s].name);
+            query[s+1] = lasttransaction(sources[s].name);
         }
     }
     return query
