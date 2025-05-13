@@ -115,4 +115,13 @@ function schemaSuffix(source) {
     if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
 }
 
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix};
+function crm_id(name) {
+    for(let s in sources) {
+        if(sources[s].alias === name && typeof sources[s].crm_id != "undefined") {
+            return sources[s].crm_id;
+        }
+    }
+    return "ERROR: crm_id is undefined for " + name
+}
+
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id};
