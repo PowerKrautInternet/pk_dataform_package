@@ -111,4 +111,8 @@ function getRefs(){
     return dependencies
 }
 
-module.exports = { addSource, setSources, getSources, ref, getRefs};
+function schemaSuffix(source) {
+    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
+}
+
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix};
