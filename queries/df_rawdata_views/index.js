@@ -26,9 +26,9 @@ function ga4_events(){
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": ["events_*"]
+            "dependencies": require('./syntec_leads').query
         },
-        "query": ga4_events_query
+        "query": require('./ga4_events').query
     }
     pk.addSource(table);
     return table;
@@ -136,7 +136,7 @@ module.exports = {
     syntec_orders,
     syntec_leads,
     dv360_data,
-    activecampagin_edm,
+    activecampaign_edm,
     activecampaign_workflows,
     bing_ad_group_performance,
     facebookdata
