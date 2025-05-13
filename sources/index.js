@@ -118,7 +118,7 @@ function schemaSuffix(source) {
 function crm_id(name) {
     for(let s in sources) {
         if(sources[s].alias === name && typeof sources[s].crm_id != "undefined") {
-            return sources[s].crm_id;
+            return '"'+ sources[s].crm_id + '"';
         }
     }
     return "ERROR: crm_id is undefined for " + name
