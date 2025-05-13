@@ -56,7 +56,7 @@ function ref(p1, p2) {
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
             ref[NrFound] += "." + sources[s].name + "` "
-            if(sources[s].type !== "function") {
+            if(sources[s].type !== "function" && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets") {
                 refs.push({
                     "name": sources[s].name,
                     "schema": sources[s].schema,
