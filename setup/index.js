@@ -1,4 +1,4 @@
-lasttransaction = require("lasttransaction");
+let lasttransaction = require("lasttransaction");
 
 function getLookup(){
     addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
