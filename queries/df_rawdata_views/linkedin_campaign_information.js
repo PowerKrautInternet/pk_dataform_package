@@ -38,7 +38,7 @@ let query = `
         JSON_VALUE(PAYLOAD, '$.response.name') AS name,
         JSON_VALUE(PAYLOAD, '$.response.status') AS status
     FROM
-        ${ref("linkedinDataProducer_lasttransaction")}
+        ${ref("linkedInAdsDataProducer_lasttransaction")}
     WHERE
         JSON_VALUE(PAYLOAD, '$.type') = "CampaignInformationPublisher"
     

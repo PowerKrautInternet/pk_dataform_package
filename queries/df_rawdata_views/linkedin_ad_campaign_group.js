@@ -20,7 +20,7 @@ SELECT
     JSON_VALUE(PAYLOAD, '$.response.backfilled') AS backfilled,
     JSON_VALUE(PAYLOAD, '$.response.status') AS status
 FROM
-  ${ref("linkedinDataProducer_lasttransaction")}
+  ${ref("linkedInAdsDataProducer_lasttransaction")}
 WHERE
   JSON_VALUE(PAYLOAD, '$.type') = "AdCampaignGroupInformationPublisher"
     

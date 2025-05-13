@@ -29,7 +29,7 @@ SELECT
     JSON_VALUE(PAYLOAD, '$.response.likes') AS likes,
     JSON_VALUE(PAYLOAD, '$.response.downloadClicks') AS downloadClicks
 FROM
-    ${ref("linkedinDataProducer_lasttransaction")}
+    ${ref("linkedInAdsDataProducer_lasttransaction")}
 WHERE
     JSON_VALUE(PAYLOAD, '$.type') = "AdsAnalyticsPublisher"
     
