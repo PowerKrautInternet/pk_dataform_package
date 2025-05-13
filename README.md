@@ -28,7 +28,8 @@ queries/
 ```
 
 Daarnaast:
-- `functions/`: Bevat herbruikbare logica.
+- `setup/`: Bevat standaard functionaliteiten die dmv een operation geimplemeerd kan worden.
+    - Elke dataproducer word automatisch een `_lasttransaction` view voor aangemaakt.
 - `sources/`: Bevat het overzicht van de gedeclareerde bronnen.
 
 ---
