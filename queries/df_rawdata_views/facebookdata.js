@@ -135,7 +135,7 @@ WITH sequences AS(
     json_value(PAYLOAD, '$.response.video_time_watched_actions') AS video_time_watched_actions,
     json_value(PAYLOAD, '$.response.website_purchase_roas') AS website_purchase_roas,
     json_value(PAYLOAD, '$.response.wish_bid') AS wish_bid,
-    json_value(PAYLOAD, '$.response.actions') AS actions
+    json_query_array(PAYLOAD, '$.response.actions') AS actions
   FROM
     ${ref("df_rawdata_views", "facebookDataProducer_lasttransaction")})
 
