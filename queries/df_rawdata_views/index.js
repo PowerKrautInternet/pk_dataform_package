@@ -26,7 +26,7 @@ function ga4_events(){
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./syntec_leads').query
+            "dependencies": require('./syntec_leads').refs
         },
         "query": require('./ga4_events').query
     }
@@ -131,6 +131,62 @@ function facebookdata() {
     return table;
 }
 
+function linkedin_ads_analytics(){
+    let table = {
+        "name": "linkedin_ads_analytics",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./linkedin_ads_analytics').refs
+        },
+        "query": require('./linkedin_ads_analytics').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function linkedin_ad_account() {
+    let table = {
+        "name": "linkedin_ad_account",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./linkedin_ad_account').refs
+        },
+        "query": require('./linkedin_ad_account').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function linkedin_campaign_information () {
+    let table = {
+        "name": "linkedin_campaign_information",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./linkedin_campaign_information').refs
+        },
+        "query": require("./linkedin_campaign_information").query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function linkedin_ad_campaign_group() {
+    let table = {
+        "name": "linkedin_campaign_group",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./linkedin_ad_campaign_group').refs
+        },
+        "query": require('./linkedin_ad_campaign_group').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = { 
     ga4_events,
     syntec_orders,
@@ -139,5 +195,9 @@ module.exports = {
     activecampaign_edm,
     activecampaign_workflows,
     bing_ad_group_performance,
-    facebookdata
+    facebookdata,
+    linkedin_ads_analytics,
+    linkedin_ad_account,
+    linkedin_campaign_information,
+    linkedin_ad_campaign_group
 }

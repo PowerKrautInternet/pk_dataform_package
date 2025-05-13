@@ -2,6 +2,13 @@ let pk = require("../sources")
 let ref = pk.ref
 
 function lasttransaction (refVal) {
+    pk.addSource({
+        "name": refVal.name,
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views"
+        }
+    });
     return `
     
         BEGIN
