@@ -1,7 +1,7 @@
 let pk = require("../sources")
 let ref = pk.ref
 
-function lasstransaction (refVal) {
+function lasttransaction (refVal) {
     return `
     
         BEGIN
@@ -66,4 +66,4 @@ WHERE
     `
 }
 
-module.exports = lasstransaction;
+module.exports = lasttransaction;
