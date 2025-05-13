@@ -1,4 +1,4 @@
-let pk = require("../setup")
+let pk = require("../sources")
 let ref = pk.ref
 
 function lasstransaction (refVal) {
