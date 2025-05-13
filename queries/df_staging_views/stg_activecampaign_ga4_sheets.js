@@ -24,7 +24,7 @@ IFNULL(campaign_date, date) AS record_datum,
     click_to_open_ratio,
     workflow_status,
     IF(name <> "", "Workflows", "eDM") AS ac_bron,
-    `; if(sources.includes("gs_activecampaign_ga4_mapping")){query += `mapping_thema AS flow_thema,`} query += `
+    `; if(sources.includes("gs_activecampaign_ga4_mapping")){query += `--`} query += `mapping_thema AS flow_thema,
     "ActiveCampaign" AS bron,
     "ActiveCampaign" AS kanaal,
     aantal AS aantal_contacts

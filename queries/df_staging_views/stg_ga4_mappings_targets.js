@@ -1,6 +1,7 @@
 /*config*/
 let pk = require("../../sources")
 let ref = pk.ref
+let sources = pk.getSources().map((s) => s.alias ?? s.name )
 let query = `
     
 
@@ -70,12 +71,16 @@ LEFT JOIN ${ref("ga_conversie_mapping")} AS ga_mapping
 ON TRIM(events_sessies.event_name) = TRIM(ga_mapping.event_name)
 
 FULL OUTER JOIN (SELECT * FROM ${ref("df_staging_views", "stg_pivot_targets")}) targets
-ON 1=0)) ga4
-
+ON 1=0)) ga4 
+  
+`; if(sources.includes("gs_activecampaign_ga4_mapping")){query += `/* NO gs_activecampaign_ga4_mapping DEFINED\n`} query += `
+    
 LEFT JOIN
   ${ref("gs_activecampaign_ga4_mapping")} ac
 ON
   ac.session_campaign = ga4.session_campaign
-`
+
+`; if(sources.includes("gs_activecampaign_ga4_mapping")){query += ` NO gs_activecampaign_ga4_mapping DEFINED\n*/`}
+
 let refs = pk.getRefs()
 module.exports = {query, refs}
