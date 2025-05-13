@@ -51,7 +51,7 @@ function setupFunctions(sources){
     let query = []
     query[0] = getLookup();
     for(let s in sources){
-        if(sources[s].name.endsWith("DataProducer")){
+        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){
             query.push(lasttransaction(sources[s]));
         }
     }
