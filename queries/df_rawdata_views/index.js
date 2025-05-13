@@ -76,15 +76,15 @@ function dv360_data () {
     return table;
 }
 
-function activecampagin_edm () {
+function activecampaign_edm () {
     let table = {
-        "name": "activecampagin_edm",
+        "name": "activecampaign_edm",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./activecampagin_edm').refs
+            "dependencies": require('./activecampaign_edm').refs
         },
-        "query": require('./activecampagin_edm').query
+        "query": require('./activecampaign_edm').query
     }
     pk.addSource(table);
     return table;
@@ -117,6 +117,19 @@ function bing_ad_group_performance () {
     pk.addSource(table);
     return table;
 }
+function facebookdata() {
+    let table = {
+        "name": "facebookdata",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./facebookdata').refs
+        },
+        "query": require('./facebookdata').query
+    }
+    pk.addSource(table);
+    return table;
+}
 
 module.exports = { 
     ga4_events,
@@ -125,5 +138,6 @@ module.exports = {
     dv360_data,
     activecampagin_edm,
     activecampaign_workflows,
-    bing_ad_group_performance
+    bing_ad_group_performance,
+    facebookdata
 }

@@ -21,13 +21,13 @@ function lasttransaction (refVal) {
             WHERE table_name = '${refVal.name}_lasttransaction'
         );
         IF dataform_table_type IS NOT NULL THEN
-        IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction"\`;
-        ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction"\`;
+        IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction\`;
+        ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction\`;
         END IF;
         END IF;
         BEGIN
         
-        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(refVal)}.${refVal.name}\`
+        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(refVal)}.${refVal.name}_lasttransaction\`
         OPTIONS()
         AS (
             SELECT
