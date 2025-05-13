@@ -30,8 +30,8 @@ IFNULL(campaign_date, date) AS record_datum,
     aantal AS aantal_contacts
 FROM
 ${ref("df_staging_views", "stg_activecampaign_workflow_edm")} ac
-
-`; if(sources.includes("gs_activecampaign_ga4_mapping")) {query += `    //BEGIN gs_activecampaign_ga4_mapping
+--optional gs_activecampaign_ga4_mapping
+`; if(sources.includes("gs_activecampaign_ga4_mapping")) {query += `    
 
 LEFT JOIN
 (
@@ -50,8 +50,8 @@ ON
     ac.campaign_name = campaign.mapping_edm
 AND 
     ac.name = campaign.mapping_flows
-    
-`}query += `                                                            //END gs_activecampaign_ga4_mapping
+--end optional gs_activecampaign_ga4_mapping
+`}query += `                                                            
 
 FULL OUTER JOIN
     ${ref("gs_activecampaign_totalcontacts")} contacts
