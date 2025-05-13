@@ -175,7 +175,7 @@ function linkedin_campaign_information () {
 
 function linkedin_ad_campaign_group() {
     let table = {
-        "name": "linkedin_campaign_group",
+        "name": "linkedin_ad_campaign_group",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
