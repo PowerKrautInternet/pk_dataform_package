@@ -56,7 +56,7 @@ function ref(p1, p2) {
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
             ref[NrFound] += "." + sources[s].name + "` "
-            if(sources[s].type !== "function" && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets") {
+            if(sources[s].type !== "function") {
                 refs.push({
                     "name": sources[s].name,
                     "schema": sources[s].schema,
@@ -88,18 +88,18 @@ function ref(p1, p2) {
     ref += "`" + dataform.projectConfig.defaultDatabase + "."
     if(typeof p2 == "undefined") {
         ref += dataform.projectConfig.defaultSchema + "." + p1
-        refs.push({
-            "name": p1,
-            "schema": dataform.projectConfig.defaultSchema,
-            "database": dataform.projectConfig.defaultDatabase
-        })
+        //refs.push({
+         //   "name": p1,
+         //   "schema": dataform.projectConfig.defaultSchema,
+        //    "database": dataform.projectConfig.defaultDatabase
+        //})
     } else {
         ref += p1 + "." + p2
-        refs.push({
-            "name": p2,
-            "schema": p1,
-            "database": dataform.projectConfig.defaultDatabase
-        })
+        //refs.push({
+        //    "name": p2,
+       //     "schema": p1,
+       //     "database": dataform.projectConfig.defaultDatabase
+       // })
     }
     ref += "` "
     return ref;
