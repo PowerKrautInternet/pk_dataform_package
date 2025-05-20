@@ -1,6 +1,7 @@
 /*config*/
 let pk = require("../../sources")
 let ref = pk.ref
+let sources = pk.getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT
@@ -55,5 +56,6 @@ GROUP BY
   date_start
 
 `
+if(!sources.includes("facebookDataProducer")){query = `ERROR: facebook is geen bron!`}
 let refs = pk.getRefs()
 module.exports = {query, refs}

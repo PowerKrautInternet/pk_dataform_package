@@ -1,6 +1,7 @@
 /*config*/
 let pk = require("../../sources")
 let ref = pk.ref
+let sources = pk.getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT 
@@ -12,6 +13,7 @@ SELECT
 
 FROM(
     SELECT
+        ${pk.ifNull(["google_ads.bron", "facebook.bron", "dv360.bron", "microsoft.bron", "linkedin.bron"], bron)}
     IFNULL(IFNULL(IFNULL(IFNULL(google_ads.bron, facebook.bron), dv360.bron), microsoft.bron), linkedin.bron) as bron,
     IFNULL(IFNULL(IFNULL(IFNULL(CAST(google_ads.account_id AS STRING), facebook.account_id), CAST(dv360.advertiser_id AS STRING)), microsoft.account_id), linkedin.accountId) as account_id,
     IFNULL(IFNULL(IFNULL(IFNULL(google_ads.account_name, facebook.account_name), dv360.advertiser), microsoft.account_name), linkedin.account_name) as account_name,
@@ -68,17 +70,10 @@ FROM(
 
 FROM ${ref("df_staging_views", "stg_google_ads_adgroup_combined")} google_ads
 
-FULL OUTER JOIN ${ref("df_staging_views", "stg_facebookdata")} facebook
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_rawdata_views", "dv360_data")} dv360
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_bing_ad_group_performance")} microsoft
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_linkedin_ads_combined")} linkedin 
-ON 1=0)
+${pk.FullOuterJoin("df_staging_views", "stg_facebookdata", "facebook")}
+${pk.FullOuterJoin("df_rawdata_views", "dv360_data", "dv360")}
+${pk.FullOuterJoin("df_staging_views", "stg_bing_ad_group_performance", "microsoft")}
+${pk.FullOuterJoin("df_staging_views", "stg_linkedin_ads_combined", "linkedin")}
     
     `
 let refs = pk.getRefs()
