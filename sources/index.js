@@ -136,12 +136,12 @@ function ifNull(values, alias){
     let end = ""
     if(Array.isArray(values)) {
         for (let s in values) {
-            ifnull += "IFNULL("
             if(s != 0){
+                ifnull += "IFNULL("
                 valueQuery += ",";
+                end += ")"
             }
             valueQuery += values[s]
-            end += ")"
         }
     }
     return ifnull + valueQuery + end;
