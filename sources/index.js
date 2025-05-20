@@ -133,18 +133,16 @@ function fullOuterJoin(schema, name, alias){
 function ifNull(values, alias){
     let ifnull = ""
     let valueQuery = ""
-    let end = ""
     if(Array.isArray(values)) {
         for (let s in values) {
             if(s != 0){
                 ifnull += "IFNULL("
-                valueQuery += ",";
-                end += ")"
+                valueQuery += "),";
             }
             valueQuery += values[s]
         }
     }
-    return ifnull + valueQuery + end;
+    return ifnull + valueQuery;
 }
 
 module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, fullOuterJoin, ifNull};
