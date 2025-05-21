@@ -163,7 +163,7 @@ function ifSource(name, query){
     if(!ref(name).startsWith("NOT FOUND")){
         return query
     } else {
-        return "--" + query
+        return "/* NOT FOUND // " + query + "*/"
     }
 }
 

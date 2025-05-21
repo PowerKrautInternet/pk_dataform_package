@@ -51,8 +51,8 @@ SELECT
       IFNULL(session_source, first_user_source) as session_source,
       IFNULL(session_medium, first_user_medium) as session_medium,
       IFNULL(session_campaign, first_user_campaign_name) as session_campaign,
-      ${ifSource("gs_ga4_standaard_events","standaard_event.event_name as event_name_standaard")},
-      ${ifSource("gs_ga4_standaard_events",`IF(standaard_event.event_name <> "", 1, 0) AS standaard_event`)},
+      ${ifSource(`gs_ga4_standaard_events`,`standaard_event.event_name as event_name_standaard,`)}
+      ${ifSource(`gs_ga4_standaard_events`,`IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,`)}
       ga_mapping.conversie_mapping,
       ga_mapping.telmethode as conversie_telmethode,
       ga_mapping.softhard as conversie_soft_hard, 
