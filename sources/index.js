@@ -104,7 +104,7 @@ function ref(p1, p2) {
     }
     ref += "` "
     */
-    return "NOT FOUND " + dataform.projectConfig.defaultSchema + p1 + "." + p2;
+    return "NOT FOUND " + dataform.projectConfig.defaultDatabase + "." + p1 + "." + p2 + "\n list:" + sources;
 }
 
 function getRefs(){
