@@ -42,15 +42,16 @@ function setSources(varSource){
     }
 }
 
-function ref(p1, p2) {
+function ref(p1, p2, ifSource) {
+    p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
     let ref = []
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-            (typeof p2 == "undefined" && (sources[s].alias == p1 || (sources[s].name == p1 && typeof sources[s].alias == 'undefined') ) )
+            (p2 == "" && (sources[s].alias == p1 || (sources[s].name == p1 && typeof sources[s].alias == 'undefined') ) )
             ||
-            (typeof p2 != "undefined" && (sources[s].alias == p2 || (sources[s].name == p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
+            (p2 != "" && (sources[s].alias == p2 || (sources[s].name == p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
         ){
             ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
@@ -84,26 +85,19 @@ function ref(p1, p2) {
         return refQuery;
     }
 
-    /*
-    //If none is found the following will try and give an estimated source with default values
-    ref += "`" + dataform.projectConfig.defaultDatabase + "."
-    if(typeof p2 == "undefined") {
-        ref += dataform.projectConfig.defaultSchema + "." + p1
-        //refs.push({
-         //   "name": p1,
-         //   "schema": dataform.projectConfig.defaultSchema,
-        //    "database": dataform.projectConfig.defaultDatabase
-        //})
-    } else {
-        ref += p1 + "." + p2
-        //refs.push({
-        //    "name": p2,
-       //     "schema": p1,
-       //     "database": dataform.projectConfig.defaultDatabase
-       // })
+    if(!ifSource) {
+        //If none is found the following will try and give an estimated source with default values
+        let refQuery = ""
+        refQuery += "`" + dataform.projectConfig.defaultDatabase + "."
+        if (typeof p2 == "undefined") {
+            refQuery += dataform.projectConfig.defaultSchema + "." + p1
+        } else {
+            refQuery += p1 + "." + p2
+        }
+        refQuery += "` "
+        return refQuery
     }
-    ref += "` "
-    */
+
     let v = sources.map((s) => s.alias + " " + s.name + " " + s.schema );
     return "NOT FOUND " + dataform.projectConfig.defaultDatabase + "." + p1 + "." + p2 + "\n list:" + v;
 }
@@ -131,11 +125,11 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
     let source;
     let nameSource;
     if(typeof  join == "undefined") {
-        source = ref(schemaOrName);
+        source = ref(schemaOrName, "", true);
         nameSource = schemaOrName;
         join = nameOrJoin;
     } else {
-        source = ref(schemaOrName, nameOrJoin);
+        source = ref(schemaOrName, nameOrJoin, true);
         nameSource = nameOrJoin;
     }
 
@@ -167,12 +161,12 @@ function ifNull(values, alias){
 function ifSource(name, query){
     if(Array.isArray(name)) {
         for(let s in name) {
-            if (ref(name).startsWith("NOT FOUND")) {
+            if (ref(name, "", true).startsWith("NOT FOUND")) {
                 return "/* NOT FOUND // " + query + "*/";
             }
         }
     } else {
-        if (ref(name).startsWith("NOT FOUND")) {
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
             return "/* NOT FOUND // " + query + "*/"
         }
     }
