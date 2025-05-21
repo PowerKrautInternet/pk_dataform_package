@@ -160,7 +160,7 @@ function ifNull(values, alias){
 }
 
 function ifSource(name, query){
-    if(!ref(name).startsWith("-NOT FOUND")){
+    if(!ref(name).startsWith("NOT FOUND")){
         return query
     }
 }
