@@ -124,10 +124,17 @@ function crm_id(name) {
     return "ERROR: crm_id is undefined for " + name
 }
 
-function fullOuterJoin(schema, name, alias){
-    return !sources.includes("facebookDataProducer") ? `
-        FULL OUTER JOIN ${ref(schema, name)} ${alias} ON 1=0
-    ` : "--No " + alias + "data\n"
+function join(joinType, schemaOrName, nameOrJoin, join) {
+    let source;
+    let nameSource;
+    if(typeof  join == "undefined") {
+        source = ref(schemaOrName);
+        nameSource = schemaOrName;
+    } else {
+        source = ref(schemaOrName, nameOrJoin);
+        nameSource = nameOrJoin;
+    }
+    return !sources.includes(nameSource) ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
 }
 
 function ifNull(values, alias){
@@ -148,4 +155,4 @@ function ifNull(values, alias){
     return ifnull + valueQuery;
 }
 
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, fullOuterJoin, ifNull};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull};
