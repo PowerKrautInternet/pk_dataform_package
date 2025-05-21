@@ -130,6 +130,7 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
     if(typeof  join == "undefined") {
         source = ref(schemaOrName);
         nameSource = schemaOrName;
+        join = nameOrJoin;
     } else {
         source = ref(schemaOrName, nameOrJoin);
         nameSource = nameOrJoin;
