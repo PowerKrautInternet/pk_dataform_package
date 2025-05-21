@@ -84,6 +84,7 @@ function ref(p1, p2) {
         return refQuery;
     }
 
+    /*
     //If none is found the following will try and give an estimated source with default values
     ref += "`" + dataform.projectConfig.defaultDatabase + "."
     if(typeof p2 == "undefined") {
@@ -102,7 +103,8 @@ function ref(p1, p2) {
        // })
     }
     ref += "` "
-    return ref;
+    */
+    return false;
 }
 
 function getRefs(){
@@ -124,12 +126,13 @@ function crm_id(name) {
     return "ERROR: crm_id is undefined for " + name
 }
 
-function availableSources() {
+function availableSources(schema, name) {
     return getSources().map((s) => s.alias ?? s.name )
 }
 
 function join(joinType, schemaOrName, nameOrJoin, join) {
     let source;
+    let schema;
     let nameSource;
     if(typeof  join == "undefined") {
         source = ref(schemaOrName);
@@ -137,10 +140,11 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
         join = nameOrJoin;
     } else {
         source = ref(schemaOrName, nameOrJoin);
+        schema = schemaOrName;
         nameSource = nameOrJoin;
     }
 
-    return !availableSources().includes(nameSource) ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
+    return ref(schema, nameSource) !== false ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
 }
 
 function ifNull(values, alias){
