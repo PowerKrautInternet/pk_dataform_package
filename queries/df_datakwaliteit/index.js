@@ -5,7 +5,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         //for each data source
-        if ( sources[s].name.endsWith("DataProducer")) {
+        let name = sources[s].name ?? "";
+        if ( name.endsWith("DataProducer")) {
             if (rowNr > 0) {
                 query += "\nUNION ALL\n\n"
             }
@@ -76,7 +77,8 @@ function dk_monitor(){
     let rowNr = 0;
     for (let s in sources) {
         //for each data source
-        if ( sources[s].name.endsWith("DataProducer")) {
+        let name = sources[s].name ?? "";
+        if ( name.endsWith("DataProducer")) {
             if (rowNr > 0) {
                 query += "UNION ALL "
             }
