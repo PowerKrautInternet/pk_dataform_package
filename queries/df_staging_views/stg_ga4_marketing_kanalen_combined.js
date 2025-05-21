@@ -48,8 +48,8 @@ SELECT
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.average_position as gsc_average_position,")}
     ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk),")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","mapping_thema"), ifSource(["stg_activecampaign_ga4_sheets", "gs_activecampaign_ga4_mapping"], "flow_thema")], "AS ac_flow_thema,")} 
-    ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.ac_name"), "ga4.ac_name"])} AS ac_name,
-    ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.campaign_name"), "ga4.ac_campaign"])} AS ac_campaign,
+    ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.ac_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_name")], "AS ac_name,")} 
+    ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.campaign_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_campaign")],"AS ac_campaign,")} 
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.ac_subject_name,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.contacts_entered AS ac_contacts_entered,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.flow_campaigns AS ac_flow_campaigns,")}
