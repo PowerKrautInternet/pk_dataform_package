@@ -136,7 +136,7 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
     return !source.startsWith("NOT FOUND") ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "\n"
 }
 
-function ifNull(values, alias){
+function ifNull(values, alias = ""){
     let ifnull = ""
     let valueQuery = ""
     let count = 0
