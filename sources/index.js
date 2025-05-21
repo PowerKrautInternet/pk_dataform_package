@@ -164,11 +164,18 @@ function ifNull(values, alias){
 }
 
 function ifSource(name, query){
-    if(!ref(name).startsWith("NOT FOUND")){
-        return query
+    if(Array.isArray(name)) {
+        for(let s in name) {
+            if (ref(name).startsWith("NOT FOUND")) {
+                return "/* NOT FOUND // " + query + "*/";
+            }
+        }
     } else {
-        return "/* NOT FOUND // " + query + "*/"
+        if (ref(name).startsWith("NOT FOUND")) {
+            return "/* NOT FOUND // " + query + "*/"
+        }
     }
+    return query;
 }
 
 module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource};
