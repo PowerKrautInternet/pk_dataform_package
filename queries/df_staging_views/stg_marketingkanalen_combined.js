@@ -13,7 +13,6 @@ SELECT
 
 FROM(
     SELECT
-        ${pk.ifNull(["google_ads.bron", "facebook.bron", "dv360.bron", "microsoft.bron", "linkedin.bron"])} as "bron"
     IFNULL(IFNULL(IFNULL(IFNULL(google_ads.bron, facebook.bron), dv360.bron), microsoft.bron), linkedin.bron) as bron,
     IFNULL(IFNULL(IFNULL(IFNULL(CAST(google_ads.account_id AS STRING), facebook.account_id), CAST(dv360.advertiser_id AS STRING)), microsoft.account_id), linkedin.accountId) as account_id,
     IFNULL(IFNULL(IFNULL(IFNULL(google_ads.account_name, facebook.account_name), dv360.advertiser), microsoft.account_name), linkedin.account_name) as account_name,
