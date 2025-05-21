@@ -144,17 +144,19 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
 function ifNull(values, alias){
     let ifnull = ""
     let valueQuery = ""
+    let count = 0
     if(Array.isArray(values)) {
         for (let s in values) {
             if(!values[s].startsWith("/* NOT FOUND //")) {
-                if (s != 0) {
+                if (count !== 0) {
                     ifnull += "IFNULL("
                     valueQuery += ",";
                 }
                 valueQuery += values[s]
-                if (s != 0) {
+                if (count !== 0) {
                     valueQuery += ")";
                 }
+                count++;
             }
         }
     }
