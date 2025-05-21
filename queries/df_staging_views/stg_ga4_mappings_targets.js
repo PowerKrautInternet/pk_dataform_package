@@ -18,7 +18,10 @@ SELECT
 
 FROM(
 SELECT
-    * EXCEPT(event_ga_session_id, conversie_mapping, target_soort_conversie, target_kanaal, target_record_datum, kanaal, event_date),
+    * EXCEPT(event_ga_session_id, conversie_mapping 
+        ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
+        ${ifSource('stg_pivot_targets','targets.kanaal,')}, 
+        target_record_datum, kanaal, event_date),
     IF(event_name <> "" AND standaard_event = 0, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" AND standaard_event = 0, unique_event_id, NULL) as privacy_conversion_id, 
     ${ifNull([
@@ -26,9 +29,14 @@ SELECT
         ifSource("gs_ga4_standaard_events", `IF(standaard_event = 0, event_name, NULL)`),
         ifSource("stg_pivot_targets", "target_soort_conversie")
     ])} as soort_conversie,
-    IFNULL(IFNULL(conversie_mapping, IF(standaard_event = 0, event_name, NULL)), target_soort_conversie) as soort_conversie_oud,   
-    IFNULL(kanaal, target_kanaal) AS kanaal,
-    IFNULL(event_date, target_record_datum) AS event_date,
+    ${ifNull([
+        "kanaal",
+        ifSource("stg_pivot_targets", "target_kanaal"),    
+    ])} as kanaal,
+    ${ifNull([
+        "event_date",
+        ifSource("stg_pivot_targets", "target_record_datum"),
+    ])} as kanaal,
     CASE
         WHEN regexp_contains(session_source,'dv360') 
         OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
