@@ -1,5 +1,6 @@
 /*config*/
-const {join, ref} = require("../../sources");
+const {join, ref, getRefs} = require("../../sources");
+// language=SQL format=false
 let query = `
 
 SELECT 
@@ -51,5 +52,5 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined"
 ${join("FULL OUTER JOIN", "df_staging_Views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 
 `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
