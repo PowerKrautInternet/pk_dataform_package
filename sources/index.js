@@ -104,7 +104,7 @@ function ref(p1, p2) {
     }
     ref += "` "
     */
-    return false;
+    return "NOT FOUND" + p1 + p2;
 }
 
 function getRefs(){
@@ -144,7 +144,7 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
         nameSource = nameOrJoin;
     }
 
-    return ref(schema, nameSource) !== false ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
+    return ref(schema, nameSource).startsWith("NOT FOUND") ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
 }
 
 function ifNull(values, alias){
