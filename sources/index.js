@@ -128,7 +128,6 @@ function crm_id(name) {
 
 function join(joinType, schemaOrName, nameOrJoin, join) {
     let source;
-    let schema;
     let nameSource;
     if(typeof  join == "undefined") {
         source = ref(schemaOrName);
@@ -136,7 +135,6 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
         join = nameOrJoin;
     } else {
         source = ref(schemaOrName, nameOrJoin);
-        schema = schemaOrName;
         nameSource = nameOrJoin;
     }
 
@@ -162,7 +160,7 @@ function ifNull(values, alias){
 }
 
 function ifSource(name, query){
-    if(!ref(name).startsWith("--No")){
+    if(!ref(name).startsWith("-NOT FOUND")){
         return query
     }
 }
