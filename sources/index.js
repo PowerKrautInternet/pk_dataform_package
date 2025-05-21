@@ -156,7 +156,7 @@ function ifNull(values, alias = ""){
         }
     }
     if(count != 0){
-        return ifnull + valueQuery + alias;
+        return ifnull + valueQuery + " " + alias;
     }
     return "";
 }
