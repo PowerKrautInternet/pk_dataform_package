@@ -155,7 +155,10 @@ function ifNull(values, alias){
             }
         }
     }
-    return ifnull + valueQuery;
+    if(count != 0){
+        return ifnull + valueQuery + alias;
+    }
+    return "";
 }
 
 function ifSource(name, query){
