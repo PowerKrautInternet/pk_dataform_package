@@ -70,10 +70,10 @@ FROM(
 
 FROM ${ref("df_staging_views", "stg_google_ads_adgroup_combined")} google_ads
 
-${pk.FullOuterJoin("df_staging_views", "stg_facebookdata", "facebook")}
-${pk.FullOuterJoin("df_rawdata_views", "dv360_data", "dv360")}
-${pk.FullOuterJoin("df_staging_views", "stg_bing_ad_group_performance", "microsoft")}
-${pk.FullOuterJoin("df_staging_views", "stg_linkedin_ads_combined", "linkedin")}
+${pk.join("full outer join","df_staging_views", "stg_facebookdata", "facebook")}
+${pk.join("full outer join","df_rawdata_views", "dv360_data", "dv360")}
+${pk.join("full outer join","df_staging_views", "stg_bing_ad_group_performance", "microsoft")}
+${pk.join("full outer join","df_staging_views", "stg_linkedin_ads_combined", "linkedin")}
     
     `
 let refs = pk.getRefs()
