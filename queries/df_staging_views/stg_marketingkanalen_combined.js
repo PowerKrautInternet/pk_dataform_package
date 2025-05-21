@@ -1,7 +1,6 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
-let sources = pk.getSources().map((s) => s.alias ?? s.name )
+let {ref, getSources, getRefs, join} = require("../../sources")
+let sources = getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT 
@@ -69,11 +68,11 @@ FROM(
 
 FROM ${ref("df_staging_views", "stg_google_ads_adgroup_combined")} google_ads
 
-${pk.join("full outer join","df_staging_views", "stg_facebookdata", "facebook")}
-${pk.join("full outer join","df_rawdata_views", "dv360_data", "dv360")}
-${pk.join("full outer join","df_staging_views", "stg_bing_ad_group_performance", "microsoft")}
-${pk.join("full outer join","df_staging_views", "stg_linkedin_ads_combined", "linkedin")}
+${join("full outer join","df_staging_views", "stg_facebookdata", "AS facebook ON 1=0")}
+${join("full outer join","df_rawdata_views", "dv360_data", "AS dv360 ON 1=0")}
+${join("full outer join","df_staging_views", "stg_bing_ad_group_performance", "AS microsoft ON 1=0")}
+${join("full outer join","df_staging_views", "stg_linkedin_ads_combined", "AS linkedin ON 1=0")}
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
