@@ -1,6 +1,5 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
+const {join, ref} = require("../../sources");
 let query = `
 
 SELECT 
@@ -45,18 +44,11 @@ SELECT
     ac.aantal_contacts AS ac_aantal_contacts
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_marketingkanalen_combined")} marketing_kanalen
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_marketingdashboard_searchconsole")} searchconsole
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_syntec_leads_orders_combined")} syntec
-ON 1=0
-
-FULL OUTER JOIN ${ref("df_staging_views", "stg_activecampaign_ga4_sheets")} ac
-ON 1=0
+    
+${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingkanalen_combined", "AS marketing_kanalen ON 1=0")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingdashboard_searchconsole", "AS searchconsole ON 1=0")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
+${join("FULL OUTER JOIN", "df_staging_Views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 
 `
 let refs = pk.getRefs()
