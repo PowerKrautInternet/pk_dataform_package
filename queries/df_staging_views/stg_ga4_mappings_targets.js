@@ -11,10 +11,10 @@ SELECT
         ELSE merk_session 
     END AS merk_session,
     IFNULL(sessie_conversie_bron, kanaal) as kanaal,
-    ac.mapping_thema,
-    ac.mapping_edm as ac_campaign,
-    ac.mapping_flows AS ac_name,
-    ac.workflow_edm AS ac_workflow_edm
+    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_thema,")}
+    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_edm as ac_campaign,")}
+    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_flows AS ac_name,")}
+    ${ifSource("gs_activecampaign_ga4_mapping", "ac.workflow_edm AS ac_workflow_edm")}
 
 FROM(
 SELECT
@@ -65,7 +65,7 @@ SELECT
       ga_mapping.conversie_mapping,
       ga_mapping.telmethode as conversie_telmethode,
       ga_mapping.softhard as conversie_soft_hard, 
-      ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie')}
+      ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
       ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}
@@ -81,5 +81,5 @@ SELECT
 ${join("LEFT JOIN", "gs_activecampaign_ga4_mapping", "AS ac ON ac.session_campaign = ga4.session_campaign")}
 `
 
-let refs = getRefs()
+let refs = getRefs() // wordt in dataform gebruikt voor dependency tracking
 module.exports = {query, refs}
