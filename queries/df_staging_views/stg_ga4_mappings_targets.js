@@ -1,6 +1,5 @@
 /*config*/
 const {ref, join, getSources, getRefs} = require("../../sources");
-let sources = getSources().map((s) => s.alias ?? s.name )
 let query = `
     
 
@@ -65,7 +64,7 @@ SELECT
     
     ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name)")}
     ${join("left join","ga_conversie_mapping", "AS ga_mapping ON TRIM(events_sessies.event_name) = TRIM(ga_mapping.event_name)")}
-    ${join("full Outer Join","df_staging_views, stg_pivot_targets", "AS targets ON 1=0")}
+    ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 
   

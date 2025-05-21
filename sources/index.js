@@ -124,6 +124,10 @@ function crm_id(name) {
     return "ERROR: crm_id is undefined for " + name
 }
 
+function availableSources() {
+    return getSources().map((s) => s.alias ?? s.name )
+}
+
 function join(joinType, schemaOrName, nameOrJoin, join) {
     let source;
     let nameSource;
@@ -135,7 +139,8 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
         source = ref(schemaOrName, nameOrJoin);
         nameSource = nameOrJoin;
     }
-    return !sources.includes(nameSource) ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
+
+    return !availableSources().includes(nameSource) ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "data\n"
 }
 
 function ifNull(values, alias){
