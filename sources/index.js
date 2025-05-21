@@ -146,13 +146,15 @@ function ifNull(values, alias){
     let valueQuery = ""
     if(Array.isArray(values)) {
         for (let s in values) {
-            if(s != 0){
-                ifnull += "IFNULL("
-                valueQuery += ",";
-            }
-            valueQuery += !values[s].startsWith("/* NOT FOUND //") ? values[s] : "NULL"
-            if(s != 0){
-                valueQuery += ")";
+            if(!values[s].startsWith("/* NOT FOUND //")) {
+                if (s != 0) {
+                    ifnull += "IFNULL("
+                    valueQuery += ",";
+                }
+                valueQuery += values[s]
+                if (s != 0) {
+                    valueQuery += ")";
+                }
             }
         }
     }

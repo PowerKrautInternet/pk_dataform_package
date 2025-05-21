@@ -3,7 +3,7 @@ const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
 
 SELECT 
-    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")}
+    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")},
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
