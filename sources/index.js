@@ -150,7 +150,7 @@ function ifNull(values, alias){
                 ifnull += "IFNULL("
                 valueQuery += ",";
             }
-            valueQuery += values[s] ?? "NULL"
+            valueQuery += !values[s].startsWith("/* NOT FOUND //") ? values[s] : "NULL"
             if(s != 0){
                 valueQuery += ")";
             }
