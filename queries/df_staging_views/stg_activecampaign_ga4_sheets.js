@@ -1,7 +1,6 @@
 /*config*/
-let pk = require("../../sources")
-let sources = pk.getSources().map((s) => s.alias ?? s.name )
-let ref = pk.ref
+const {ifSource, join, ref, getRefs, getSources} = require("../../sources");
+let sources = getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT
@@ -24,40 +23,20 @@ IFNULL(campaign_date, date) AS record_datum,
     click_to_open_ratio,
     workflow_status,
     IF(name <> "", "Workflows", "eDM") AS ac_bron,
-    `; if(!sources.includes("gs_activecampaign_ga4_mapping")){query += `--`} query += `mapping_thema AS flow_thema,
+    ${ifSource("gs_activecampaign_ga4_mapping", "mapping_thema AS flow_thema,")}
     "ActiveCampaign" AS bron,
     "ActiveCampaign" AS kanaal,
     aantal AS aantal_contacts
 FROM
 ${ref("df_staging_views", "stg_activecampaign_workflow_edm")} ac
---optional gs_activecampaign_ga4_mapping
-`; if(sources.includes("gs_activecampaign_ga4_mapping")) {query += `    
 
-LEFT JOIN
-(
-    SELECT
-        mapping_edm,
-        mapping_flows,
-        mapping_thema
-    FROM
-        ${ref("gs_activecampaign_ga4_mapping")}
-    GROUP BY
-        mapping_edm,
-        mapping_flows,
-        mapping_thema
-) campaign
-ON
-    ac.campaign_name = campaign.mapping_edm
-AND 
-    ac.name = campaign.mapping_flows
---end optional gs_activecampaign_ga4_mapping
-`}query += `                                                            
-
-FULL OUTER JOIN
-    ${ref("gs_activecampaign_totalcontacts")} contacts
-ON
-    1=0
+${join( 
+    "LEFT JOIN(SELECT mapping_edm, mapping_flows, mapping_thema FROM", 
+    "gs_activecampaign_ga4_mapping", 
+    "GROUP BY mapping_edm, mapping_flows, mapping_thema) campaign ON ac.campaign_name = campaign.mapping_edm AND ac.name = campaign.mapping_flows"
+)}
+${join("FULL OUTER JOIN", "gs_activecampaign_totalcontacts", "AS contacts ON 1=0")}
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
