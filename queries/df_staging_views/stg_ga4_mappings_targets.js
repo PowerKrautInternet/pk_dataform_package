@@ -51,15 +51,15 @@ SELECT
       IFNULL(session_source, first_user_source) as session_source,
       IFNULL(session_medium, first_user_medium) as session_medium,
       IFNULL(session_campaign, first_user_campaign_name) as session_campaign,
-      ${ifSource(`gs_ga4_standaard_events`,`standaard_event.event_name as event_name_standaard,`)}
-      ${ifSource(`gs_ga4_standaard_events`,`IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,`)}
+      ${ifSource('gs_ga4_standaard_events','standaard_event.event_name as event_name_standaard,')}
+      ${ifSource('gs_ga4_standaard_events','IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,')}
       ga_mapping.conversie_mapping,
       ga_mapping.telmethode as conversie_telmethode,
       ga_mapping.softhard as conversie_soft_hard, 
-      targets.conversie_mapping as target_soort_conversie,
-      targets.kanaal as target_kanaal,
-      targets.record_datum as target_record_datum,
-      CAST(targets.day_target AS INT64) AS conversie_target
+      ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie')}
+      ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
+      ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
+      ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
