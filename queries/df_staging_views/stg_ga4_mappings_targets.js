@@ -18,10 +18,11 @@ SELECT
 
 FROM(
 SELECT
-    * EXCEPT(event_ga_session_id, conversie_mapping 
+    * EXCEPT(event_ga_session_id, conversie_mapping, 
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
-        ${ifSource('stg_pivot_targets','targets.kanaal,')}, 
-        target_record_datum, kanaal, event_date),
+        ${ifSource('stg_pivot_targets','targets.kanaal,')} 
+        ${ifSource('stg_pivot_targets','target_record_datum,')}
+         kanaal, event_date),
     IF(event_name <> "" AND standaard_event = 0, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" AND standaard_event = 0, unique_event_id, NULL) as privacy_conversion_id, 
     ${ifNull([
