@@ -126,10 +126,6 @@ function crm_id(name) {
     return "ERROR: crm_id is undefined for " + name
 }
 
-function availableSources(schema, name) {
-    return getSources().map((s) => s.alias ?? s.name )
-}
-
 function join(joinType, schemaOrName, nameOrJoin, join) {
     let source;
     let schema;
@@ -156,7 +152,7 @@ function ifNull(values, alias){
                 ifnull += "IFNULL("
                 valueQuery += ",";
             }
-            valueQuery += values[s]
+            valueQuery += values[s] ?? "NULL"
             if(s != 0){
                 valueQuery += ")";
             }
@@ -165,4 +161,10 @@ function ifNull(values, alias){
     return ifnull + valueQuery;
 }
 
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull};
+function ifSource(name, query){
+    if(!ref(name).endsWith("NOT FOUND")){
+        return query
+    }
+}
+
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource};

@@ -1,5 +1,5 @@
 /*config*/
-const {ref, join, getSources, getRefs} = require("../../sources");
+const {ref, join, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
     
 
@@ -21,9 +21,12 @@ SELECT
     * EXCEPT(event_ga_session_id, conversie_mapping, target_soort_conversie, target_kanaal, target_record_datum, kanaal, event_date),
     IF(event_name <> "" AND standaard_event = 0, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" AND standaard_event = 0, unique_event_id, NULL) as privacy_conversion_id, 
-    IFNULL(
-        IFNULL(conversie_mapping, IF(standaard_event = 0, event_name, NULL)), 
-        target_soort_conversie) as soort_conversie,   
+    ${ifNull([
+        ifSource("ga_conversie_mapping", "conversie_mapping"),
+        ifSource("gs_ga4_standaard_events", `IF(standaard_event = 0, event_name, NULL)`),
+        ifSource("stg_pivot_targets", "target_soort_conversie")
+    ])} as soort_conversie,
+    IFNULL(IFNULL(conversie_mapping, IF(standaard_event = 0, event_name, NULL)), target_soort_conversie) as soort_conversie_oud,   
     IFNULL(kanaal, target_kanaal) AS kanaal,
     IFNULL(event_date, target_record_datum) AS event_date,
     CASE
@@ -35,10 +38,8 @@ SELECT
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
         WHEN regexp_contains(session_source,'google|adwords')
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Google Ads'
-        --OR regexp_contains(session_campaign,'^(.*organic.*)$')) 
         WHEN regexp_contains(session_source,'bing')
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
-        --OR regexp_contains(session_campaign,'^(.*organic.*)$')) THEN 'Microsoft Advertising'
         WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
         ELSE NULL
     END AS sessie_conversie_bron
@@ -50,8 +51,8 @@ SELECT
       IFNULL(session_source, first_user_source) as session_source,
       IFNULL(session_medium, first_user_medium) as session_medium,
       IFNULL(session_campaign, first_user_campaign_name) as session_campaign,
-      standaard_event.event_name as event_name_standaard,
-      IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,
+      ${ifSource("gs_ga4_standaard_events","standaard_event.event_name as event_name_standaard")},
+      ${ifSource("gs_ga4_standaard_events",`IF(standaard_event.event_name <> "", 1, 0) AS standaard_event`)},
       ga_mapping.conversie_mapping,
       ga_mapping.telmethode as conversie_telmethode,
       ga_mapping.softhard as conversie_soft_hard, 
@@ -68,7 +69,7 @@ SELECT
   )
 ) ga4 
   
-${join("LEFT JOIN", "gs_activecampaign_ga4_mapping", " as ac ON ac.session_campaign = ga4.session_campaign")}
+${join("LEFT JOIN", "gs_activecampaign_ga4_mapping", "AS ac ON ac.session_campaign = ga4.session_campaign")}
 `
 
 let refs = getRefs()
