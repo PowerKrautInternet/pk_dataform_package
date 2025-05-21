@@ -140,7 +140,7 @@ function join(joinType, schemaOrName, nameOrJoin, join) {
         nameSource = nameOrJoin;
     }
 
-    return source.startsWith("NOT FOUND") ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "\n"
+    return !source.startsWith("NOT FOUND") ? `${joinType} ${source} ${join} \n` : "--No " + nameSource + "\n"
 }
 
 function ifNull(values, alias){
