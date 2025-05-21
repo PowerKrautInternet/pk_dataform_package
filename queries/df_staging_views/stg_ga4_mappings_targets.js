@@ -37,7 +37,7 @@ SELECT
     ${ifNull([
         "event_date",
         ifSource("stg_pivot_targets", "target_record_datum"),
-    ])} as kanaal,
+    ])} as event_date,
     CASE
         WHEN regexp_contains(session_source,'dv360') 
         OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
