@@ -104,7 +104,8 @@ function ref(p1, p2) {
     }
     ref += "` "
     */
-    return "NOT FOUND " + dataform.projectConfig.defaultDatabase + "." + p1 + "." + p2 + "\n list:" + sources;
+    let v = sources.map((s) => s.alias + " " + s.name + " " + s.schema );
+    return "NOT FOUND " + dataform.projectConfig.defaultDatabase + "." + p1 + "." + p2 + "\n list:" + v;
 }
 
 function getRefs(){
