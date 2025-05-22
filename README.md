@@ -24,7 +24,7 @@ Dit is het bestand dat altijd als eerste uitgevoerd zal worden in uw dataform om
 
 Het grootste verschil met de standaard format die dataform aanneemt is dat wij de bronnen eerst verzamelen voordat we ze in een declare functie aanroepen, hierdoor bestaat declerations.js nu uit 3 onderdelen, waarbij je eigelijk alleen de 'const sources' hoeft aan te passen:
 
-```declerations.js
+```javascript
 const sources = [
   {
     // De normale rijen die nodig zijn voor een declare vul je hier ook in. Zoals; database, schema en name.
@@ -50,6 +50,66 @@ operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(
 ```
 !! Let op: als deze stap word toegevoegd zullen ook automatisch alle "_lasttransation" schema's toegevoegd worden! Dit kan dus voor dubbele schema's zorgen.
 
+## Stap 2: Datakwaliteit.js
+In dit bestand moet je de volgende code neerzetten om te zorgen dat je alle datakwaliteit tabellen krijgt:
+
+```javascript
+pk = require("pk_dataform_package/queries/df_datakwaliteit");
+
+publish("dk_maxReceivedon",
+        {
+          type: "table",
+          schema: "df_datakwaliteit"
+        }
+).query(ctx => pk.dk_maxReceivedon());
+
+publish("dk_monitor",
+        {
+          type: "table",
+          schema: "df_datakwaliteit",
+          dependencies: "dk_maxReceivedon"
+        }
+).query(ctx => pk.dk_monitor());
+
+publish("dk_healthRapport",
+        {
+          type: "incremental",
+          schema: "df_datakwaliteit",
+          dependencies: "dk_monitor"
+        }
+).query(ctx => pk.dk_healthRapport());
+
+publish("dk_errormessages",
+        {
+          type:"table",
+          schema: "df_datakwaliteit",
+          tags: ["df_datakwaliteit"],
+          dependencies: "dk_healthRapport"
+        }
+).query(ctx => pk.dk_errormessages())
+```
+Hierbij kan je df_datakwaliteit aanroepen in je workflow configurations.
+
+## Stap 3: Query's en personalisatie
+Voor de query stg_facebookdata werkt het nu als volgt:
+```javascript
+let pk = require("pk_dataform_package/queries/df_staging_views"); 
+// let pk... hoef je maar 1x aan te roepen per javascript bestand (.js)
+
+let stg_facebookdata = pk.stg_facebookdata();   // Haal je de laatste versie van de query op (heeft te maken met dependency tracking
+publish(                                        // Dataform functie voor het maken van een table/view
+    stg_facebookdata.name,                      // Naam van query/table/view
+    stg_facebookdata.config                     // Config (zoals deze bovenin een sqlx file staat
+).query(                                        
+    stg_facebookdata.query                      // De query van de table
+)
+```
+Wanneer het dus gewild is om personalisatie toe te voegen binnen een query is het aangeraden om
+- Optie A: Vervang de standaard Query van de table
+- Optie B: Vervang de naam van de query en voeg zo een extra stap in het ETL toe
+Zoals: het voorbeeld stg_facebookdata_raw noemen en dan een vervolgquery schrijven die je stg_facebookdata noemt. Hierdoor zal de vervolgquery aangeroepen worden in de gestandaardiseerde ETL.
+- Optie C: Binnen de package is de mogelijkheid tot SQL injecting toegevoegd. Dit is echter nog in BETA en moeten we over beslissen waar, of en hoe we dit willen implementeren.
+
 ---
 
 ## 📁 Mappenstructuur
@@ -73,10 +133,3 @@ Daarnaast:
 
 * Bij het linken van een CRM_ID aan een bron is de alias gelinkt aan de CRM_ID. Dat doe je bijvoorbeeld zo:
 `{ alias: "syntec", crm_id: "982" }`
-
-**Velden die dynamisch worden toegevoegd op basis van beschikbaarheid**
-
-```
-stg_activecampaign_ga4_sheets/
-├── gs_activecampaign_ga4_mapping/
-```
