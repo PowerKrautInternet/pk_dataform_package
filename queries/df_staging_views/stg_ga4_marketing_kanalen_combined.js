@@ -30,18 +30,15 @@ SELECT
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum")
     ])} as record_date,
-    ${ifNull(["ga4.session_campaign_id", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_id")])} as campaign_id,
-    ${ifNull(["ga4.session_google_ads_ad_group_id", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_id")])} as ad_group_id,
-    ${ifNull(["ga4.session_google_ads_ad_group_name", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")])} as ad_group_name,
-    ${ifNull(["ga4.session_landingpage_location", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url")])} as landingpage_location,
-    ${ifNull(["ga4.session_term", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")])} as term,
-    ${ifNull(["ga4.session_device_category", ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)")])} as device_category,
-    ${ifNull(["ga4.session_geo_country", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")])} as geo_country,
-    ${ifNull([
-        "ga4.merk_event",
-        ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.merk")
-    ])} as merk,
+    ${ifNull(["ga4.session_campaign_id",                ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.campaign_id")],      "as campaign_id,")}
+    ${ifNull(["ga4.session_google_ads_ad_group_id",     ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.ad_group_id")],      "as ad_group_id,")}
+    ${ifNull(["ga4.session_google_ads_ad_group_name",   ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.ad_group_name")],    " as ad_group_name,")}
+    ${ifNull(["ga4.session_landingpage_location",       ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.url")],                  " as landingpage_location,")}
+    ${ifNull(["ga4.session_term",                       ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.query")],                "as term,")}
+    ${ifNull(["ga4.session_device_category",            ifSource("stg_marketingdashboard_searchconsole",    "LOWER(searchconsole.device)")],        "as device_category,")}
+    ${ifNull(["ga4.session_geo_country",                ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.country")],              "as geo_country,")}
+    ${ifNull(["ga4.merk_event",                         ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.merk"), 
+                                                               ifSource("stg_syntec_leads_orders_combined",         "syntec.merk")],                        "as merk,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.impressions as gsc_impressions,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.sum_position as gsc_sum_position,")}

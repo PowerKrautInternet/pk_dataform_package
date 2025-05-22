@@ -22,6 +22,34 @@ Query’s worden ingeladen via de package en vervolgens gepubliceerd via standaa
 ## Stap 1: Declarations.js
 Dit is het bestand dat altijd als eerste uitgevoerd zal worden in uw dataform omgeving. Hier zullen we dan ook alle standaard query's opzetten en onze inkomende bronnen defineren.
 
+Het grootste verschil met de standaard format die dataform aanneemt is dat wij de bronnen eerst verzamelen voordat we ze in een declare functie aanroepen, hierdoor bestaat declerations.js nu uit 3 onderdelen, waarbij je eigelijk alleen de 'const sources' hoeft aan te passen:
+
+```declerations.js
+const sources = [
+  {
+    // De normale rijen die nodig zijn voor een declare vul je hier ook in. Zoals; database, schema en name.
+    database: "dtc-datalake-prod",
+    schema: "df_staging_views",
+    name: "stg_openRdwData",
+    alias: "GA4", // Hier vul je een naam in die meerdere bronnen kan groepen. In dit voorbeeld zou je bijvoorbeeld meerdere bronnen als GA4 kunnen defineren en zo altijd gezamelijk kunnen aanroepen in een ref()
+    crm_id: "982", // Hiermee kan je aangeven op welk CRM_ID gefilterd moet worden. (BETA: nog niet overal geimplementeerd)
+  },
+  {
+    schema: ...
+    name: ...
+    ...
+  }
+]
+
+for (let s in sources) {
+    declare(sources[s]);
+    if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"})}
+};
+require("pk_dataform_package/sources").setSources(sources);
+operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(sources))
+```
+!! Let op: als deze stap word toegevoegd zullen ook automatisch alle "_lasttransation" schema's toegevoegd worden! Dit kan dus voor dubbele schema's zorgen.
+
 ---
 
 ## 📁 Mappenstructuur

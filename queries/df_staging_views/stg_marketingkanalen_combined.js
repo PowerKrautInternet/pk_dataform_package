@@ -24,9 +24,9 @@ FROM (
         ${ifNull(['google_ads.campaign_bidding_strategy_type', ifSource('dv360_data','line_item_type'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_optimization_target_type')])} AS bidding_strategy_type,
         ${ifNull(['google_ads.campaign_status', ifSource('stg_bing_ad_group_performance','microsoft.campaign_status'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_status')])} AS campaign_status,
         ${ifNull(['google_ads.ad_group_status', ifSource('dv360_data','dv360.insertion_order_status'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_status')])} AS ad_group_status,
-        ${ifNull(['google_ads.ad_group_type', ifSource('stg_bing_ad_group_performance','microsoft.adgroup_type')])} AS ad_group_type,
+        ${ifNull(['google_ads.ad_group_type', ifSource('stg_bing_ad_group_performance','microsoft.adgroup_type')], "AS ad_group_type,")}
         google_ads.conversions_value, 
-        ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')])} AS objective
+        ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')], "AS objective,")}
         ${ifSource("stg_facebookdata", "facebook.ad_id AS facebook_ad_id,")}
         ${ifSource("stg_facebookdata", "facebook.ad_name AS facebook_ad_name,")}
         ${ifSource("dv360_data", "dv360.creative AS dv360_creative,")}
