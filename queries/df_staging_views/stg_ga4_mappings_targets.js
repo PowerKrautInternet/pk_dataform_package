@@ -78,6 +78,7 @@ SELECT
   )
 ) ga4 
   
+--mag er uit
 ${join("LEFT JOIN", "gs_activecampaign_ga4_mapping", "AS ac ON ac.session_campaign = ga4.session_campaign")}
 `
 

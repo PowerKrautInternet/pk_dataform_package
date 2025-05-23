@@ -68,6 +68,45 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             query += "\n)\n"
             rowNr += 1
         }
+        else if (name == "events_*"){
+            if (rowNr > 0) {query += "\nUNION ALL\n\n"}
+            query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+            if(sources[s].freshnessDays == undefined){
+                query += 1
+            } else {
+                query += sources[s].freshnessDays
+            }
+            query += ", NULL, "
+
+            //if the noWeekend is set the true statement of the recency if is always 0
+            if(sources[s].noWeekend == true){
+                query += "0"
+            } else {
+                query += "1"
+            }
+            query += ") AS RECENCY_CHECK, *"
+            if (extraSelect != ""){
+                query += ", "
+            }
+            query += extraSelect
+            query += " \n\nFROM ( "
+
+            //SELECT ...
+            query += "\n\tSELECT "
+            query +=  "\n\tDATE(MAX(DATE_ADD(CAST(event_timestamp AS STRING), INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+            query += "`device`.`web_info`.`hostname`  AS KEY1, 'GA4' AS BRON"      //BRON
+
+            //FROM ... database . schema . name
+            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+
+            //GROUP BY ...
+            query += "\n\n\tGROUP BY "
+            query += "BRON, "
+            query += "KEY1"
+
+            query += "\n)\n"
+            rowNr += 1
+        }
     }
     return query
 }
