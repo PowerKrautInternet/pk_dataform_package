@@ -94,7 +94,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             //SELECT ...
             query += "\n\tSELECT "
             query +=  "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
-            if (typeof sources[s] != "undefined") {
+            if (typeof sources[s].alias != "undefined") {
                 query += sources[s].alias
             } else {
                 query += sources[s].schema
@@ -156,7 +156,7 @@ function dk_monitor(){
                 }
             } else if (name === "events_*") {
                 query += "'"
-                if (typeof sources[s] != "undefined") {
+                if (typeof sources[s].alias != "undefined") {
                     query += sources[s].alias
                 } else {
                     query += sources[s].schema
