@@ -1,4 +1,4 @@
-let pk = require('../index.js');
+let pk = require('../../sources');
 
 function stg_ga4_events_sessies () {
     let table = {

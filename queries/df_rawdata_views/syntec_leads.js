@@ -1,0 +1,87 @@
+/*config*/
+let pk = require("../../sources")
+let ref = pk.ref
+let query = `
+
+    SELECT
+        json_value(PAYLOAD, '$.dtcmedia_crm_id') AS dtcmedia_crm_id,
+        json_value(PAYLOAD, '$.type') AS type,
+        json_value(PAYLOAD, '$.id') AS lead_id,
+        json_value(PAYLOAD, '$.response.bron') AS lead_bron,
+        json_value(PAYLOAD, '$.response.onbereikbaar') AS onbereikbaar,
+        json_value(PAYLOAD, '$.response.voicemail') AS voicemail,
+        json_value(PAYLOAD, '$.response.proefrit') AS proefrit,
+        json_value(PAYLOAD, '$.response.afspraak') AS afspraak,
+        json_value(PAYLOAD, '$.response.geescaleerd') AS geescaleerd,
+        json_value(PAYLOAD, '$.response.ol') AS ol,
+        json_value(PAYLOAD, '$.response.kanaal') AS kanaal,
+        json_value(PAYLOAD, '$.response.ordersoort') AS ordersoort,
+        json_value(PAYLOAD, '$.response.klant') AS klant,
+        json_value(PAYLOAD, '$.response.telefoon') AS telefoon,
+        json_value(PAYLOAD, '$.response.mail') AS mail,
+        json_value(PAYLOAD, '$.response.toegewezen_aan') AS toegewezen_aan,
+        json_value(PAYLOAD, '$.response.huidige_stap') AS huidige_stap,
+        json_value(PAYLOAD, '$.response.resultaat') AS resultaat,
+        json_value(PAYLOAD, '$.response.opvolgdatum') AS opvolgdatum,
+        json_value(PAYLOAD, '$.response.onderwerp') AS onderwerp,
+        json_value(PAYLOAD, '$.response.vestiging') AS vestiging,
+        json_value(PAYLOAD, '$.response.kanaal_groep') AS kanaal_groep,
+        json_value(PAYLOAD, '$.response.categorie') AS categorie,
+        json_value(PAYLOAD, '$.response.segment') AS segment,
+        json_value(PAYLOAD, '$.response.merk') AS merk,
+        json_value(PAYLOAD, '$.response.model') AS MODEL,
+        json_value(PAYLOAD, '$.response.partner') AS partner,
+        PARSE_DATETIME('%Y-%m-%d %H:%M:%S', NULLIF(json_value(PAYLOAD, '$.response.datum_gesloten'), "")) AS datum_gesloten,
+        json_value(PAYLOAD, '$.response.sluitreden') AS sluitreden,
+        json_value(PAYLOAD, '$.response.gesloten_door') AS gesloten_door,
+        json_value(PAYLOAD, '$.response.last_note_type') AS last_note_type,
+        PARSE_DATETIME('%Y-%m-%d %H:%M:%S', NULLIF(json_value(PAYLOAD, '$.response.laatste_contact'), "")) AS laatste_contact,
+        json_value(PAYLOAD, '$.response.laatste_opmerking') AS laatste_opmerking,
+        json_value(PAYLOAD, '$.response.dagen_sinds_start') AS dagen_sinds_start,
+        json_value(PAYLOAD, '$.response.autoline_magic') AS autoline_magic,
+        json_value(PAYLOAD, '$.response.gesproken') AS gesproken,
+        json_value(PAYLOAD, '$.response.contactmomenten') AS contactmomenten,
+        json_value(PAYLOAD, '$.response.week_activity') AS week_activity,
+        json_value(PAYLOAD, '$.response.opvolgdatum_week') AS opvolgdatum_week,
+        json_value(PAYLOAD, '$.response.pon_lead_id') AS pon_lead_id,
+        json_value(PAYLOAD, '$.response.week_aangelegd') AS week_aangelegd,
+        json_value(PAYLOAD, '$.response.jaar_aangelegd') AS jaar_aangelegd,
+        json_value(PAYLOAD, '$.response.maand_aangelegd') AS maand_aangelegd,
+        json_value(PAYLOAD, '$.response.eerste_toewijzing') AS eerste_toewijzing,
+        json_value(PAYLOAD, '$.response.toegewezen_door') AS toegewezen_door,
+        json_value(PAYLOAD, '$.response.kenteken') AS kenteken,
+        json_value(PAYLOAD, '$.response.col_48') AS col_48,
+        json_value(PAYLOAD, '$.response.first_contact') AS first_contact,
+        PARSE_DATETIME('%Y-%m-%d %H:%M:%S', NULLIF(json_value(PAYLOAD, '$.response.gemodificeerd'), "")) AS gemodificeerd,
+        PARSE_DATETIME('%Y-%m-%d %H:%M:%S', NULLIF(json_value(PAYLOAD, '$.response.aangelegd'), "")) AS aangelegd,
+        json_value(PAYLOAD, '$.response.sluitreden_cid') AS sluitreden_cid,
+        json_value(PAYLOAD, '$.response.klantkoppeling') AS klantkoppeling,
+        json_value(PAYLOAD, '$.response.partner_plaats') AS partner_plaats,
+        json_value(PAYLOAD, '$.response.auto_omschrijving') AS auto_omschrijving,
+        json_value(PAYLOAD, '$.response.verkocht_controle_door') AS verkocht_controle_door,
+        json_value(PAYLOAD, '$.response.datum_verkocht_check') AS datum_verkocht_check,
+        json_value(PAYLOAD, '$.response.min_voor_geopend') AS min_voor_geopend,
+        json_value(PAYLOAD, '$.response.work_mail') AS work_mail,
+        json_value(PAYLOAD, '$.response.priv_mail') AS priv_mail,
+        json_value(PAYLOAD, '$.response.opvolgdatum_toekomst') AS opvolgdatum_toekomst,
+        json_value(PAYLOAD, '$.response.ext_subcat') AS ext_subcat,
+        json_value(PAYLOAD, '$.response.kanaal_id') AS kanaal_id,
+        json_value(PAYLOAD, '$.response.vestiging_id') AS vestiging_id,
+        json_value(PAYLOAD, '$.response.merk_id') AS merk_id,
+        json_value(PAYLOAD, '$.response.kanaal_grp_id') AS kanaal_grp_id,
+        json_value(PAYLOAD, '$.response.ordersoort_cid') AS ordersoort_cid,
+        json_value(PAYLOAD, '$.response.fase') AS fase,
+        json_value(PAYLOAD, '$.response.order_id') AS order_id,
+        json_value(PAYLOAD, '$.response.first_remark_showroom_employee') AS first_remark_showroom_employee,
+        json_value(PAYLOAD, '$.response.first_remark_internet_employee') AS first_remark_internet_employee,
+        json_value(PAYLOAD, '$.response.date_first_assigned_showroom') AS date_first_assigned_showroom,
+    FROM
+        ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}
+    WHERE
+        json_value(PAYLOAD, '$.type') = "csvSyntecDumpLeadsTotaalApointPublisher"
+      AND json_value(PAYLOAD, '$.dtcmedia_crm_id') IN ( ${ pk.crm_id("syntec") } )
+
+    
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}
