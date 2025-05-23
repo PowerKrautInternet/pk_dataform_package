@@ -93,7 +93,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
             //SELECT ...
             query += "\n\tSELECT "
-            query +=  "\n\tDATE(MAX(CAST(event_date AS DATE), INTERVAL 2 HOUR)) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+            query +=  "\n\tDATE(MAX(CAST(event_date AS DATE))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
             query += "`device`.`web_info`.`hostname`  AS KEY1, 'GA4' AS BRON"      //BRON
 
             //FROM ... database . schema . name
