@@ -117,9 +117,9 @@ function dk_monitor(){
     for (let s in sources) {
         //for each data source
         let name = sources[s].name ?? "";
-        if ( name.endsWith("DataProducer")) {
+        if ( name.endsWith("DataProducer") || name === "events_*") {
             if (rowNr > 0) {
-                query += "UNION ALL "
+                query += "\nUNION ALL\n\n"
             }
             //SELECT ...
             query += "\nSELECT "
@@ -137,13 +137,20 @@ function dk_monitor(){
             //FROM ... database . schema . name
             query += "\nFROM ("
             query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
-            query += "'" + sources[s].name + "' AS BRON, "      //BRON
-
+            if(name.endsWith("DataProducer")) {
+                query += "'" + sources[s].name + "' AS BRON, "      //BRON
+            } else if (name == "events_*") {
+                query += "'GA4' AS BRON, "
+            }
             //KEY1 ...
-            if(sources[s].key1 != undefined){
-                query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1+ "')"
-            } else {
-                query += "STRING(NULL)"
+            if(name.endsWith("DataProducer")) {
+                if (sources[s].key1 != undefined) {
+                    query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1 + "')"
+                } else {
+                    query += "STRING(NULL)"
+                }
+            } else if (name === "events_*") {
+                query += "`device`.`web_info`.`hostname`"
             }
             query += " AS KEY1 "
 
