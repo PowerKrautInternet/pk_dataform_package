@@ -136,11 +136,11 @@ function dk_monitor(){
 
             //FROM ... database . schema . name
             query += "\nFROM ("
-            query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
             if(name.endsWith("DataProducer")) {
+                query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
             } else if (name == "events_*") {
-                query += "'GA4' AS BRON, "
+                query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON 'GA4' AS BRON, "
             }
             //KEY1 ...
             if(name.endsWith("DataProducer")) {
