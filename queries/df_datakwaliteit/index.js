@@ -93,8 +93,12 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
             //SELECT ...
             query += "\n\tSELECT "
-            query +=  "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"     //MAX_RECEIVEDON
-            query += sources[s].alias ?? sources[s].schema
+            query +=  "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
+            if (typeof sources[s] != "undefined") {
+                query += sources[s].alias
+            } else {
+                query += sources[s].schema
+            }
             query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
             //FROM ... database . schema . name
@@ -151,7 +155,13 @@ function dk_monitor(){
                     query += "STRING(NULL)"
                 }
             } else if (name === "events_*") {
-                query += "'" + sources[s].alias ?? sources[s].schema + "'"
+                query += "'"
+                if (typeof sources[s] != "undefined") {
+                    query += sources[s].alias
+                } else {
+                    query += sources[s].schema
+                }
+                query += "'"
             }
             query += " AS KEY1 "
 
