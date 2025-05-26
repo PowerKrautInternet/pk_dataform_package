@@ -132,12 +132,12 @@ function dk_monitor(){
             //SELECT ...
             query += "\nSELECT "
             query +=  "stats.BRON, "
-            if(sources[s].key1 == undefined || name !== "events_*"){
+            if(sources[s].key1 == undefined || name != "events_*"){
                 query += "MAX("
             }
 
             query += "stats.KEY1"
-            if(sources[s].key1 == undefined || name !== "events_*"){
+            if(sources[s].key1 == undefined || name != "events_*"){
                 query += ") as KEY1"
             }
             query += ", stats.RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
