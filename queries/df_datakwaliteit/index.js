@@ -173,6 +173,7 @@ function dk_monitor(){
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
+        let name = sources[s].name;
 
         //for each data source
         if (type !== "NONE") {
