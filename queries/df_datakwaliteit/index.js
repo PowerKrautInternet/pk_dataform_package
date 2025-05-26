@@ -147,7 +147,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if(type === "googleAds"){
                     query += "'GoogleAds'";
                 } else if (type === "DV360"){
-                    query += "`DV360`"
+                    query += "'DV360'"
                 }
                 query += " AS BRON,\n";
 
