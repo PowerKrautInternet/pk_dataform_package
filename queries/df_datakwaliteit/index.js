@@ -244,7 +244,7 @@ function dk_monitor(){
 
             query += "GROUP BY "
             query += "BRON, "
-            if(sources[s].key1 != undefined || name === "events_*"){
+            if(sources[s].key1 != undefined || type !== "dataProducer") {
                 query += "KEY1, "
             }
             query += "RECEIVEDON"
