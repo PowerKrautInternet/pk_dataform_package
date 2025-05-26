@@ -135,7 +135,6 @@ function dk_monitor(){
             if(sources[s].key1 == undefined || name != "events_*"){
                 query += "MAX("
             }
-
             query += "stats.KEY1"
             if(sources[s].key1 == undefined || name != "events_*"){
                 query += ") as KEY1"
