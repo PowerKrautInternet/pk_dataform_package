@@ -98,11 +98,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //SELECT ...
                 query += "\n\tSELECT "
                 query += "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
-                if (typeof sources[s].alias != "undefined") {
-                    query += sources[s].alias
-                } else {
-                    query += sources[s].schema
-                }
+                query += sources[s].alias ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
                 //FROM ... database . schema . name
@@ -134,18 +130,24 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "MAX("
                 if(type === "googleAds"){
                     query += "_LATEST_DATE"
+                } else if (type === "DV360"){
+                    query += "date"
                 }
                 query += ") AS MAX_RECEIVEDON,\n"
 
                 //KEY1
                 if(type === "googleAds"){
-                    query += "'" + name.split("_")[2] + "'"
+                    query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+                } else if (type === "DV360"){
+                    query += sources[s].alias ?? "'" + name.split("_")[4] + "'"
                 }
                 query += " AS KEY1,\n"
 
                 //BRON
                 if(type === "googleAds"){
-                    query += "'" + "GoogleAds" + "'";
+                    query += "'GoogleAds'";
+                } else if (type === "DV360"){
+                    query += "`DV360`"
                 }
                 query += " AS BRON,\n";
 
@@ -164,6 +166,7 @@ function getTypeSource(source){
     if (name.startsWith("ads_AdGroup_")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
+    else if (name.startsWith("Dagelijkse_BQ_export_-_")) type = "DV360"
     return type
 }
 
@@ -200,8 +203,10 @@ function dk_monitor(){
                 query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
+            } else if (type === "DV360") {
+                query +=  "SELECT 'insert' AS ACTION, date as RECEIVEDON, 'DV360' "
             }
-            query += "AS BRON, \n"
+            query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
                 if (sources[s].key1 !== undefined) {
@@ -211,14 +216,12 @@ function dk_monitor(){
                 }
             } else if (type === "GA4") {
                 query += "'"
-                if (typeof sources[s].alias != "undefined") {
-                    query += sources[s].alias
-                } else {
-                    query += sources[s].schema
-                }
+                query += sources[s].alias ?? sources[s].schema
                 query += "'"
             } else if( type === "googleAds" ){
-                query += "'" + name.split("_")[2] + "'"
+                query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+            } else if (type === "DV360") {
+                query += sources[s].alias ?? "'" + name.split("_")[4] + "'"
             }
             query += " AS KEY1 "
 
@@ -232,7 +235,7 @@ function dk_monitor(){
             query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
 
             //KEY1 ...
-            if(sources[s].key1 != undefined || name === "events_*"){
+            if(sources[s].key1 != undefined || type !== "dataProducer") {
                 query += "AND "
                 query += "stats.KEY1 = maxdate.KEY1 "
             }
