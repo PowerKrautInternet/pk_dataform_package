@@ -199,7 +199,7 @@ function dk_monitor(){
             } else if (type === "GA4") {
                 query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
-                query += "SELECT 'insert' AS ACTION, "
+                query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             }
             query += "AS BRON, \n"
             //KEY1 ...
@@ -217,6 +217,8 @@ function dk_monitor(){
                     query += sources[s].schema
                 }
                 query += "'"
+            } else if( type === "googleAds" ){
+                query += "'" + name.split("_")[2] + "'"
             }
             query += " AS KEY1 "
 
