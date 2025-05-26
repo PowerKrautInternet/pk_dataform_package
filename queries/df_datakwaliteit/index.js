@@ -160,7 +160,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 function getTypeSource(source){
     let type = "NONE";
     let name = sources.name;
-    if (sources.schema.startsWith("ads_AdGroup_")) type = "googleAds"
+    if (name.startsWith("ads_AdGroup_")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
     return type
