@@ -131,10 +131,11 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\nSELECT\n "
 
                 //MAX_RECEIVEDON
+                query += "MAX("
                 if(type === "googleAds"){
                     query += "_LATEST_DATE"
                 }
-                query += " AS MAX_RECEIVEDON,\n"
+                query += ") AS MAX_RECEIVEDON,\n"
 
                 //KEY1
                 if(type === "googleAds"){
