@@ -4,6 +4,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
+        let type = getTypeSource(sources[s]);
         if (sources[s].recency !== "false") {
             //for each data source
             let name = sources[s].name ?? "";
@@ -68,7 +69,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
                 query += "\n)\n"
                 rowNr += 1
-            } else if (name == "events_*") {
+            }
+            else if (name === "events_*") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
@@ -114,51 +116,96 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n)\n"
                 rowNr += 1
             }
+            else if (type !== "NONE"){
+                if (rowNr > 0) query += "\nUNION ALL\n";
+                query += "SELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-";
+                query += sources[s].freshnessDays ?? 1;
+                query += ", NULL, ";
+
+                //if the noWeekend is set the true statement of the recency if is always 0
+                sources[s].noWeekend === true ? query += "0" : query += "1"
+                query += ") AS RECENCY_CHECK, *"
+                query += " \n\nFROM ( "
+
+                //SELECT ...
+                query += "\nSELECT\n "
+
+                //MAX_RECEIVEDON
+                if(type === "googleAds"){
+                    query += "_LATEST_DATE"
+                }
+                query += "AS MAX_RECEIVEDON,\n"
+
+                //KEY1
+                if(type === "googleAds"){
+                    query += "'" + name.split("_")[2] + "'"
+                }
+                query += "AS KEY1,\n"
+
+                //BRON
+                if(type === "googleAds"){
+                    query += "'" + "GoogleAds" + "'";
+                }
+                query += "AS BRON,\n";
+
+                //FROM
+                query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
+                rowNr += 1
+            }
         }
     }
     return query
+}
+
+function getTypeSource(source){
+    let type = "NONE";
+    let name = sources.name;
+    if (sources.schema.startsWith("ads_AdGroup_")) type = "googleAds"
+    else if (name.endsWith("DataProducer")) type = "dataProducer"
+    else if (name === "events_*") type = "GA4"
+    return type
 }
 
 function dk_monitor(){
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
+        let type = getTypeSource(sources[s]);
+
         //for each data source
-        let name = sources[s].name ?? "";
-        if ( name.endsWith("DataProducer") || name === "events_*") {
-            if (rowNr > 0) {
-                query += "\nUNION ALL\n\n"
-            }
+        if (type !== "NONE") {
+            if (rowNr > 0) { query += "\nUNION ALL\n\n" } // Just to join the sources
+
             //SELECT ...
-            query += "\nSELECT "
-            query +=  "stats.BRON, "
-            if(sources[s].key1 == undefined && name != "events_*"){
+            query += "\nSELECT stats.BRON, "
+
+            if(sources[s].key1 === undefined && type === "dataProducer") {
                 query += "MAX("
             }
-
             query += "stats.KEY1"
-            if(sources[s].key1 == undefined && name != "events_*"){
+            if(sources[s].key1 === undefined && type === "dataProducer"){
                 query += ") as KEY1"
             }
             query += ", stats.RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
-            //FROM ... database . schema . name
+            //FROM ... database . schema . name AS BRON
             query += "\nFROM ("
-            if(name.endsWith("DataProducer")) {
+            if(type === "dataProducer") {
                 query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
-                query += "'" + sources[s].name + "' AS BRON, "      //BRON
-            } else if (name == "events_*") {
-                query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' AS BRON, "
+                query += "'" + sources[s].name + "' "      //BRON
+            } else if (type === "GA4") {
+                query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
             }
+            query += "AS BRON, \n"
             //KEY1 ...
-            if(name.endsWith("DataProducer")) {
-                if (sources[s].key1 != undefined) {
+            if(type === "dataProducer") {
+                if (sources[s].key1 !== undefined) {
                     query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1 + "')"
                 } else {
                     query += "STRING(NULL)"
                 }
-            } else if (name === "events_*") {
+            } else if (type === "GA4") {
                 query += "'"
                 if (typeof sources[s].alias != "undefined") {
                     query += sources[s].alias
