@@ -159,7 +159,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
 function getTypeSource(source){
     let type = "NONE";
-    let name = sources.name ?? "";
+    let name = source.name ?? "";
     if (name.startsWith("ads_AdGroup_")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
@@ -196,6 +196,8 @@ function dk_monitor(){
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
                 query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
+            } else if (type === "googleAds"){
+                query += "SELECT 'insert' AS ACTION, "
             }
             query += "AS BRON, \n"
             //KEY1 ...
