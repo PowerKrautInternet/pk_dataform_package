@@ -4,113 +4,116 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let query = '';
     let rowNr = 0;
     for (let s in sources) {
-        //for each data source
-        let name = sources[s].name ?? "";
-        if ( name.endsWith("DataProducer")) {
-            if (rowNr > 0) {
-                query += "\nUNION ALL\n\n"
-            }
-
-            query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
-            if(sources[s].freshnessDays == undefined){
-                query += 1
-            } else {
-                query += sources[s].freshnessDays
-            }
-            query += ", NULL, "
-
-            //if the noWeekend is set the true statement of the recency if is always 0
-            if(sources[s].noWeekend == true){
-                query += "0"
-            } else {
-                query += "1"
-            }
-            query += ") AS RECENCY_CHECK, *"
-            if (extraSelect != ""){
-                query += ", "
-            }
-            query += extraSelect
-            query += " \n\nFROM ( "
-
-            //SELECT ...
-            query += "\n\tSELECT "
-            query +=  "\n\tDATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
-            query += "'" + sources[s].name + "' AS BRON, "      //BRON
-
-            //KEY1 ...
-            if(sources[s].key1 != undefined){
-                query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1+ "')"
-            } else {
-                query += "STRING(NULL)"
-            }
-            query += " AS KEY1 "
-
-            //FROM ... database . schema . name
-            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
-
-            //WHERE ... CRMID
-            if(sources[s].crm_id != undefined) {
-                query += "\nWHERE "
-                query += "JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') IN ('"
-                if(Array.isArray(sources[s].crm_id)) {
-                    query += sources[s].crm_id.join("','")
-                } else {
-                    query += sources[s].crm_id
+        if (sources[s].recency !== "false") {
+            //for each data source
+            let name = sources[s].name ?? "";
+            if (name.endsWith("DataProducer")) {
+                if (rowNr > 0) {
+                    query += "\nUNION ALL\n\n"
                 }
-                query += "') "
+
+                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                if (sources[s].freshnessDays == undefined) {
+                    query += 1
+                } else {
+                    query += sources[s].freshnessDays
+                }
+                query += ", NULL, "
+
+                //if the noWeekend is set the true statement of the recency if is always 0
+                if (sources[s].noWeekend == true) {
+                    query += "0"
+                } else {
+                    query += "1"
+                }
+                query += ") AS RECENCY_CHECK, *"
+                if (extraSelect != "") {
+                    query += ", "
+                }
+                query += extraSelect
+                query += " \n\nFROM ( "
+
+                //SELECT ...
+                query += "\n\tSELECT "
+                query += "\n\tDATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+                query += "'" + sources[s].name + "' AS BRON, "      //BRON
+
+                //KEY1 ...
+                if (sources[s].key1 != undefined) {
+                    query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1 + "')"
+                } else {
+                    query += "STRING(NULL)"
+                }
+                query += " AS KEY1 "
+
+                //FROM ... database . schema . name
+                query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+
+                //WHERE ... CRMID
+                if (sources[s].crm_id != undefined) {
+                    query += "\nWHERE "
+                    query += "JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') IN ('"
+                    if (Array.isArray(sources[s].crm_id)) {
+                        query += sources[s].crm_id.join("','")
+                    } else {
+                        query += sources[s].crm_id
+                    }
+                    query += "') "
+                }
+
+                //GROUP BY ...
+                query += "\n\n\tGROUP BY "
+                query += "BRON, "
+                query += "KEY1"
+
+                query += "\n)\n"
+                rowNr += 1
+            } else if (name == "events_*") {
+                if (rowNr > 0) {
+                    query += "\nUNION ALL\n\n"
+                }
+                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                if (typeof sources[s].freshnessDays == "undefined") {
+                    query += 1
+                } else {
+                    query += sources[s].freshnessDays
+                }
+                query += ", NULL, "
+
+                //if the noWeekend is set the true statement of the recency if is always 0
+                if (sources[s].noWeekend == true) {
+                    query += "0"
+                } else {
+                    query += "1"
+                }
+                query += ") AS RECENCY_CHECK, *"
+                if (extraSelect != "") {
+                    query += ", "
+                }
+                query += extraSelect
+                query += " \n\nFROM ( "
+
+                //SELECT ...
+                query += "\n\tSELECT "
+                query += "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
+                if (typeof sources[s].alias != "undefined") {
+                    query += sources[s].alias
+                } else {
+                    query += sources[s].schema
+                }
+                query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
+
+                //FROM ... database . schema . name
+                query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
+
+                //GROUP BY ...
+                query += "\n\n\tGROUP BY "
+                query += "BRON, "
+                query += "KEY1"
+
+                query += "\n)\n"
+                rowNr += 1
             }
-
-            //GROUP BY ...
-            query += "\n\n\tGROUP BY "
-            query += "BRON, "
-            query += "KEY1"
-
-            query += "\n)\n"
-            rowNr += 1
-        }
-        else if (name == "events_*"){
-            if (rowNr > 0) {query += "\nUNION ALL\n\n"}
-            query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
-            if(sources[s].freshnessDays == undefined){
-                query += 1
-            } else {
-                query += sources[s].freshnessDays
-            }
-            query += ", NULL, "
-
-            //if the noWeekend is set the true statement of the recency if is always 0
-            if(sources[s].noWeekend == true){
-                query += "0"
-            } else {
-                query += "1"
-            }
-            query += ") AS RECENCY_CHECK, *"
-            if (extraSelect != ""){
-                query += ", "
-            }
-            query += extraSelect
-            query += " \n\nFROM ( "
-
-            //SELECT ...
-            query += "\n\tSELECT "
-            query +=  "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
-            if (typeof sources[s].alias != "undefined") {
-                query += sources[s].alias
-            } else {
-                query += sources[s].schema
-            }
-            query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
-
-            //FROM ... database . schema . name
-            query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
-
-            //GROUP BY ...
-            query += "\n\n\tGROUP BY "
-            query += "BRON, "
-            query += "KEY1"
-
-            query += "\n)\n"
-            rowNr += 1
         }
     }
     return query
