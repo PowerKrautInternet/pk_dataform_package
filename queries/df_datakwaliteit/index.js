@@ -134,19 +134,19 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if(type === "googleAds"){
                     query += "_LATEST_DATE"
                 }
-                query += "AS MAX_RECEIVEDON,\n"
+                query += " AS MAX_RECEIVEDON,\n"
 
                 //KEY1
                 if(type === "googleAds"){
                     query += "'" + name.split("_")[2] + "'"
                 }
-                query += "AS KEY1,\n"
+                query += " AS KEY1,\n"
 
                 //BRON
                 if(type === "googleAds"){
                     query += "'" + "GoogleAds" + "'";
                 }
-                query += "AS BRON,\n";
+                query += " AS BRON,\n";
 
                 //FROM
                 query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
@@ -159,12 +159,10 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
 function getTypeSource(source){
     let type = "NONE";
-    if (typeof source.name !== "undefined") {
-        let name = source.name;
-        if (name.startsWith("ads_AdGroup_")) type = "googleAds"
-        else if (name.endsWith("DataProducer")) type = "dataProducer"
-        else if (name === "events_*") type = "GA4"
-    }
+    let name = source.name ?? "";
+    if (name.startsWith("ads_AdGroup_")) type = "googleAds"
+    else if (name.endsWith("DataProducer")) type = "dataProducer"
+    else if (name === "events_*") type = "GA4"
     return type
 }
 
