@@ -5,6 +5,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
+        let key1 = sources[s] ?? "$.DTCMEDIA_CRM_ID"
         if (sources[s].recency !== "false" && !sources.recency === false) {
             //for each data source
             let name = sources[s].name ?? "";
@@ -40,12 +41,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                if (sources[s].key1 != undefined) {
-                    query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1 + "')"
-                } else {
-                    query += "STRING(NULL)"
-                }
-                query += " AS KEY1 "
+                    query += `JSON_VALUE(PAYLOAD, '${key1}') AS KEY1 `
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
@@ -184,6 +180,7 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
+        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID"
 
         //for each data source
         if (type !== "NONE") {
@@ -192,13 +189,7 @@ function dk_monitor(){
             //SELECT ...
             query += "\nSELECT stats.BRON, "
 
-            if(sources[s].key1 === undefined && type === "dataProducer") {
-                query += "MAX("
-            }
             query += "stats.KEY1"
-            if(sources[s].key1 === undefined && type === "dataProducer"){
-                query += ") as KEY1"
-            }
             query += ", stats.RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
@@ -217,11 +208,7 @@ function dk_monitor(){
             query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
-                if (sources[s].key1 !== undefined) {
-                    query += "JSON_VALUE(PAYLOAD, '" + sources[s].key1 + "')"
-                } else {
-                    query += "STRING(NULL)"
-                }
+                    query += `JSON_VALUE(PAYLOAD, '${key1}')`
             } else if (type === "GA4") {
                 query += "'"
                 query += sources[s].alias ?? sources[s].schema
@@ -251,10 +238,8 @@ function dk_monitor(){
             query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
 
             //KEY1 ...
-            if(sources[s].key1 != undefined || type !== "dataProducer") {
                 query += "AND "
                 query += "stats.KEY1 = maxdate.KEY1 "
-            }
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
@@ -263,9 +248,7 @@ function dk_monitor(){
 
             query += "GROUP BY "
             query += "BRON, "
-            if(sources[s].key1 != undefined || type !== "dataProducer") {
                 query += "KEY1, "
-            }
             query += "RECEIVEDON"
 
             query += "\n"
