@@ -5,7 +5,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        if (sources[s].recency !== "false") {
+        if (sources[s].recency !== "false" && !sources.recency === false) {
             //for each data source
             let name = sources[s].name ?? "";
             if (name.endsWith("DataProducer")) {

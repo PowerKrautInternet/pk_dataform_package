@@ -20,6 +20,15 @@ Deze structuur is opgezet om consistent, herbruikbaar en modulair om te gaan met
 Query’s worden ingeladen via de package en vervolgens gepubliceerd via standaard Dataform-methodes. Ook bronnen worden centraal gedeclareerd en beschikbaar gesteld aan de rest van de pipeline. Herbruikbare functies, zoals lookups of mappings, zijn beschikbaar via de `functions` map.
 
 ## package.json
+```json
+{
+   "name": "{VUL HIER JE PROJECTNAAM}", 
+   "dependencies": {
+     "@dataform/core": "3.0.0-beta.6",
+     "pk_dataform_package": "https://github.com/PowerKrautInternet/pk_dataform_package/archive/refs/tags/v{VUL HIER DE LAATSTE VERSIE VAN DE PACKAGE}.tar.gz"
+   }
+}
+```
 
 ## workflow configuration
 met de tag: df_datakwaliteit en een configuration id met "recency" er in. hierdoor weet de alerting policy dat deze meegenomen moet worden met de recency
