@@ -19,6 +19,11 @@ Deze structuur is opgezet om consistent, herbruikbaar en modulair om te gaan met
 
 Query’s worden ingeladen via de package en vervolgens gepubliceerd via standaard Dataform-methodes. Ook bronnen worden centraal gedeclareerd en beschikbaar gesteld aan de rest van de pipeline. Herbruikbare functies, zoals lookups of mappings, zijn beschikbaar via de `functions` map.
 
+## package.json
+
+## workflow configuration
+met de tag: df_datakwaliteit en een configuration id met "recency" er in. hierdoor weet de alerting policy dat deze meegenomen moet worden met de recency
+
 ## Stap 1: Declarations.js
 Dit is het bestand dat altijd als eerste uitgevoerd zal worden in uw dataform omgeving. Hier zullen we dan ook alle standaard query's opzetten en onze inkomende bronnen defineren.
 

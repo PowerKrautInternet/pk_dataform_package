@@ -139,7 +139,15 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if(type === "googleAds"){
                     query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
                 } else if (type === "DV360"){
-                    query += sources[s].alias ?? "'" + name.split("_")[4] + "'"
+                    query += sources[s].alias ?? "'"
+                    let names = name.split("_")
+                    for(let i = 4; names[i] !== "dv360"; i++){
+                            if (i > 4){
+                                query += " "
+                            }
+                           query += names[i]
+                    }
+                    query += "'"
                 }
                 query += " AS KEY1,\n"
 
@@ -220,8 +228,16 @@ function dk_monitor(){
                 query += "'"
             } else if( type === "googleAds" ){
                 query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
-            } else if (type === "DV360") {
-                query += sources[s].alias ?? "'" + name.split("_")[4] + "'"
+            } else if (type === "DV360"){
+                query += sources[s].alias ?? "'"
+                let names = name.split("_")
+                for(let i = 4; names[i] !== "dv360"; i++){
+                    if (i > 4){
+                        query += " "
+                    }
+                    query += names[i]
+                }
+                query += "'"
             }
             query += " AS KEY1 "
 
@@ -278,7 +294,7 @@ function dk_errormessages() {
     query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron, ':', key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
     query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
     if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
-    query += ".dk_healthRapport` WHERE DATE = CURRENT_DATE()"
+    query += ".dk_healthRapport` WHERE DATE = CURRENT_DATE() "
     query += " ) as row_conditions ) as alerts"
 
     return query;
