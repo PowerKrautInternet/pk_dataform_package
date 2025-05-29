@@ -1,7 +1,7 @@
 /*config*/
-let pk = require("../ref.js")
+let pk = require("../../sources")
 let ref = pk.ref
-module.exports = `
+query = `
 
 SELECT
     event_date,
@@ -114,6 +114,8 @@ SELECT
     publisher.ad_source_name as publisher_ad_source_name,
     publisher.ad_unit_id as publisher_ad_unit_id
 
-FROM GA4_BRON
+FROM ${ref("GA4")}
 
 `
+let refs = pk.getRefs()
+module.exports = {query, refs}
