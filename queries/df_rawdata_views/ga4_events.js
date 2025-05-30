@@ -114,7 +114,7 @@ SELECT
     publisher.ad_source_name as publisher_ad_source_name,
     publisher.ad_unit_id as publisher_ad_unit_id
 
-FROM ${ref("GA4")}
+FROM ${ref("events_*")}
 
 `
 let refs = pk.getRefs()
