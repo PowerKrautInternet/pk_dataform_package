@@ -18,7 +18,8 @@ SELECT
 
 FROM(
 SELECT
-    * EXCEPT(event_ga_session_id, conversie_mapping, 
+    * EXCEPT(event_ga_session_id, 
+        ${ifSource('ga_conversie_mapping', 'conversie_mapping, ')}
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
         ${ifSource('stg_pivot_targets','targets.kanaal,')} 
         ${ifSource('stg_pivot_targets','target_record_datum,')}
