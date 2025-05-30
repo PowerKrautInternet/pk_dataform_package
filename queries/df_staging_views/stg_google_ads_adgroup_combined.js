@@ -3,8 +3,6 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 
-
-
 SELECT 
     'Google Ads' as bron,
     ad_group.customer_id as account_id,

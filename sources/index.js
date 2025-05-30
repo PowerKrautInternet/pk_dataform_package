@@ -1,4 +1,4 @@
-let sources = []
+let sources = [] //TODO hier een import voor maken ipv een require
 
 //Posible source keys:
 //Database
@@ -102,7 +102,7 @@ function ref(p1, p2, ifSource) {
     return "NOT FOUND " + dataform.projectConfig.defaultDatabase + "." + p1 + "." + p2 + "\n list:" + v;
 }
 
-function getRefs(){
+function getRefs(){//getAndClearRef
     let dependencies = refs;
     refs = []
     return dependencies
@@ -112,13 +112,13 @@ function schemaSuffix(source) {
     if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
 }
 
-function crm_id(name) {
+function crm_id(sourceName) {
     for(let s in sources) {
-        if(sources[s].alias === name && typeof sources[s].crm_id != "undefined") {
+        if(sources[s].alias === sourceName && typeof sources[s].crm_id != "undefined") {
             return '"'+ sources[s].crm_id + '"';
         }
     }
-    return "ERROR: crm_id is undefined for " + name
+    return "ERROR: crm_id is undefined for " + sourceName
 }
 
 function join(joinType, schemaOrName, nameOrJoin, join) {
@@ -175,5 +175,5 @@ function ifSource(name, query){
     }
     return query;
 }
-
+//TODO support/queryhelpers
 module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource};
