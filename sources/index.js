@@ -93,6 +93,11 @@ function ref(p1, p2, ifSource) {
             refQuery += dataform.projectConfig.defaultSchema + "." + p1
         } else {
             refQuery += p1 + "." + p2
+            refs.push({
+                database: dataform.projectConfig.defaultDatabase,
+                schema: p1,
+                name: p2
+            })
         }
         refQuery += "` "
         return refQuery
