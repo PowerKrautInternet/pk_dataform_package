@@ -43,6 +43,7 @@ function setSources(varSource){
 }
 
 function ref(p1, p2, ifSource) {
+
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
     let ref = []
@@ -83,6 +84,12 @@ function ref(p1, p2, ifSource) {
         }
         refQuery +=" \n)"
         return refQuery;
+    } else if(p2){
+        refs.push({
+            database: dataform.projectConfig.defaultDatabase,
+            schema: p1,
+            name: p2
+        })
     }
 
     if(!ifSource) {
@@ -93,11 +100,6 @@ function ref(p1, p2, ifSource) {
             refQuery += dataform.projectConfig.defaultSchema + "." + p1
         } else {
             refQuery += p1 + "." + p2
-            // refs.push({
-            //     database: dataform.projectConfig.defaultDatabase,
-            //     schema: p1,
-            //     name: p2
-            // })
         }
         refQuery += "` "
         return refQuery
