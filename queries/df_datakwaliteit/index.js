@@ -5,7 +5,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s] ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
+        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
         if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
@@ -161,6 +161,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             } else {
                 query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
             }
+        } else {
+            query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Recency disabled! \n"
         }
     }
     return query
