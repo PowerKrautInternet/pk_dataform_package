@@ -65,7 +65,7 @@ function ref(p1, p2, ifSource) {
                     "database": sources[s].database
                 })
             } else {
-                return "`" + sources[s].database + "`.rawdata." + p1 + "--" + (NrFound + 1)
+                return "`" + sources[s].database + "`.rawdata." + p1
             }
             NrFound++;
         }
@@ -83,7 +83,7 @@ function ref(p1, p2, ifSource) {
             refQuery += ref[r];
         }
         refQuery +=" \n)"
-        return refQuery;
+        return refQuery+ "--" + (NrFound + 1);
     } else if(p2){
         refs.push({
             database: dataform.projectConfig.defaultDatabase,
