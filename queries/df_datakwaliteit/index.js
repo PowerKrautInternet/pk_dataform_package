@@ -6,7 +6,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let key1 = sources[s] ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
-        if (sources[s].recency !== "false" && !sources[s].recency === false) {
+        if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
             if (name.endsWith("DataProducer")) {
@@ -158,9 +158,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //FROM
                 query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
                 rowNr += 1
+            } else {
+                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
             }
-        } else {
-            query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
         }
     }
     return query
