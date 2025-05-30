@@ -62,9 +62,9 @@ SELECT
       IFNULL(session_campaign, first_user_campaign_name) as session_campaign,
       ${ifSource('gs_ga4_standaard_events','standaard_event.event_name as event_name_standaard,')}
       ${ifSource('gs_ga4_standaard_events','IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,')}
-      ga_mapping.conversie_mapping,
-      ga_mapping.telmethode as conversie_telmethode,
-      ga_mapping.softhard as conversie_soft_hard, 
+      ${ifSource('ga_conversie_mapping',"ga_mapping.conversie_mapping,")}
+      ${ifSource('ga_conversie_mapping','ga_mapping.telmethode as conversie_telmethode,')}
+      ${ifSource('ga_conversie_mapping','ga_mapping.softhard as conversie_soft_hard, ')}
       ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
