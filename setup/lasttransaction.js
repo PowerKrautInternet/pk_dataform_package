@@ -9,6 +9,7 @@ function lasttransaction (refVal) {
             "schema": "df_rawdata_views"
         }
     });
+    refVal["schema"] = "df_rawdata_views"
     return `
     
         BEGIN
