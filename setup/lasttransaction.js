@@ -2,18 +2,19 @@ let pk = require("../sources")
 let ref = pk.ref
 
 function lasttransaction (refVal) {
+    let config = {
+        "type": "view",
+        "schema": "df_rawdata_views"
+    }
     pk.addSource({
         "name": refVal.name+"_lasttransaction",
-        "config": {
-            "type": "view",
-            "schema": "df_rawdata_views"
-        }
+        "config": config
     });
-    refVal["schema"] = "df_rawdata_views"
+
     return `
     
         BEGIN
-        CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(refVal)}\` OPTIONS(location="EU");
+        CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}\` OPTIONS(location="EU");
         EXCEPTION WHEN ERROR THEN
         IF NOT CONTAINS_SUBSTR(@@error.message, "already exists: dataset") AND
         NOT CONTAINS_SUBSTR(@@error.message, "too many dataset metadata update operations") AND
@@ -25,7 +26,7 @@ function lasttransaction (refVal) {
         BEGIN
         DECLARE dataform_table_type DEFAULT (
             SELECT ANY_VALUE(table_type)
-            FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(refVal)}.INFORMATION_SCHEMA.TABLES\`
+            FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
             WHERE table_name = '${refVal.name}_lasttransaction'
         );
         IF dataform_table_type IS NOT NULL THEN
@@ -35,7 +36,7 @@ function lasttransaction (refVal) {
         END IF;
         BEGIN
         
-        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(refVal)}.${refVal.name}_lasttransaction\`
+        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${refVal.name}_lasttransaction\`
         OPTIONS()
         AS (
             SELECT
