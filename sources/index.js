@@ -43,7 +43,7 @@ function setSources(varSource){
 }
 
 function addSuffix(schema) {
-    if (!schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
+    if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
         return schema+"_"+dataform.projectConfig.schemaSuffix
     }
     return schema
@@ -91,7 +91,7 @@ function ref(p1, p2, ifSource) {
         }
         refQuery +=" \n)"
         return refQuery
-    } else if(p2){
+    } else if(p2 && !ifSource) {
         refs.push({
             "database": dataform.projectConfig.defaultDatabase,
             "schema": p1,

@@ -20,15 +20,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 } else {
                     query += sources[s].freshnessDays
                 }
-                query += ", NULL, "
-
-                //if the noWeekend is set the true statement of the recency if is always 0
-                if (sources[s].noWeekend == true) {
-                    query += "0"
-                } else {
-                    query += "1"
-                }
-                query += ") AS RECENCY_CHECK, *"
+                query += ", NULL, 1) AS RECENCY_CHECK, *"
                 if (extraSelect != "") {
                     query += ", "
                 }

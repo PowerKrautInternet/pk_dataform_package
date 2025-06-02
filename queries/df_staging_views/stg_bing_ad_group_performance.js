@@ -32,7 +32,7 @@ let query = `
         MAX(quality_score) AS quality_score,
 
 
-    FROM ${ref("bing_ad_group_performance")}
+    FROM ${ref("df_rawdata_views", "bing_ad_group_performance")}
 
              LEFT JOIN
          (SELECT
