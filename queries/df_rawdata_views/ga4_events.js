@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../../sources")
 let ref = pk.ref
-query = `
+let query = `
 
 SELECT
     event_date,
@@ -118,4 +118,8 @@ FROM ${ref("events_*")}
 
 `
 let refs = pk.getRefs()
+for (let r in refs) {
+    query += refs[r].schema
+    query += refs[r].name
+}
 module.exports = {query, refs}

@@ -78,7 +78,7 @@ function ref(p1, p2, ifSource) {
         refQuery = "\n(SELECT * FROM \n";
         for (let r in ref) {
             if (r > 0) {
-                refQuery += "UNION ALL "
+                refQuery += "UNION ALL \n"
             }
             refQuery += ref[r];
         }
@@ -86,9 +86,9 @@ function ref(p1, p2, ifSource) {
         return refQuery+ "--" + (NrFound + 1);
     } else if(p2){
         refs.push({
-            database: dataform.projectConfig.defaultDatabase,
-            schema: p1,
-            name: p2
+            "database": dataform.projectConfig.defaultDatabase,
+            "schema": p1,
+            "name": p2
         })
     }
 
