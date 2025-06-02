@@ -4,7 +4,7 @@ let query = `
 
 SELECT 
     *,
-    ${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("GS_MERKEN")}))) as merk,
+    ${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")}))) as merk,
 
 FROM (
     SELECT
