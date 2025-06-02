@@ -15,9 +15,9 @@ let refs = []
 function addSource(varsource) {
     //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
     if (varsource.type !== "function") {
-        varsource.noSuffix = "false"
+        varsource.noSuffix = false
     } else {
-        varsource.noSuffix = "true"
+        varsource.noSuffix = true
     }
     let source = {
         "name": varsource.name,
