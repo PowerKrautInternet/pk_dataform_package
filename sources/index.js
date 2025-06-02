@@ -44,7 +44,7 @@ function setSources(varSource){
 
 function addSuffix(schema) {
     if (!schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
-        return schema+dataform.projectConfig.schemaSuffix
+        return schema+"_"+dataform.projectConfig.schemaSuffix
     }
     return schema
 }
