@@ -46,7 +46,7 @@ function ref(p1, p2, ifSource) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
-    let ref = []
+    let ref = [];
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
