@@ -81,7 +81,7 @@ function ref(p1, p2, ifSource) {
 
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
-        let refQuery = ""
+        let refQuery
         refQuery = "\n(SELECT * FROM \n";
         for (let r in ref) {
             if (r > 0) {
@@ -106,7 +106,7 @@ function ref(p1, p2, ifSource) {
         if (typeof p2 == "undefined") {
             refQuery += addSuffix(dataform.projectConfig.defaultSchema) + "." + p1
         } else {
-            refQuery += p1 + "." + p2
+            refQuery += addSuffix(p1) + "." + p2
         }
         refQuery += "` "
         return refQuery
