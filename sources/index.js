@@ -42,6 +42,13 @@ function setSources(varSource){
     }
 }
 
+function addSuffix(schema) {
+    if (!schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
+        return schema+dataform.projectConfig.schemaSuffix
+    }
+    return schema
+}
+
 function ref(p1, p2, ifSource) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
@@ -111,6 +118,11 @@ function ref(p1, p2, ifSource) {
 
 function getRefs(){//getAndClearRef
     let dependencies = refs;
+    dependencies.push({
+        database: dataform.projectConfig.defaultDatabase,
+        schema:addSuffix("dataform"),
+        name:"setup_operations"
+    })
     refs = []
     return dependencies
 }
