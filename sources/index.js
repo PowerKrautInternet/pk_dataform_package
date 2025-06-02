@@ -83,7 +83,7 @@ function ref(p1, p2, ifSource) {
             refQuery += ref[r];
         }
         refQuery +=" \n)"
-        return refQuery+ "--" + (NrFound + 1);
+        return refQuery
     } else if(p2){
         refs.push({
             "database": dataform.projectConfig.defaultDatabase,
