@@ -104,7 +104,7 @@ function ref(p1, p2, ifSource) {
         let refQuery = ""
         refQuery += "`" + dataform.projectConfig.defaultDatabase + "."
         if (typeof p2 == "undefined") {
-            refQuery += dataform.projectConfig.defaultSchema + "." + p1
+            refQuery += addSuffix(dataform.projectConfig.defaultSchema) + "." + p1
         } else {
             refQuery += p1 + "." + p2
         }
