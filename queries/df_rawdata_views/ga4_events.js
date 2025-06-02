@@ -119,7 +119,7 @@ FROM ${ref("events_*")}
 `
 let refs = pk.getRefs()
 for (let r in refs) {
-    query += refs[r].schema
-    query += refs[r].name
+    query += refs[r].toString()
+    query += "\n"
 }
 module.exports = {query, refs}
