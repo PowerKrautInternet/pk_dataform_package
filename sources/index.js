@@ -37,7 +37,7 @@ function setSources(varSource){
     sources = [];
     for(let s in varSource){
         let v = varSource[s];
-        v["noSuffix"] = "true";
+        v["noSuffix"] = true;
         sources.push(v);
     }
 }
@@ -63,7 +63,7 @@ function ref(p1, p2, ifSource) {
         ){
             ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!sources[s].noSuffix && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
+            if(sources[s].noSuffix && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
             ref[NrFound] += "." + sources[s].name + "` "
             if(sources[s].type !== "function") {
                 refs.push({
