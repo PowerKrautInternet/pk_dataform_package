@@ -118,11 +118,7 @@ function ref(p1, p2, ifSource) {
 
 function getRefs(){//getAndClearRef
     let dependencies = refs;
-    dependencies.push({
-        "database": dataform.projectConfig.defaultDatabase,
-        "schema": addSuffix(dataform.projectConfig.defaultSchema),
-        "name": "setup_operations"
-    })
+    dependencies.push("setup_operations")
     refs = []
     return dependencies
 }
