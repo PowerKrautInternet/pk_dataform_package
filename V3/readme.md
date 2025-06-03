@@ -1,0 +1,1 @@
+Alle query die door de querybuilder heen gaan worden eerst omgezet naar lowercase

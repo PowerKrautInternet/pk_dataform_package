@@ -21,7 +21,7 @@ SELECT
     * EXCEPT(event_ga_session_id, 
         ${ifSource('ga_conversie_mapping', 'conversie_mapping, ')}
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
-        ${ifSource('stg_pivot_targets','targets.kanaal,')} 
+        ${ifSource('stg_pivot_targets','target_kanaal,')} 
         ${ifSource('stg_pivot_targets','target_record_datum,')}
          kanaal, event_date),
     IF(event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, 1, 0) AS conversion_event,
