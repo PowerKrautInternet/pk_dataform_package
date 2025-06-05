@@ -32,8 +32,8 @@ SELECT
         ifSource("stg_pivot_targets", "target_soort_conversie")
     ])} as soort_conversie,
     ${ifNull([
-        "kanaal",
-        ifSource("stg_pivot_targets", "target_kanaal"),    
+        "CAST(kanaal as string)",
+        ifSource("stg_pivot_targets", "cast(target_kanaal as string)"),    
     ])} as kanaal,
     ${ifNull([
         "event_date",
