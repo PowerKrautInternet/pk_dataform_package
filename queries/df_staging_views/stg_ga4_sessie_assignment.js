@@ -15,7 +15,13 @@ SELECT
     event_buy_plaats, 
     event_buy_brand, 
     event_trade_in_model, 
-    event_trade_in_brand, 
+    event_trade_in_brand,
+    event_formfields_id,
+    event_formfields_merk,
+    event_formfields_model,
+    event_formfields_soort,
+    event_formfields_titel,
+    event_formfields_vestiging,
     IFNULL(event_engaged_session_event, 0) AS session_engaged,
     --event_engagement_time_msec,
     -- event_session_engaged
@@ -144,6 +150,12 @@ SELECT
     geo_country,
     geo_region,
     geo_continent,
+    event_formfields_id,
+    event_formfields_merk,
+    event_formfields_model,
+    event_formfields_soort,
+    event_formfields_titel,
+    event_formfields_vestiging,
 
 FROM ${ref("ga4_events")}
 
