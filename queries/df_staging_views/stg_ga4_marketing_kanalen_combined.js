@@ -4,6 +4,7 @@ let query = `
 
 SELECT 
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")}
+    event_buy_status,
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
