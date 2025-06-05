@@ -123,6 +123,12 @@ unique_event_id,
     IFNULL(events.event_buy_brand, sessie_assignment.event_buy_brand) AS event_buy_brand,
     IFNULL(events.event_trade_in_model, sessie_assignment.event_trade_in_model) AS event_trade_in_model,
     IFNULL(events.event_trade_in_brand, sessie_assignment.event_trade_in_brand) AS event_trade_in_brand,
+    IFNULL(events.event_formfields_id, sessie_assignment.event_formfields_id) AS event_formfields_id,
+    IFNULL(events.event_formfields_merk, sessie_assignment.event_formfields_merk) AS event_formfields_merk,
+    IFNULL(events.event_formfields_model, sessie_assignment.event_formfields_model) AS event_formfields_model,
+    IFNULL(events.event_formfields_soort, sessie_assignment.event_formfields_soort) AS event_formfields_soort,
+    IFNULL(events.event_formfields_titel, sessie_assignment.event_formfields_titel) AS event_formfields_titel,
+    IFNULL(events.event_formfields_vestiging, sessie_assignment.event_formfields_vestiging) AS event_formfields_vestiging,
 
     FROM ${ref("ga4_events")} events
 
