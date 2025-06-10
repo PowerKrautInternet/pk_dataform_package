@@ -5,7 +5,6 @@ let query = `
 SELECT
     ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")}
-    event_buy_status,
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
@@ -66,14 +65,14 @@ SELECT
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.workflow_status AS ac_workflow_status,")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","ac_workflow_edm"), ifSource("stg_activecampaign_ga4_sheets","ac_bron")], "AS ac_bron,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.aantal_contacts AS ac_aantal_contacts")}
-    ga4.event_formfields_id,
-    ga4.event_formfields_merk,
-    ga4.event_formfields_model,
-    ga4.event_formfields_soort,
-    ga4.event_formfields_titel,
-    ga4.event_formfields_vestiging,
-    ga4.event_merk_concat,
-    ga4.session_merk_concat,
+    --ga4.event_formfields_id,
+    --ga4.event_formfields_merk,
+    --ga4.event_formfields_model,
+    --ga4.event_formfields_soort,
+    --ga4.event_formfields_titel,
+    --ga4.event_formfields_vestiging,
+    --ga4.event_merk_concat,
+    --ga4.session_merk_concat,
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
