@@ -71,6 +71,8 @@ SELECT
     ga4.event_formfields_soort,
     ga4.event_formfields_titel,
     ga4.event_formfields_vestiging,
+    ga4.event_merk_concat,
+    ga4.session_merk_concat,
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     

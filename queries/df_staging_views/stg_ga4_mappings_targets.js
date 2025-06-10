@@ -70,8 +70,6 @@ SELECT
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
       ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}
-    CONCAT(IFNULL(events_sessies.event_formfields_merk, ""), IFNULL(events_sessies.event_buy_brand, ""), IFNULL(events_sessies.event_name, ""), IFNULL(event_page_title, ""), IFNULL(event_page_location, ""), IFNULL(event_page_referrer, "")) as event_merk_concat,
-    CONCAT(IFNULL(events_sessies.event_formfields_merk, ""), IFNULL(events_sessies.event_buy_brand, ""), IFNULL(session_campaign, ""), IFNULL(session_landingpage_title, ""), IFNULL(session_landingpage_location, ""), IFNULL(session_term, ""), IFNULL(session_content, "")) as session_merk_concat,
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
