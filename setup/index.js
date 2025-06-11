@@ -17,7 +17,7 @@ function getLookup(){
                 normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
                 normalizedValue = normalizedValue.replace(/\s+/gi, " ");
         
-                if (normalizedNeedle.match(new RegExp('.*\\b' + normalizedValue + '\\b.*', 'gi'))) {
+                if (normalizedNeedle.match(new RegExp('.*\\\b' + normalizedValue + '\\\b.*', 'gi'))) {
                     return lookupTable[item];
                 }
             }
