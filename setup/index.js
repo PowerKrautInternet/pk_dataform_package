@@ -4,7 +4,7 @@ let pk = require("../sources");
 function getLookup(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
     return `
-        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (needle STRING, haystack STRING) RETURNS STRING LANGUAGE js AS R"""
         const lookupTable = JSON.parse(haystack);
 
 
