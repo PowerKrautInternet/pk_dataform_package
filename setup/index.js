@@ -5,42 +5,37 @@ function getLookup(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
     return `
         CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.lookupTable`"} (arg_needle STRING, arg_table_as_json STRING) RETURNS STRING LANGUAGE js AS R"""
-        function lookupTable(needle, haystack) {
-            const lookupTable = JSON.parse(haystack);
-        
-        
-            for (var item in lookupTable) {
-                let normalizedValue = removeAccents(lookupTable[item]);
-                let normalizedNeedle = removeAccents(needle);
-                normalizedNeedle = normalizedNeedle.replace(/[^a-zA-Z0-9]/gi, " ");
-                normalizedValue = normalizedValue.replace(/[^a-zA-Z0-9]/gi, " ");
-                normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
-                normalizedValue = normalizedValue.replace(/\s+/gi, " ");
-        
-                if (normalizedNeedle.match(new RegExp('.*\\\b' + normalizedValue + '\\\b.*', 'gi'))) {
-                    return lookupTable[item];
-                }
-            }
-        
-            return null;
+        const lookupTable = JSON.parse(haystack);
+
+
+    for (const item in lookupTable) {
+        let normalizedValue = removeAccents(lookupTable[item]);
+        let normalizedNeedle = removeAccents(needle);
+        normalizedNeedle = normalizedNeedle.replace(/[^a-zA-Z0-9]/gi, " ");
+        normalizedValue = normalizedValue.replace(/[^a-zA-Z0-9]/gi, " ");
+        normalizedNeedle = normalizedNeedle.replace(/\s+/gi, " ");
+        normalizedValue = normalizedValue.replace(/\s+/gi, " ");
+
+        if (normalizedNeedle.match(new RegExp('.*'+normalizedValue+'.*', 'gi'))) {
+            return lookupTable[item];
         }
-        
-        function removeAccents(strAccents) {
-            var strAccents = strAccents.split('');
-            var strAccentsOut = new Array();
-            var strAccentsLen = strAccents.length;
-            var accents = "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-            var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
-            for (var y = 0; y < strAccentsLen; y++) {
-                if (accents.indexOf(strAccents[y]) != -1) {
-                    strAccentsOut[y] = accentsOut.substr(accents.indexOf(strAccents[y]), 1);
-                } else
-                    strAccentsOut[y] = strAccents[y];
-            }
-            strAccentsOut = strAccentsOut.join('');
-        
-            return strAccentsOut;
-        }
+    }
+
+    return null;
+function removeAccents(strAccents) {
+    strAccents = strAccents.split('');
+    let strAccentsOut = [];
+    const strAccentsLen = strAccents.length;
+    const accents = "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+    const accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
+    for (let y = 0; y < strAccentsLen; y++) {
+        if (accents.indexOf(strAccents[y]) !== -1) {
+            strAccentsOut[y] = accentsOut.substring(accents.indexOf(strAccents[y]), 1);
+        } else
+            strAccentsOut[y] = strAccents[y];
+    }
+    return strAccentsOut.join('');
+}
         """;
     `
 }
