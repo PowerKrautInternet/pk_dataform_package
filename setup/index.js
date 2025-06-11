@@ -22,7 +22,8 @@ function getLookup(){
     }
 
     return null;
-function removeAccents(strAccents = "") {
+function removeAccents(strAccents) {
+    strAccents = strAccents ?? "";
     strAccents = strAccents.split('');
     let strAccentsOut = [];
     const strAccentsLen = strAccents.length;
