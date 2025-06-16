@@ -61,7 +61,7 @@ function ref(p1, p2, ifSource) {
             ||
             (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
         ){
-            ref[NrFound].alias = sources[s].alias ?? "NULL";
+            ref[NrFound].alias = sources[s].alias ? '"' + sources[s].alias + '"' : "NULL";
             ref[NrFound].query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound].query += "_" + dataform.projectConfig.schemaSuffix }
@@ -79,7 +79,6 @@ function ref(p1, p2, ifSource) {
         }
     }
 
-
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
         let refQuery = "--Combining multiple ref results\n"
@@ -87,7 +86,7 @@ function ref(p1, p2, ifSource) {
             if (r > 0) {
                 refQuery += "UNION ALL";
             }
-            refQuery += `\n(SELECT *, "${ref[r].alias}" as alias FROM \n`;
+            refQuery += `\n(SELECT *, ${ref[NrFound].alias} as alias FROM \n`;
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
