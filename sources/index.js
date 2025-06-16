@@ -61,10 +61,11 @@ function ref(p1, p2, ifSource) {
             ||
             (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
         ){
-            ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
+            ref[NrFound] = sources[s].alias;
+            ref[NrFound].query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound] += "_" + dataform.projectConfig.schemaSuffix }
-            ref[NrFound] += "." + sources[s].name + "` "
+            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound].query += "_" + dataform.projectConfig.schemaSuffix }
+            ref[NrFound].query += "." + sources[s].name + "` "
             if(sources[s].type !== "function") {
                 refs.push({
                     "name": sources[s].name,
@@ -81,13 +82,13 @@ function ref(p1, p2, ifSource) {
 
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
-        let refQuery
-        refQuery = "\n(SELECT * FROM \n";
+        let refQuery = "--Combining multiple ref results\n"
         for (let r in ref) {
             if (r > 0) {
-                refQuery += "UNION ALL \n SELECT * FROM \n";
+                refQuery += "UNION ALL";
             }
-            refQuery += ref[r];
+            refQuery += "\n(SELECT * FROM \n";
+            refQuery += ref[r].query;
         }
         refQuery +=" \n)"
         return refQuery
