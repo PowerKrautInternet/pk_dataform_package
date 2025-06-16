@@ -85,7 +85,7 @@ function ref(p1, p2, ifSource) {
         refQuery = "\n(SELECT * FROM \n";
         for (let r in ref) {
             if (r > 0) {
-                refQuery += "UNION ALL \n"
+                refQuery += "UNION ALL \n SELECT * FROM \n";
             }
             refQuery += ref[r];
         }

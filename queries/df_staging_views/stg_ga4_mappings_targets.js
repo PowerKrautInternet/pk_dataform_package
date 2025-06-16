@@ -11,15 +11,11 @@ SELECT
         ELSE merk_session 
     END AS merk_session,
     IFNULL(sessie_conversie_bron, kanaal) as kanaal,
-    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_thema,")}
-    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_edm as ac_campaign,")}
-    ${ifSource("gs_activecampaign_ga4_mapping", "ac.mapping_flows AS ac_name,")}
-    ${ifSource("gs_activecampaign_ga4_mapping", "ac.workflow_edm AS ac_workflow_edm")}
 
 FROM(
 SELECT
     * EXCEPT(event_ga_session_id, 
-        ${ifSource('ga_conversie_mapping', 'conversie_mapping, ')}
+        ${ifSource('gs_conversie_mapping', 'conversie_mapping, ')}
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
         ${ifSource('stg_pivot_targets','target_kanaal,')} 
         ${ifSource('stg_pivot_targets','target_record_datum,')}
@@ -27,7 +23,7 @@ SELECT
     IF(event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, unique_event_id, NULL) as privacy_conversion_id, 
     ${ifNull([
-        ifSource("ga_conversie_mapping", "conversie_mapping"),
+        ifSource("gs_conversie_mapping", "conversie_mapping"),
         ifSource("gs_ga4_standaard_events", `IF(standaard_event = 0, event_name, NULL)`),
         ifSource("stg_pivot_targets", "target_soort_conversie")
     ])} as soort_conversie,
@@ -63,9 +59,9 @@ SELECT
       IFNULL(session_campaign, first_user_campaign_name) as session_campaign,
       ${ifSource('gs_ga4_standaard_events','standaard_event.event_name as event_name_standaard,')}
       ${ifSource('gs_ga4_standaard_events','IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,')}
-      ${ifSource('ga_conversie_mapping',"ga_mapping.conversie_mapping,")}
-      ${ifSource('ga_conversie_mapping','ga_mapping.telmethode as conversie_telmethode,')}
-      ${ifSource('ga_conversie_mapping','ga_mapping.softhard as conversie_soft_hard, ')}
+      ${ifSource('gs_conversie_mapping',"gs_mapping.conversie_mapping,")}
+      ${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
+      ${ifSource('gs_conversie_mapping','gs_mapping.softhard as conversie_soft_hard, ')}
       ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
@@ -74,13 +70,11 @@ SELECT
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
     ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name)")}
-    ${join("left join","ga_conversie_mapping", "AS ga_mapping ON TRIM(events_sessies.event_name) = TRIM(ga_mapping.event_name)")}
+    ${join("left join","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name)")}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 
-  
---mag er uit
-${join("LEFT JOIN", "gs_activecampaign_ga4_mapping", "AS ac ON ac.session_campaign = ga4.session_campaign")}
+
 `
 
 let refs = getRefs() // wordt in dataform gebruikt voor dependency tracking
