@@ -79,6 +79,7 @@ function ref(p1, p2, ifSource) {
         }
     }
 
+
     //if a ref was found than return al the refs that where found in an query that will be implemented in a 'from'
     if(NrFound > 0) {
         let refQuery = "--Combining multiple ref results\n"
@@ -86,7 +87,7 @@ function ref(p1, p2, ifSource) {
             if (r > 0) {
                 refQuery += "UNION ALL";
             }
-            refQuery += `\n(SELECT *, ${ref[NrFound].alias} as alias FROM \n`;
+            refQuery += `\n(SELECT *, ${ref[r].alias} as alias FROM \n`;
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
