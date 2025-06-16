@@ -53,7 +53,7 @@ function ref(p1, p2, ifSource) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
-    let ref = [];
+    let ref = [{}];
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
@@ -61,7 +61,7 @@ function ref(p1, p2, ifSource) {
             ||
             (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
         ){
-            ref[NrFound] = sources[s].alias ?? "NULL";
+            ref[NrFound].alias = sources[s].alias ?? "NULL";
             ref[NrFound].query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound].query += "_" + dataform.projectConfig.schemaSuffix }
@@ -87,7 +87,7 @@ function ref(p1, p2, ifSource) {
             if (r > 0) {
                 refQuery += "UNION ALL";
             }
-            refQuery += "\n(SELECT * FROM \n";
+            refQuery += `\n(SELECT *, ${ref[r].alias} as alias FROM \n`;
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
