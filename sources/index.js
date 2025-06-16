@@ -57,9 +57,9 @@ function ref(p1, p2, ifSource) {
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && typeof sources[s].alias == 'undefined') ) )
+            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].schema.startsWith('ads_') ) ) ) )
             ||
-            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
+            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].schema.startsWith('ads_') ) ) ) && sources[s].schema == p1)
         ){
             ref[NrFound].alias = sources[s].alias ? '"' + sources[s].alias + '"' : "NULL";
             ref[NrFound].query = "`" + sources[s].database + "." + sources[s].schema
