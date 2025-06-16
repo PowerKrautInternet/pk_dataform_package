@@ -87,7 +87,7 @@ function ref(p1, p2, ifSource) {
             if (r > 0) {
                 refQuery += "UNION ALL";
             }
-            refQuery += `\n(SELECT *, ${ref[r].alias} as alias FROM \n`;
+            refQuery += `\n(SELECT *, "${ref[r].alias}" as alias FROM \n`;
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
