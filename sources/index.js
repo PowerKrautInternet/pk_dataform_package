@@ -57,9 +57,9 @@ function ref(p1, p2, ifSource) {
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-            (p2 == "" && (sources[s].alias == p1 || (sources[s].name == p1 && typeof sources[s].alias == 'undefined') ) )
+            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/[0-9]/g, "") === p1 && typeof sources[s].alias == 'undefined') ) )
             ||
-            (p2 != "" && (sources[s].alias == p2 || (sources[s].name == p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
+            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/[0-9]/g, "") === p2 && typeof sources[s].alias == 'undefined') ) && sources[s].schema == p1)
         ){
             ref[NrFound] = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
