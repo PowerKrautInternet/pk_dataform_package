@@ -6,8 +6,7 @@ let query = `
 SELECT 
     'Google Ads' as bron,
     ad_group.customer_id as account_id,
-    MAX(CASE
-      WHEN ad_group.customer_id = 2705664705 THEN 'A-Point' ELSE NULL END) AS account_name,
+    MAX(ad_group.alias AS account_name,
     ad_group.campaign_id,
     MAX(ad_campaign.campaign_name) AS campaign_name,
     MAX(ad_campaign.campaign_advertising_channel_type) AS campaign_advertising_channel_type,
