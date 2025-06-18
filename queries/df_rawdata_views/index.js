@@ -168,6 +168,20 @@ function linkedin_ad_campaign_group() {
     return table;
 }
 
+function lef_leads() {
+    let table = {
+        "name": "lef_leads",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./lef_leads').refs
+        },
+        "query": require('./lef_leads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = { 
     ga4_events,
     syntec_orders,
@@ -180,5 +194,6 @@ module.exports = {
     linkedin_ads_analytics,
     linkedin_ad_account,
     linkedin_campaign_information,
-    linkedin_ad_campaign_group
+    linkedin_ad_campaign_group,
+    lef_leads
 }
