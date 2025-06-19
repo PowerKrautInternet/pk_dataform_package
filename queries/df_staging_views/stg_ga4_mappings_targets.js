@@ -4,12 +4,7 @@ let query = `
     
 
 SELECT 
-    ga4.* EXCEPT(merk_session, kanaal, sessie_conversie_bron),
-    CASE 
-        WHEN merk_session IN ('vw-bedrijfswagens', 'volkswagen-bedrijfswagens') THEN 'Volkswagen Bedrijfswagens'
-        WHEN merk_session IN ('VW', 'Volkswagen') THEN 'Volkswagen'
-        ELSE merk_session 
-    END AS merk_session,
+    ga4.* EXCEPT(kanaal, sessie_conversie_bron),
     IFNULL(sessie_conversie_bron, kanaal) as kanaal,
 
 FROM(
@@ -62,7 +57,8 @@ SELECT
       ${ifSource('gs_conversie_mapping',"gs_mapping.conversie_mapping,")}
       ${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
       ${ifSource('gs_conversie_mapping','gs_mapping.softhard as conversie_soft_hard, ')}
-      ${ifSource('stg_pivot_targets','targets.conversie_mapping as target_soort_conversie,')}
+      ${ifSource('stg_pivot_targets','targets.soort_conversie as target_soort_conversie,')}
+      ${ifSource('stg_pivot_targets','targets.merk as target_merk,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
       ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}

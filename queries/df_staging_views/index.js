@@ -206,6 +206,36 @@ function stg_lef_leads_agg(){
         },
         "query": require('./stg_lef_leads_agg').query
     }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_googleads_combined() {
+    let table = {
+        "name": "stg_googleads_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_googleads_combined').refs
+        },
+        "query": require('./stg_googleads_combined').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_googleads_perfmax_combined() {
+    let table = {
+        "name": "stg_googleads_perfmax_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_googleads_perfmax_combined').refs
+        },
+        "query": require('./stg_googleads_perfmax_combined').query
+    }
+    pk.addSource(table);
+    return table;
 }
 
 module.exports = {
@@ -223,5 +253,7 @@ module.exports = {
     stg_bing_ad_group_performance,
     stg_linkedin_ads_combined,
     stg_activecampaign_workflow_edm,
-    stg_lef_leads_agg
+    stg_lef_leads_agg,
+    stg_googleads_combined,
+    stg_googleads_perfmax_combined
 }

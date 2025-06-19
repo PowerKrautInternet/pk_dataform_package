@@ -56,7 +56,7 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
 
     FROM 
-        ${ref("df_staging_views", "stg_google_ads_adgroup_combined")} google_ads
+        ${ref("df_staging_views", "stg_googleads_combined")} google_ads
 
     ${join("full outer join", "df_staging_views", "stg_facebookdata", "AS facebook ON 1=0")}
     ${join("full outer join", "df_rawdata_views", "dv360_data", "AS dv360 ON 1=0")}
