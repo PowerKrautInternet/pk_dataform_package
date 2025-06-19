@@ -56,7 +56,7 @@ return getAdres(json_row, field_name);""";
 function getEmail(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getEmail", "type": "function"})
     return `
-        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING) RETURNS STRING LANGUAGE js AS R"""
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getEmail`"} (json_row STRING) RETURNS STRING LANGUAGE js AS R"""
         function getEmail(obj) {
  let contact = JSON.parse(obj).slice().filter((item, index) => { return item.contactwijzeType == "E-mail" }).pop();
  return ((contact) ? contact.value : null)
@@ -68,7 +68,7 @@ return getEmail(json_row);""";
 function getTelefoon(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getTelefoon", "type": "function"})
     return `
-        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getTelefoon`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
         function getTelefoon(obj) {
  let contact = JSON.parse(obj).slice().filter((item, index) => { return item.contactwijzeType == "Telefoon" }).pop();
  return ((contact) ? contact.value : null)
