@@ -85,7 +85,7 @@ SELECT
   session_campaign
 
 FROM
-  ${ref("df_rawdata_views", "stg_lef_leads")} lef
+  ${ref("df_rawdata_views", "lef_leads")} lef
       
 LEFT JOIN (
     SELECT
