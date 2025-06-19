@@ -62,6 +62,7 @@ function ref(p1, p2, ifSource) {
             (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) && sources[s].schema == p1)
         ){
             let r = {}
+            r.schema = sources[s].schema
             r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : "NULL";
             r.query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
@@ -91,7 +92,12 @@ function ref(p1, p2, ifSource) {
             } else {
                 refQuery += "("
             }
-            refQuery += `\nSELECT *, ${ref[r].alias ?? "NULL"} as alias FROM \n`;
+            refQuery += '\nSELECT *, '
+            if (ref[r].alias && ref[r].schema === 'googleAds') {
+                refQuery += ref[r].alias ?? "NULL"
+                refQuery += "as alias "
+            }
+            refQuery += "FROM \n"
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
