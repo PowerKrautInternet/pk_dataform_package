@@ -6,7 +6,7 @@ let query = `
         'Google Ads' as bron,
         campaign.customer_id,
         campaign.campaign_id,
-        MAX(campaign.account_name) AS account_name,
+        MAX(campaign.alias) AS account_name,
         MAX(campaign.campaign_name) AS campaign_name,
         MAX(campaign.campaign_advertising_channel_type) AS campaign_advertising_channel_type,
         MAX(campaign.campaign_bidding_strategy_type) AS campaign_bidding_strategy_type,
