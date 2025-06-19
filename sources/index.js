@@ -53,20 +53,21 @@ function ref(p1, p2, ifSource) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
-    let ref = [{}];
+    let ref = [];
     let NrFound = 0;
     for(let s in sources) {
-        sources[s].alias = sources[s].alias ?? null
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
             (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) )
             ||
             (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) && sources[s].schema == p1)
         ){
-            ref[NrFound].alias = sources[s].alias ? '"' + sources[s].alias + '"' : "NULL";
-            ref[NrFound].query = "`" + sources[s].database + "." + sources[s].schema
+            let r = {}
+            r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : "NULL";
+            r.query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { ref[NrFound].query += "_" + dataform.projectConfig.schemaSuffix }
-            ref[NrFound].query += "." + sources[s].name + "` "
+            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { r.query += "_" + dataform.projectConfig.schemaSuffix }
+            r.query += "." + sources[s].name + "` "
+            ref.push(r)
             if(sources[s].type !== "function") {
                 refs.push({
                     "name": sources[s].name,
