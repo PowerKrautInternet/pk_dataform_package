@@ -68,7 +68,7 @@ return getEmail(json_row);""";
 function getTelefoon(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getTelefoon", "type": "function"})
     return `
-        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getTelefoon`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getTelefoon`"} (json_row STRING) RETURNS STRING LANGUAGE js AS R"""
         function getTelefoon(obj) {
  let contact = JSON.parse(obj).slice().filter((item, index) => { return item.contactwijzeType == "Telefoon" }).pop();
  return ((contact) ? contact.value : null)
