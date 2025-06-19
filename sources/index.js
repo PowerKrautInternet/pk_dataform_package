@@ -88,6 +88,8 @@ function ref(p1, p2, ifSource) {
         for (let r in ref) {
             if (r > 0) {
                 refQuery += "UNION ALL";
+            } else {
+                refQuery += "("
             }
             refQuery += `\nSELECT *, ${ref[r].alias ?? "NULL"} as alias FROM \n`;
             refQuery += ref[r].query;
