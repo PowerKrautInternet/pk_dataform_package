@@ -41,9 +41,22 @@ function removeAccents(strAccents) {
     `
 }
 
+function getAdres(){
+    pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
+    return `
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
+        function getAdres(obj, field_name) {
+ let response = JSON.parse(obj);
+ return ((response && response.slice().length > 0) ? response.slice().pop()[field_name] : null)
+}
+return getAdres(json_row, field_name);""";
+    `
+}
+
 function setupFunctions(sources){
     let query = []
     query[0] = getLookup();
+    query[1] = getAdres();
     for(let s in sources){
         if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){
             query.push(lasttransaction(sources[s]));
