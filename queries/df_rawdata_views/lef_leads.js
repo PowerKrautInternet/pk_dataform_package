@@ -75,7 +75,7 @@ SELECT
         IF (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Voertuig Informatie.ClientID') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Voertuig Informatie.ClientID'),
         IF (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Informatie.ClientID') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Informatie.ClientID'),
         IF (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Extra.ClientID') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Extra.ClientID'),
-        IF (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid'), NULL) ) ) ) ) ), '\\\d{1,}.\\\d{1,}$'
+        IF (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid'), NULL) ) ) ) ) ), '\\\\d{1,}.\\\\d{1,}$'
     ) AS google_clientid,
     RECEIVEDON,
     ACTION
