@@ -56,6 +56,7 @@ function ref(p1, p2, ifSource) {
     let ref = [{}];
     let NrFound = 0;
     for(let s in sources) {
+        sources[s].alias = sources[s].alias ?? null
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
             (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) )
             ||
@@ -87,7 +88,7 @@ function ref(p1, p2, ifSource) {
             if (r > 0) {
                 refQuery += "UNION ALL";
             }
-            refQuery += `\n(SELECT *, ${ref[r].alias} as alias FROM \n`;
+            refQuery += `\n(SELECT *, ${ref[r].alias ?? "NULL"} as alias FROM \n`;
             refQuery += ref[r].query;
         }
         refQuery +=" \n)"
