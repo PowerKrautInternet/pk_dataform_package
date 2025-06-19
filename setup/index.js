@@ -42,7 +42,7 @@ function removeAccents(strAccents) {
 }
 
 function getAdres(){
-    pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
+    pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getAdres", "type": "function"})
     return `
         CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
         function getAdres(obj, field_name) {
@@ -53,10 +53,36 @@ return getAdres(json_row, field_name);""";
     `
 }
 
+function getEmail(){
+    pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getEmail", "type": "function"})
+    return `
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING) RETURNS STRING LANGUAGE js AS R"""
+        function getEmail(obj) {
+ let contact = JSON.parse(obj).slice().filter((item, index) => { return item.contactwijzeType == "E-mail" }).pop();
+ return ((contact) ? contact.value : null)
+}
+return getEmail(json_row);""";
+    `
+}
+
+function getTelefoon(){
+    pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "getTelefoon", "type": "function"})
+    return `
+        CREATE OR REPLACE FUNCTION ${"`" + dataform.projectConfig.defaultDatabase + ".rawdata.getAdres`"} (json_row STRING, field_name STRING) RETURNS STRING LANGUAGE js AS R"""
+        function getTelefoon(obj) {
+ let contact = JSON.parse(obj).slice().filter((item, index) => { return item.contactwijzeType == "Telefoon" }).pop();
+ return ((contact) ? contact.value : null)
+}
+return getTelefoon(json_row);""";
+    `
+}
+
 function setupFunctions(sources){
     let query = []
     query[0] = getLookup();
     query[1] = getAdres();
+    query[2] = getEmail();
+    query[3] = getTelefoon();
     for(let s in sources){
         if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){
             query.push(lasttransaction(sources[s]));
