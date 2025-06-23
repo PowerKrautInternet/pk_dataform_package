@@ -60,7 +60,7 @@ SELECT
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
         ifSource("stg_lef_leads_agg", "lef.gewenstMerk"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
-        ""Overig""
+        "'Overig'"
     ], "as merk,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.impressions as gsc_impressions,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
