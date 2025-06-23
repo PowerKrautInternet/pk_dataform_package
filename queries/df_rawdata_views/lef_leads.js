@@ -147,6 +147,7 @@ SELECT
 
 FROM
     ${ref("df_rawdata_views", "lefBiDataProducer_lasttransaction")}
+)
 `
 let refs = getRefs()
 module.exports = {query, refs}
