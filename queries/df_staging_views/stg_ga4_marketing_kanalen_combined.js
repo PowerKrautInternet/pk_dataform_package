@@ -116,28 +116,28 @@ SELECT
         ifSource("stg_lef_leads_agg","lef.google_clientid")
     ], "AS user_pseudo_id,")}
 
-    ${ifSource("stg_lef_leads_agg","lef.LEFleadID AS lef_lead_id")}
-    ${ifSource("stg_lef_leads_agg","lef.aangemaaktDatum AS lef_aangemaakt_datum")}
-    ${ifSource("stg_lef_leads_agg","lef.afgerondDatum AS lef_afgerond_datum")}
-    ${ifSource("stg_lef_leads_agg","lef.lead_bron AS lef_lead_bron")}
-    ${ifSource("stg_lef_leads_agg","lef.systeem AS lef_systeem")}
-    ${ifSource("stg_lef_leads_agg","lef.kwalificatie AS lef_kwalificatie")}
-    ${ifSource("stg_lef_leads_agg","lef.leadType AS lef_lead_type")}
-    ${ifSource("stg_lef_leads_agg","lef.initiatief AS lef_initiatief")}
-    ${ifSource("stg_lef_leads_agg","lef.soortLead AS lef_soort_lead")}
-    ${ifSource("stg_lef_leads_agg","lef.leadOmschrijving AS lef_lead_omschrijving")}
-    ${ifSource("stg_lef_leads_agg","lef.vestiging AS lef_vestiging")}
-    ${ifSource("stg_lef_leads_agg","lef.medewerker AS lef_medewerker")}
-    ${ifSource("stg_lef_leads_agg","lef.resultaat AS lef_resultaat")}
-    ${ifSource("stg_lef_leads_agg","lef.afsluitreden AS lef_afsluitreden")}
-    ${ifSource("stg_lef_leads_agg","lef.heeftOfferte AS lef_heeft_offerte")}
-    ${ifSource("stg_lef_leads_agg","lef.heeftOrder AS lef_heeft_order")}
-    ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer")}
-    ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer")}
-    ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model")}
-    ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort")}
-    ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof")}
-    ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar")}
+    ${ifSource("stg_lef_leads_agg","lef.LEFleadID AS lef_lead_id,")}
+    ${ifSource("stg_lef_leads_agg","lef.aangemaaktDatum AS lef_aangemaakt_datum,")}
+    ${ifSource("stg_lef_leads_agg","lef.afgerondDatum AS lef_afgerond_datum,")}
+    ${ifSource("stg_lef_leads_agg","lef.lead_bron AS lef_lead_bron,")}
+    ${ifSource("stg_lef_leads_agg","lef.systeem AS lef_systeem,")}
+    ${ifSource("stg_lef_leads_agg","lef.kwalificatie AS lef_kwalificatie,")}
+    ${ifSource("stg_lef_leads_agg","lef.leadType AS lef_lead_type,")}
+    ${ifSource("stg_lef_leads_agg","lef.initiatief AS lef_initiatief,")}
+    ${ifSource("stg_lef_leads_agg","lef.soortLead AS lef_soort_lead,")}
+    ${ifSource("stg_lef_leads_agg","lef.leadOmschrijving AS lef_lead_omschrijving,")}
+    ${ifSource("stg_lef_leads_agg","lef.vestiging AS lef_vestiging,")}
+    ${ifSource("stg_lef_leads_agg","lef.medewerker AS lef_medewerker,")}
+    ${ifSource("stg_lef_leads_agg","lef.resultaat AS lef_resultaat,")}
+    ${ifSource("stg_lef_leads_agg","lef.afsluitreden AS lef_afsluitreden,")}
+    ${ifSource("stg_lef_leads_agg","lef.heeftOfferte AS lef_heeft_offerte,")}
+    ${ifSource("stg_lef_leads_agg","lef.heeftOrder AS lef_heeft_order,")}
+    ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
+    ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
