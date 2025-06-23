@@ -34,7 +34,7 @@ SELECT
     ${ifNull([
         "ga4.event_date",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.record_date"),
-        ifSource("stg_lef_laeds_agg", "CAST(lef.aangemaaktDatum AS DATE)"),
+        ifSource("stg_lef_leads_agg", "CAST(lef.aangemaaktDatum AS DATE)"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum")
