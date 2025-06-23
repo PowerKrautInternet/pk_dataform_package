@@ -140,7 +140,7 @@ SELECT
           IF
             (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Extra.ClientID') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Extra.ClientID'),
             IF
-              (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid'), NULL) ) ) ) ) ), '\\d{1,}.\\d{1,}$') 
+              (JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid') <> '', JSON_VALUE(PAYLOAD, '$.response.overige.extraInfo.Overige formulier velden.google_clientid'), NULL) ) ) ) ) ), '\\\\d{1,}.\\\\d{1,}$') 
     AS google_clientid,
     RECEIVEDON,
     ACTION
