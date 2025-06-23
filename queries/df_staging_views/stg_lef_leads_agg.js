@@ -54,16 +54,16 @@ SELECT
   huisnummertoevoeging,
   straat,
   plaats,
-  contactwijzen,
-  contactwijzen_Telefoon,
+  email,
+  telefoon,
   klantinfo_bewaartermijn,
-  Merk,
-  MODEL,
-  AutoSoort,
-  Brandstof,
-  Bouwjaar,
-  Uitvoering,
-  Kenteken,
+  gewenstMerk,
+  gewenstModel,
+  gewenstAutoSoort,
+  gewenstBrandstof,
+  gewenstBouwjaar,
+  gewenstUitvoering,
+  gewenstKenteken,
   huidigMerk,
   huidigModel,
   huidigUitvoering,
@@ -71,32 +71,33 @@ SELECT
   huidigKenteken,
   huidigBouwjaar,
   RECEIVEDON,
-  google_clientid,
   ACTION,
-  session_primary_channel_group,
+  google_clientid,
+  user_pseudo_id,
+  event_date,
   event_name,
   event_page_location,
   session_landingpage_location,
   session_landingpage_title,
   session_device_category,
   session_geo_city,
+  session_source,
+  session_medium,
   session_source_medium,
-  kanaal,
-  session_campaign
-
+  session_campaign,
+  merk_session,
+  kanaal
+  
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
-      
-LEFT JOIN (
-    SELECT
-        *
-    FROM
-        ${ref("df_staging_tables", "stg_ga4_events_sessies")} 
-    WHERE 
-        event_name = "session_start"
-) kanalen 
-ON 
-    lef.google_clientid = kanalen.user_pseudo_id
+LEFT JOIN 
+(SELECT
+*
+FROM
+  ${ref("df_staging_tables", "stg_ga4_events_sessies")} 
+WHERE event_name = "session_start"
+) kanalen
+ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id)
 
 `
 let refs = getRefs()
