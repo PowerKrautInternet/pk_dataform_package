@@ -3,7 +3,7 @@ const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
 
 SELECT
-    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location, session_primary_channel_group,
+    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
@@ -95,10 +95,6 @@ SELECT
     ${ifNull(["ga4.event_page_location",
         ifSource("stg_lef_leads_agg","lef.event_page_location"
     )], "AS event_page_location,")}
-    
-    ${ifNull(["ga4.session_primary_channel_group",
-        ifSource("stg_lef_leads_agg","lef.session_primary_channel_group")
-    ],"AS session_primary_channel_group,")}
     
     ${ifNull(["ga4.session_landingpage_title",
         ifSource("stg_lef_leads_agg","lef.session_landingpage_title")
