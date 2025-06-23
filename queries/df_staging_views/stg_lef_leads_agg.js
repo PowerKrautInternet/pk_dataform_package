@@ -2,8 +2,12 @@
 const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
 
-SELECT
-  "LEF" AS bron,
+SELECT 
+"LEF" AS bron,
+* EXCEPT(sessie_conversie_bron, kanaal),
+IFNULL(sessie_conversie_bron, kanaal) AS kanaal
+FROM(
+  SELECT
   pk_crm_id,
   type,
   LEFleadID,
@@ -84,6 +88,20 @@ SELECT
   session_source,
   session_medium,
   session_source_medium,
+  CASE
+    WHEN regexp_contains(session_source,'dv360') 
+    OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
+    WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
+    AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'Facebook'
+    WHEN regexp_contains(session_source,'linkedin')
+    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
+    WHEN regexp_contains(session_source,'google|adwords')
+    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Google Ads'
+    WHEN regexp_contains(session_source,'bing')
+    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
+    WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
+    ELSE NULL
+  END AS sessie_conversie_bron,
   session_campaign,
   merk_session,
   kanaal
@@ -98,7 +116,7 @@ FROM
 WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id)
-
+)
 `
 let refs = getRefs()
 module.exports = {query, refs}
