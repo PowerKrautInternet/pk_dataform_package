@@ -1,7 +1,7 @@
 /*config*/
 let pk = require("../../sources")
 let ref = pk.ref
-query = `
+let query = `
 
 SELECT
     event_date,
@@ -31,6 +31,12 @@ SELECT
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'buy_brand') as event_buy_brand,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'trade_in_model') as event_trade_in_model,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'trade_in_brand') as event_trade_in_brand,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_id') as event_formfields_id,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_merk') as event_formfields_merk,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_model') as event_formfields_model,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_soort') as event_formfields_soort,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_titel') as event_formfields_titel,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_vestiging') as event_formfields_vestiging,
     privacy_info.analytics_storage as privacy_analytics_storage,
     privacy_info.ads_storage as privacy_ads_storage,
     privacy_info.uses_transient_token as privacy_uses_transient_token,
@@ -114,7 +120,7 @@ SELECT
     publisher.ad_source_name as publisher_ad_source_name,
     publisher.ad_unit_id as publisher_ad_unit_id
 
-FROM ${ref("GA4")}
+FROM ${ref("events_*")}
 
 `
 let refs = pk.getRefs()

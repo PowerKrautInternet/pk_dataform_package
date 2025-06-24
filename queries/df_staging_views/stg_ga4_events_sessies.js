@@ -14,38 +14,38 @@ FROM(
     * EXCEPT(session_default_channel_group),
     ${ref("lookupTable")}(
         event_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("GS_MERKEN")}))
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")}))
     ) as merk_event,
     ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("GS_MERKEN")}))) as merk_session,
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")}))) as merk_session,
     session_default_channel_group,
     CASE
-WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
-WHEN REGEXP_CONTAINS(session_campaign, 'cross-network') THEN 'Cross-network'
-WHEN (REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart') OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$')) AND REGEXP_CONTAINS(session_medium, '^(.*cp.*|ppc|paid.*)$') THEN 'Paid Shopping'
-WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex|adwords')
-AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Search'
-WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|Facebook|fb|instagram|ig|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|paid.*)$') THEN 'Paid Social'
-WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
-AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Video'
-WHEN session_medium IN ('display', 'banner', 'expandable', 'interstitial', 'cpm') THEN 'Display'
-WHEN REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart')
-OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$') THEN 'Organic Shopping'
-WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|fb|instagram|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') OR session_medium IN ('social', 'social-network', 'social-media', 'sm', 'social network', 'social media') THEN 'Organic Social'
-WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
-OR REGEXP_CONTAINS(session_medium,'^(.*video.*)$') THEN 'Organic Video'
-WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex') OR session_medium = 'organic' THEN 'Organic Search'
-WHEN REGEXP_CONTAINS(session_source,'email|e-mail|e_mail|e mail|care-mail')
-OR REGEXP_CONTAINS(session_medium,'email|e-mail|e_mail|e mail|caremail') THEN 'Email'
-WHEN session_medium = 'affiliate' THEN 'Affiliates'
-WHEN REGEXP_CONTAINS(session_source,'gaspedaal')
-OR session_medium = 'referral' THEN 'Referral'
-WHEN session_medium = 'audio' THEN 'Audio'
-WHEN session_medium = 'sms' THEN 'SMS'
-WHEN session_medium LIKE '%push' OR REGEXP_CONTAINS(session_medium,'mobile|notification') THEN 'Mobile Push Notifications'
-WHEN session_source = 'offline' THEN 'DM'
-ELSE NULL
-END AS custom_default_channel_group,
+    WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
+    WHEN REGEXP_CONTAINS(session_campaign, 'cross-network') THEN 'Cross-network'
+    WHEN (REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart') OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$')) AND REGEXP_CONTAINS(session_medium, '^(.*cp.*|ppc|paid.*)$') THEN 'Paid Shopping'
+    WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex|adwords')
+    AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Search'
+    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|Facebook|fb|instagram|ig|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|paid.*)$') THEN 'Paid Social'
+    WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
+    AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Video'
+    WHEN session_medium IN ('display', 'banner', 'expandable', 'interstitial', 'cpm') THEN 'Display'
+    WHEN REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart')
+    OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$') THEN 'Organic Shopping'
+    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|fb|instagram|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') OR session_medium IN ('social', 'social-network', 'social-media', 'sm', 'social network', 'social media') THEN 'Organic Social'
+    WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
+    OR REGEXP_CONTAINS(session_medium,'^(.*video.*)$') THEN 'Organic Video'
+    WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex') OR session_medium = 'organic' THEN 'Organic Search'
+    WHEN REGEXP_CONTAINS(session_source,'email|e-mail|e_mail|e mail|care-mail')
+    OR REGEXP_CONTAINS(session_medium,'email|e-mail|e_mail|e mail|caremail') THEN 'Email'
+    WHEN session_medium = 'affiliate' THEN 'Affiliates'
+    WHEN REGEXP_CONTAINS(session_source,'gaspedaal')
+    OR session_medium = 'referral' THEN 'Referral'
+    WHEN session_medium = 'audio' THEN 'Audio'
+    WHEN session_medium = 'sms' THEN 'SMS'
+    WHEN session_medium LIKE '%push' OR REGEXP_CONTAINS(session_medium,'mobile|notification') THEN 'Mobile Push Notifications'
+    WHEN session_source = 'offline' THEN 'DM'
+    ELSE NULL
+    END AS custom_default_channel_group,
     NULLIF(concat(session_source,' / ', session_medium), ' / ') AS session_source_medium,
 
     FROM(
@@ -123,6 +123,12 @@ unique_event_id,
     IFNULL(events.event_buy_brand, sessie_assignment.event_buy_brand) AS event_buy_brand,
     IFNULL(events.event_trade_in_model, sessie_assignment.event_trade_in_model) AS event_trade_in_model,
     IFNULL(events.event_trade_in_brand, sessie_assignment.event_trade_in_brand) AS event_trade_in_brand,
+    IFNULL(events.event_formfields_id, sessie_assignment.event_formfields_id) AS event_formfields_id,
+    IFNULL(events.event_formfields_merk, sessie_assignment.event_formfields_merk) AS event_formfields_merk,
+    IFNULL(events.event_formfields_model, sessie_assignment.event_formfields_model) AS event_formfields_model,
+    IFNULL(events.event_formfields_soort, sessie_assignment.event_formfields_soort) AS event_formfields_soort,
+    IFNULL(events.event_formfields_titel, sessie_assignment.event_formfields_titel) AS event_formfields_titel,
+    IFNULL(events.event_formfields_vestiging, sessie_assignment.event_formfields_vestiging) AS event_formfields_vestiging,
 
     FROM ${ref("ga4_events")} events
 

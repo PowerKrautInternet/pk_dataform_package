@@ -5,8 +5,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s] ?? "$.DTCMEDIA_CRM_ID"
-        if (sources[s].recency !== "false" && !sources.recency === false) {
+        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
+        if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
             if (name.endsWith("DataProducer")) {
@@ -20,15 +20,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 } else {
                     query += sources[s].freshnessDays
                 }
-                query += ", NULL, "
-
-                //if the noWeekend is set the true statement of the recency if is always 0
-                if (sources[s].noWeekend == true) {
-                    query += "0"
-                } else {
-                    query += "1"
-                }
-                query += ") AS RECENCY_CHECK, *"
+                query += ", NULL, 1) AS RECENCY_CHECK, *"
                 if (extraSelect != "") {
                     query += ", "
                 }
@@ -158,7 +150,11 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //FROM
                 query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
                 rowNr += 1
+            } else {
+                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
             }
+        } else {
+            query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Recency disabled! \n"
         }
     }
     return query

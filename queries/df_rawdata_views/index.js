@@ -1,32 +1,13 @@
 let pk = require('../../sources');
 let sources = pk.getSources();
 
-function ga4_events_query() {
-    let ga4_select_query = " ( SELECT * FROM "
-    let sourceCount = 0;
-    for (let s in sources) {
-        //for each data source
-        if (sources[s].alias === "GA4") {
-            if(sourceCount > 0){
-                ga4_select_query += " UNION ALL SELECT * FROM "
-            }
-            ga4_select_query += "`" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
-            sourceCount++;
-        }
-    }
-    ga4_select_query += ")"
-
-    let query = require('./ga4_events.js');
-    return query.replace('GA4_BRON', ga4_select_query);
-}
-
 function ga4_events(){
     let table = {
         "name": "ga4_events",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./syntec_leads').refs
+            "dependencies": require('./ga4_events').refs
         },
         "query": require('./ga4_events').query
     }
@@ -187,6 +168,20 @@ function linkedin_ad_campaign_group() {
     return table;
 }
 
+function lef_leads() {
+    let table = {
+        "name": "lef_leads",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./lef_leads').refs
+        },
+        "query": require('./lef_leads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = { 
     ga4_events,
     syntec_orders,
@@ -199,5 +194,6 @@ module.exports = {
     linkedin_ads_analytics,
     linkedin_ad_account,
     linkedin_campaign_information,
-    linkedin_ad_campaign_group
+    linkedin_ad_campaign_group,
+    lef_leads
 }
