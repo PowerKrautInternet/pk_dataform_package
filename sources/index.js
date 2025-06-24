@@ -97,7 +97,7 @@ function ref(p1, p2, ifSource) {
             let name = ref[r].name ?? ""
             if (name.startsWith("ads_")) {
                 refQuery += ref[r].alias ?? "NULL"
-                refQuery += "as alias "
+                refQuery += " as alias "
             }
             refQuery += "FROM \n"
             refQuery += ref[r].query;
