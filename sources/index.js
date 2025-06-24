@@ -93,7 +93,7 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            if (ref[r].alias && ref[r].schema === 'googleAds') {
+            if (ref[r].name.startsWith("ads_")) {
                 refQuery += ref[r].alias ?? "NULL"
                 refQuery += "as alias "
             }
