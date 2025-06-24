@@ -3,12 +3,11 @@ const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
 
 SELECT
-    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location, session_primary_channel_group,
-    session_landingpage_location,
+    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
-    session_device_category,
     session_geo_city,
-    session_source_medium ),
+    session_source_medium,
+    user_pseudo_id),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")}
     ${ifNull([
         "ga4.bron",
@@ -35,7 +34,7 @@ SELECT
     ${ifNull([
         "ga4.event_date",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.record_date"),
-        ifSource("stg_lef_laeds_agg", "lef.aangemaaktDatum"),
+        ifSource("stg_lef_leads_agg", "CAST(lef.aangemaaktDatum AS DATE)"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum")
@@ -46,15 +45,22 @@ SELECT
     ], "as campaign_id,")}
     ${ifNull(["ga4.session_google_ads_ad_group_id",     ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.ad_group_id")],      "as ad_group_id,")}
     ${ifNull(["ga4.session_google_ads_ad_group_name",   ifSource("stg_marketingkanalen_combined",           "marketing_kanalen.ad_group_name")],    " as ad_group_name,")}
-    ${ifNull(["ga4.session_landingpage_location",       ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.url")],                  " as landingpage_location,")}
+    ${ifNull(["ga4.session_landingpage_location",       
+        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url"),
+        ifSource("stg_lef_leads_agg","lef.session_landingpage_location")     
+    ], "as landingpage_location,")}
     ${ifNull(["ga4.session_term",                       ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.query")],                "as term,")}
-    ${ifNull(["ga4.session_device_category",            ifSource("stg_marketingdashboard_searchconsole",    "LOWER(searchconsole.device)")],        "as device_category,")}
+    ${ifNull(["ga4.session_device_category",            
+        ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)"),
+        ifSource("stg_lef_leads_agg","lef.session_device_category")
+    ], "as device_category,")}
     ${ifNull(["ga4.session_geo_country",                ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.country")],              "as geo_country,")}
     ${ifNull([
         "ga4.merk_event",                         
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_lef_leads_agg", "lef.merk"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.merk")
+        ifSource("stg_lef_leads_agg", "lef.gewenstMerk"),
+        ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
+        "'Overig'"
     ], "as merk,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.impressions as gsc_impressions,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
@@ -81,19 +87,6 @@ SELECT
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.workflow_status AS ac_workflow_status,")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","ac_workflow_edm"), ifSource("stg_activecampaign_ga4_sheets","ac_bron")], "AS ac_bron,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.aantal_contacts AS ac_aantal_contacts")}
-    ${ifSource("stg_lef_leads_agg", `lef.* EXCEPT(bron,
-        event_name,
-        event_page_location,
-        session_primary_channel_group,
-        session_landingpage_location,
-        session_landingpage_title,
-        session_device_category,
-        session_geo_city,
-        session_source_medium,
-        kanaal,
-        session_campaign,
-        aangemaaktDatum,
-        Merk),`)}
     
     ${ifNull(["ga4.event_name", 
         ifSource("stg_lef_leads_agg","lef.event_name"
@@ -103,21 +96,9 @@ SELECT
         ifSource("stg_lef_leads_agg","lef.event_page_location"
     )], "AS event_page_location,")}
     
-    ${ifNull(["ga4.session_primary_channel_group",
-        ifSource("stg_lef_leads_agg","lef.session_primary_channel_group")
-    ],"AS session_primary_channel_group,")}
-    
-    ${ifNull(["ga4.session_landingpage_location",
-        ifSource("stg_lef_leads_agg","lef.session_landingpage_location")
-    ], "AS session_landingpage_location,")}
-    
     ${ifNull(["ga4.session_landingpage_title",
         ifSource("stg_lef_leads_agg","lef.session_landingpage_title")
     ], "AS session_landingpage_title,")}
-    
-    ${ifNull(["ga4.session_device_category",
-        ifSource("stg_lef_leads_agg","lef.session_device_category")
-    ], "AS session_device_category,")}
     
     ${ifNull(["ga4.session_geo_city",
         ifSource("stg_lef_leads_agg","lef.session_geo_city")
@@ -126,6 +107,33 @@ SELECT
     ${ifNull(["ga4.session_source_medium",
         ifSource("stg_lef_leads_agg","lef.session_source_medium")
     ], "AS session_source_medium,")}
+
+    ${ifNull(["ga4.user_pseudo_id",
+        ifSource("stg_lef_leads_agg","lef.google_clientid")
+    ], "AS user_pseudo_id,")}
+
+    ${ifSource("stg_lef_leads_agg","lef.LEFleadID AS lef_lead_id,")}
+    ${ifSource("stg_lef_leads_agg","lef.aangemaaktDatum AS lef_aangemaakt_datum,")}
+    ${ifSource("stg_lef_leads_agg","lef.afgerondDatum AS lef_afgerond_datum,")}
+    ${ifSource("stg_lef_leads_agg","lef.lead_bron AS lef_lead_bron,")}
+    ${ifSource("stg_lef_leads_agg","lef.systeem AS lef_systeem,")}
+    ${ifSource("stg_lef_leads_agg","lef.kwalificatie AS lef_kwalificatie,")}
+    ${ifSource("stg_lef_leads_agg","lef.leadType AS lef_lead_type,")}
+    ${ifSource("stg_lef_leads_agg","lef.initiatief AS lef_initiatief,")}
+    ${ifSource("stg_lef_leads_agg","lef.soortLead AS lef_soort_lead,")}
+    ${ifSource("stg_lef_leads_agg","lef.leadOmschrijving AS lef_lead_omschrijving,")}
+    ${ifSource("stg_lef_leads_agg","lef.vestiging AS lef_vestiging,")}
+    ${ifSource("stg_lef_leads_agg","lef.medewerker AS lef_medewerker,")}
+    ${ifSource("stg_lef_leads_agg","lef.resultaat AS lef_resultaat,")}
+    ${ifSource("stg_lef_leads_agg","lef.afsluitreden AS lef_afsluitreden,")}
+    ${ifSource("stg_lef_leads_agg","lef.heeftOfferte AS lef_heeft_offerte,")}
+    ${ifSource("stg_lef_leads_agg","lef.heeftOrder AS lef_heeft_order,")}
+    ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
+    ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
