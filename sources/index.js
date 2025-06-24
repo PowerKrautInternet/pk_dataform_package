@@ -93,7 +93,7 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            let name = ref[r].name ?? null
+            let name = ref[r].name ?? ""
             if (name.startsWith("ads_")) {
                 refQuery += ref[r].alias ?? "NULL"
                 refQuery += "as alias "
