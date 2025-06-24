@@ -4,8 +4,9 @@ let query = `
 
 SELECT 
 "LEF" AS bron,
-* EXCEPT(sessie_conversie_bron, kanaal),
+* EXCEPT(sessie_conversie_bron, kanaal, lead_rank, event_timestamp),
 IFNULL(sessie_conversie_bron, kanaal) AS kanaal
+
 FROM(
   SELECT
   pk_crm_id,
@@ -79,6 +80,7 @@ FROM(
   google_clientid,
   user_pseudo_id,
   event_date,
+  event_timestamp,
   event_name,
   event_page_location,
   session_landingpage_location,
@@ -104,7 +106,8 @@ FROM(
   END AS sessie_conversie_bron,
   session_campaign,
   merk_session,
-  kanaal
+  kanaal,
+  ROW_NUMBER() OVER(PARTITION BY LEFleadID ORDER BY event_timestamp ASC) AS lead_rank
   
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
@@ -117,6 +120,7 @@ WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id)
 )
+WHERE lead_rank = 1
 `
 let refs = getRefs()
 module.exports = {query, refs}
