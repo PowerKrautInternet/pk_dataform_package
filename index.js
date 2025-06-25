@@ -9,6 +9,7 @@ class viewClass {
         this.select_block = true
         this.from_block = true
         this.viewQuery = {select: "*", from: "`anywhere`"}
+        return this
     };
     select (enable) {
         this.select_block = enable
