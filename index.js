@@ -1,5 +1,5 @@
+function table (publishFunction, endTable, config, query) {
+    publishFunction(endTable, config).query(query)
+}
 
-
-module.exports = `
-SELECT * FROM ${ctx.ref("facebookdata")}
-`
+module.exports = {table}
