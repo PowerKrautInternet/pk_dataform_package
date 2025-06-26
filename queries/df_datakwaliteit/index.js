@@ -235,7 +235,7 @@ function dk_monitor(){
 
             //KEY1 ...
                 query += "AND "
-                query += "stats.KEY1 = maxdate.KEY1 "
+                query += "IFNULL(stats.KEY1, '') = IFNULL(maxdate.KEY1, '') "
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
@@ -244,7 +244,7 @@ function dk_monitor(){
 
             query += "GROUP BY "
             query += "BRON, "
-                query += "KEY1, "
+            query += "KEY1, "
             query += "RECEIVEDON"
 
             query += "\n"
