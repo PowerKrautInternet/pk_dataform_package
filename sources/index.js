@@ -43,7 +43,7 @@ function setSources(varSource){
 }
 
 function addSuffix(schema) {
-    if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
+    if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") {
         return schema+"_"+dataform.projectConfig.schemaSuffix
     }
     return schema
