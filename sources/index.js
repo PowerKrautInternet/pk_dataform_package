@@ -44,7 +44,7 @@ function setSources(varSource){
 
 function addSuffix(schema) {
     if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
-        return schema+"_"+dataform.projectConfig.schemaSuffix+"test47"
+        return schema+"_"+dataform.projectConfig.schemaSuffix
     }
     return schema
 }
@@ -67,7 +67,7 @@ function ref(p1, p2, ifSource) {
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { r.query += "_" + dataform.projectConfig.schemaSuffix + "test70" }
+            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && dataform.projectConfig.schemaSuffix !== typeof undefined) { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
             ref.push(r)
             if(sources[s].type !== "function") {
@@ -137,7 +137,7 @@ function getRefs(){//getAndClearRef
 }
 
 function schemaSuffix(source) {
-    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix+"test140" } else {return ""}
+    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
 }
 
 function crm_id(sourceName) {
