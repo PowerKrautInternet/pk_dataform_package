@@ -67,7 +67,7 @@ function ref(p1, p2, ifSource) {
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && dataform.projectConfig.schemaSuffix !== typeof undefined) { r.query += "_" + dataform.projectConfig.schemaSuffix  }
+            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
             ref.push(r)
             if(sources[s].type !== "function") {
