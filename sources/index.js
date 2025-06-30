@@ -137,7 +137,7 @@ function getRefs(){//getAndClearRef
 }
 
 function schemaSuffix(source) {
-    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
+    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix ?? "ALSO_WRONG" } else {return ""}
 }
 
 function crm_id(sourceName) {
