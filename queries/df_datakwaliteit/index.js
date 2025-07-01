@@ -162,8 +162,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.alias ?? source.name ?? "";
-    if (name.startsWith("ads_AdGroup_") || name.startsWith("p_ads_AdGroup") || name.startsWith("p_ads_AssetGroup")) type = "googleAds"
+    let name = source.name ?? "";
+    if (name.startsWith("ads_AdGroup_") || name.startsWith("p_ads_AdGroup") || name.startsWith("p_ads_AssetGroup") || name.startsWith("p_ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_")) type = "DV360"
