@@ -190,7 +190,7 @@ function dk_monitor(){
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
             //FROM ... database . schema . name AS BRON
-            query += "\nFROM ("
+            query += "\nFROM (\n"
             if(type === "dataProducer") {
                 query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
@@ -231,7 +231,7 @@ function dk_monitor(){
             if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
             query += ".dk_maxReceivedon` as maxdate ON "
 
-            query += "stats.BRON = maxdate.BRON AND date(DATE_ADD(stats.RECEIVEDON, INTERVAL 2 HOUR)) = maxdate.MAX_RECEIVEDON "
+            query += "stats.BRON = maxdate.BRON AND date(DATE_ADD(cast(stats.RECEIVEDON as datetime), INTERVAL 2 HOUR)) = maxdate.MAX_RECEIVEDON "
 
             //KEY1 ...
                 query += "AND "
