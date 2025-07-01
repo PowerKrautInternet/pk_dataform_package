@@ -228,7 +228,7 @@ function dk_monitor(){
 
             //JOIN
             query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
-            if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
+            if(dataform.projectConfig.schemaSuffix != "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { query += "_" + dataform.projectConfig.schemaSuffix }
             query += ".dk_maxReceivedon` as maxdate ON "
 
             query += "stats.BRON = maxdate.BRON AND date(DATE_ADD(cast(stats.RECEIVEDON as datetime), INTERVAL 2 HOUR)) = maxdate.MAX_RECEIVEDON "
