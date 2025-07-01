@@ -162,7 +162,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.name ?? "";
+    let name = source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup_")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
