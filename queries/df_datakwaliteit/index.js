@@ -195,7 +195,7 @@ function dk_monitor(){
                 query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
-                query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
+                query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",event_date) as datetime) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             } else if (type === "DV360") {
