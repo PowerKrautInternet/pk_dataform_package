@@ -150,6 +150,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "'GoogleAds'";
                 } else if (type === "DV360"){
                     query += "'DV360'"
+                } else if (type === "google_search_console"){
+                    query += "Google Search Console"
                 }
                 query += " AS BRON,\n";
 
