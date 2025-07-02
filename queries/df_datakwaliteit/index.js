@@ -11,10 +11,10 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             let name = sources[s].name ?? "";
             if (name.endsWith("DataProducer")) {
                 if (rowNr > 0) {
-                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
+                    query += "\nUNION ALL\n\n"
                 }
 
-                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                query += "SELECT bron, key, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (sources[s].freshnessDays == undefined) {
                     query += 1
                 } else {
@@ -60,9 +60,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             }
             else if (name === "events_*") {
                 if (rowNr > 0) {
-                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
+                    query += "\nUNION ALL\n\n"
                 }
-                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                query += "SELECT bron, key, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (typeof sources[s].freshnessDays == "undefined") {
                     query += 1
                 } else {
@@ -102,9 +102,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             }
             else if (type !== "NONE"){
                 if (rowNr > 0) {
-                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
+                    query += "\nUNION ALL\n\n"
                 }
-                query += "SELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-";
+                query += "SELECT bron, key, max_receivedon, recency_check\nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-";
                 query += sources[s].freshnessDays ?? 1;
                 query += ", NULL, ";
 
