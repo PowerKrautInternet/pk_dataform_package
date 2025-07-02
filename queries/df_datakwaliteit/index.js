@@ -188,13 +188,13 @@ function dk_monitor(){
             query += "\nSELECT stats.BRON, "
 
             query += "stats.KEY1"
-            query += ", DATE_ADD(cast(stats.RECEIVEDON as datetime), INTERVAL 2 HOUR) as RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
+            query += ", stats.RECEIVEDON as RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
             //FROM ... database . schema . name AS BRON
             query += "\nFROM (\n"
             if(type === "dataProducer") {
-                query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
+                query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
                 query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",event_date) as datetime) AS RECEIVEDON, 'GA4' "
@@ -233,7 +233,7 @@ function dk_monitor(){
             if(dataform.projectConfig.schemaSuffix != "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { query += "_" + dataform.projectConfig.schemaSuffix }
             query += ".dk_maxReceivedon` as maxdate ON "
 
-            query += "stats.BRON = maxdate.BRON AND date(DATE_ADD(cast(stats.RECEIVEDON as datetime), INTERVAL 2 HOUR)) = maxdate.MAX_RECEIVEDON "
+            query += "stats.BRON = maxdate.BRON AND stats.RECEIVEDON = maxdate.MAX_RECEIVEDON "
 
             //KEY1 ...
                 query += "AND "
