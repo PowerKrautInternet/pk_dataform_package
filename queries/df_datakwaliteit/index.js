@@ -231,7 +231,7 @@ function dk_monitor(){
                 }
                 query += "'"
             } else if (type === "google_search_console"){
-
+                query += "site_url"
             }
             query += " AS KEY1 "
 
