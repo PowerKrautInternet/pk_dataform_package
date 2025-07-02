@@ -122,6 +122,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "_LATEST_DATE"
                 } else if (type === "DV360"){
                     query += "date"
+                } else if (type === "google_search_console"){
+                    query += "data_date"
                 }
                 query += ") AS MAX_RECEIVEDON,\n"
 
@@ -138,6 +140,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                            query += names[i]
                     }
                     query += "'"
+                } else if (type === "google_search_console"){
+                    query += "site_url"
                 }
                 query += " AS KEY1,\n"
 
@@ -169,6 +173,7 @@ function getTypeSource(source){
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_")) type = "DV360"
+    else if (name === "searchdata_url_impression") type = "google_search_console"
     return type
 }
 
@@ -202,6 +207,8 @@ function dk_monitor(){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             } else if (type === "DV360") {
                 query +=  "SELECT 'insert' AS ACTION, date as RECEIVEDON, 'DV360' "
+            } else if (type === "google_search_console"){
+                query += "SELECT 'insert' AS ACTION, data_date as receivedon, 'google_search_console' "
             }
             query += " AS BRON, \n"
             //KEY1 ...
@@ -223,6 +230,8 @@ function dk_monitor(){
                     query += names[i]
                 }
                 query += "'"
+            } else if (type === "google_search_console"){
+
             }
             query += " AS KEY1 "
 
