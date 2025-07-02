@@ -11,7 +11,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             let name = sources[s].name ?? "";
             if (name.endsWith("DataProducer")) {
                 if (rowNr > 0) {
-                    query += "\nUNION ALL\n\n"
+                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
                 }
 
                 query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
@@ -55,12 +55,12 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "BRON, "
                 query += "KEY1"
 
-                query += "\n)\n"
+                query += "\n))\n"
                 rowNr += 1
             }
             else if (name === "events_*") {
                 if (rowNr > 0) {
-                    query += "\nUNION ALL\n\n"
+                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
                 }
                 query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (typeof sources[s].freshnessDays == "undefined") {
@@ -97,11 +97,13 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "BRON, "
                 query += "KEY1"
 
-                query += "\n)\n"
+                query += "\n))\n"
                 rowNr += 1
             }
             else if (type !== "NONE"){
-                if (rowNr > 0) query += "\nUNION ALL\n";
+                if (rowNr > 0) {
+                    query += "\nUNION ALL\n\nSELECT bron, key, max_receivedon, recency_check\nFROM (\n"
+                }
                 query += "SELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-";
                 query += sources[s].freshnessDays ?? 1;
                 query += ", NULL, ";
@@ -148,7 +150,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += " AS BRON,\n";
 
                 //FROM
-                query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
+                query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n))\n"
                 rowNr += 1
             } else {
                 query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
