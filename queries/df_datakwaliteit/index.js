@@ -194,7 +194,7 @@ function dk_monitor(){
             //FROM ... database . schema . name AS BRON
             query += "\nFROM (\n"
             if(type === "dataProducer") {
-                query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour) AS RECEIVEDON, ACTION, "
+                query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
                 query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",event_date) as datetime) AS RECEIVEDON, 'GA4' "
