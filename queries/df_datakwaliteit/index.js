@@ -210,7 +210,7 @@ function dk_monitor(){
             } else if (type === "DV360") {
                 query +=  "SELECT 'insert' AS ACTION, date as RECEIVEDON, 'DV360' "
             } else if (type === "google_search_console"){
-                query += "SELECT 'insert' AS ACTION, data_date as receivedon, 'google_search_console' "
+                query += "SELECT 'insert' AS ACTION, data_date as receivedon, 'Google Search Console' "
             }
             query += " AS BRON, \n"
             //KEY1 ...
