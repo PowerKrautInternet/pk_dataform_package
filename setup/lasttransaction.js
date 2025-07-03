@@ -47,7 +47,8 @@ function lasttransaction (refVal) {
                 MAX(ACTION) AS ACTION,
                 MAX(RECEIVEDON) AS RECEIVEDON,
                 SCHEMA,
-                PRIMARYFIELDHASH
+                PRIMARYFIELDHASH,
+                ALIAS
                 FROM
                 ${ref(refVal.schema, refVal.name)} AS FIRST
                 WHERE
