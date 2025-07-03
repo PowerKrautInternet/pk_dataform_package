@@ -57,9 +57,9 @@ function ref(p1, p2, ifSource) {
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) )
+            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) )
             ||
-            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) && sources[s].schema == p1)
+            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) && sources[s].schema === p1)
         ){
             let r = {}
             r.schema = sources[s].schema
@@ -95,7 +95,7 @@ function ref(p1, p2, ifSource) {
             }
             refQuery += '\nSELECT *, '
             let name = ref[r].name ?? ""
-            if (name.startsWith("ads_")) {
+            if (name.startsWith("ads_") || name === "events_*") {
                 refQuery += ref[r].alias ?? "NULL"
                 refQuery += " as alias "
             }
