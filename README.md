@@ -54,12 +54,13 @@ const sources = [
     ...
   }
 ]
-
+let src = require("pk_dataform_package/sources")
+let declared = {}
 for (let s in sources) {
-    declare(sources[s]);
-    if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"})}
+  declare(sources[s]);
+  if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] != true){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"}); declared[sources[s].name] = true}
 };
-require("pk_dataform_package/sources").setSources(sources);
+src.setSources(sources);
 operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(sources))
 ```
 !! Let op: als deze stap word toegevoegd zullen ook automatisch alle "_lasttransation" schema's toegevoegd worden! Dit kan dus voor dubbele schema's zorgen.
