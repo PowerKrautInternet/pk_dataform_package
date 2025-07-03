@@ -49,13 +49,13 @@ function lasttransaction (refVal) {
                 SCHEMA,
                 PRIMARYFIELDHASH
                 FROM
-                \`${refVal.database + "." + refVal.schema + "." + refVal.name}\` AS FIRST
+                \`${ref(refVal.schema, refVal.name)}\` AS FIRST
                 WHERE
                 RECEIVEDON = (
                     SELECT
                     MAX(RECEIVEDON)
                     FROM
-                    \`${refVal.database + "." + refVal.schema + "." + refVal.name}\` AS second
+                    \`${ref(refVal.schema, refVal.name)}\` AS second
                     WHERE
                     first.schema = second.schema
                     AND first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH 

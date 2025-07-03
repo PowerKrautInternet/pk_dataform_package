@@ -1,5 +1,6 @@
 let lasttransaction = require("./lasttransaction");
 let pk = require("../sources");
+const {ifSource} = require("../sources");
 
 function getLookup(){
     pk.addSource({"config":{"database": dataform.projectConfig.defaultDatabase, "schema": "rawdata"}, "name": "lookupTable", "type": "function"})
@@ -84,7 +85,7 @@ function setupFunctions(sources){
     query[2] = getEmail();
     query[3] = getTelefoon();
     for(let s in sources){
-        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){
+        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && !pk.ref(name+"_lasttransaction", "", true).startsWith("NOT FOUND")){
             query.push(lasttransaction(sources[s]));
         }
     }
