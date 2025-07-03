@@ -63,7 +63,8 @@ function lasttransaction (refVal) {
                 )
                 GROUP BY
                 SCHEMA,
-                PRIMARYFIELDHASH 
+                PRIMARYFIELDHASH ,
+                ALIAS
             )
             WHERE
             action != 'delete'
