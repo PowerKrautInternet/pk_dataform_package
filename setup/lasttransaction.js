@@ -39,35 +39,29 @@ function lasttransaction (refVal) {
         CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${refVal.name}_lasttransaction\`
         OPTIONS()
         AS (
+        
             SELECT
-            *
-            FROM (
+                MAX(cd.PAYLOAD) AS PAYLOAD,
+                MAX(cd.ACTION) AS ACTION,
+                MAX(cd.RECEIVEDON) AS RECEIVEDON,
+                cd.SCHEMA,
+                cd.PRIMARYFIELDHASH,
+                cd.ALIAS
+            FROM ${ref(refVal.schema, refVal.name)} cd
+            JOIN( 
                 SELECT
-                MAX(PAYLOAD) AS PAYLOAD,
-                MAX(ACTION) AS ACTION,
-                MAX(RECEIVEDON) AS RECEIVEDON,
-                SCHEMA,
-                PRIMARYFIELDHASH,
-                ALIAS
-                FROM
-                ${ref(refVal.schema, refVal.name)} AS FIRST
-                WHERE
-                RECEIVEDON = (
-                    SELECT
-                    MAX(RECEIVEDON)
-                    FROM
-                    ${ref(refVal.schema, refVal.name)} AS second
-                    WHERE
-                    first.schema = second.schema
-                    AND first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH 
-                )
-                GROUP BY
-                SCHEMA,
-                PRIMARYFIELDHASH ,
-                ALIAS
-            )
-            WHERE
-            action != 'delete'
+                    SCHEMA,
+                    PRIMARYFIELDHASH,
+                    MAX(RECEIVEDON) AS max_receivedon
+                FROM ${ref(refVal.schema, refVal.name)}
+                GROUP BY SCHEMA, PRIMARYFIELDHASH
+            ) ld
+              ON cd.SCHEMA = ld.SCHEMA
+             AND cd.PRIMARYFIELDHASH = ld.PRIMARYFIELDHASH
+             AND cd.RECEIVEDON = ld.max_receivedon
+            WHERE cd.ACTION != 'delete'
+            GROUP BY cd.SCHEMA, cd.PRIMARYFIELDHASH, cd.ALIAS
+        
         );
         END;
         END;  
