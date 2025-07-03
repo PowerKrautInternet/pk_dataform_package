@@ -94,11 +94,8 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            let name = ref[r].name ?? ""
-                refQuery += ref[r].alias ?? "NULL"
-                refQuery += " as alias "
-            refQuery += "FROM \n"
-            refQuery += ref[r].query;
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? ref[r].alias ?? "NULL" :
+            refQuery += " as alias FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
         return refQuery
@@ -201,5 +198,16 @@ function ifSource(name, query){
     }
     return query;
 }
+
+function getTypeSource(source){
+    let type = "NONE";
+    let name = source.name ?? "";
+    if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
+    else if (name.endsWith("DataProducer")) type = "dataProducer"
+    else if (name === "events_*") type = "GA4"
+    else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_")) type = "DV360"
+    else if (name === "searchdata_url_impression") type = "google_search_console"
+    return type
+}
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource};
