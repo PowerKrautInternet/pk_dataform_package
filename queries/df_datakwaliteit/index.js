@@ -59,7 +59,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n))\n"
                 rowNr += 1
             }
-            else if (name === "events_*") {
+            else if (type === "GA4") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
