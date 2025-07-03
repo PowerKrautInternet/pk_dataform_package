@@ -84,9 +84,11 @@ function setupFunctions(sources){
     query[1] = getAdres();
     query[2] = getEmail();
     query[3] = getTelefoon();
+    let declared = {}
     for(let s in sources){
-        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && !pk.ref(sources[s].name+"_lasttransaction", "", true).startsWith("NOT FOUND")){
+        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] != true){
             query.push(lasttransaction(sources[s]));
+            declared[sources[s].name] = true;
         }
     }
     return query
