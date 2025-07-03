@@ -94,8 +94,8 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            refQuery += getTypeSource(ref[r]) !== "NONE" ? ref[r].alias ?? "NULL" :
-            refQuery += " as alias FROM \n" + ref[r].query;
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias" : ""
+            refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
         return refQuery
