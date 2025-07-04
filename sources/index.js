@@ -67,7 +67,7 @@ function ref(p1, p2, ifSource) {
             r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
-            r.account = typeof sources[s].account == "undefined" ? sources[s].account : null;
+            r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
