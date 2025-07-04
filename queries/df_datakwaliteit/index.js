@@ -2,7 +2,7 @@ let sources = require("../../sources").getSources();
 let {getTypeSource} = require("../../sources");
 
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
-    let query = '';
+    let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, key1, bron FROM(';
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
@@ -166,6 +166,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Recency disabled! \n"
         }
     }
+    query += ") GROUP BY BRON, KEY1"
     return query
 }
 
