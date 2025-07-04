@@ -46,7 +46,8 @@ function lasttransaction (refVal) {
                 MAX(cd.RECEIVEDON) AS RECEIVEDON,
                 cd.SCHEMA,
                 cd.PRIMARYFIELDHASH,
-                cd.ALIAS
+                cd.ALIAS,
+                ${getTypeSource(ref[r]) !== "NONE" ? (ref[r].account ?? "NULL") : "account"}
             FROM ${ref(refVal.schema, refVal.name)} cd
             JOIN( 
                 SELECT
