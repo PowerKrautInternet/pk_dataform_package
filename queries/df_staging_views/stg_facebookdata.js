@@ -56,6 +56,5 @@ GROUP BY
   date_start
 
 `
-if(!sources.includes("facebookDataProducer")){query = `ERROR: facebook is geen bron!`}
 let refs = pk.getRefs()
 module.exports = {query, refs}
