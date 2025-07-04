@@ -47,7 +47,7 @@ function lasttransaction (refVal) {
                 cd.SCHEMA,
                 cd.PRIMARYFIELDHASH,
                 cd.ALIAS,
-                ${(refVal.account ?? "NULL")} as account,
+                cd.account,
             FROM ${ref(refVal.schema, refVal.name)} cd
             JOIN( 
                 SELECT
