@@ -33,6 +33,7 @@ function getSources() {
     return sources;
 }
 
+//used in the declarations.js
 function setSources(varSource){
     sources = [];
     for(let s in varSource){
@@ -94,7 +95,8 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT * '
-            refQuery += getTypeSource(ref[r]) !== "NONE" ? ", " + (ref[r].alias ?? "NULL") + " as alias" : ""
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? ", " + (ref[r].alias ?? "NULL") + " as alias," : ""
+            refQuery += `${ref[r].account ?? "NULL"} as dealer,`
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
@@ -178,7 +180,7 @@ function ifNull(values, alias = ""){
             }
         }
     }
-    if(count != 0){
+    if(count !== 0){
         return ifnull + valueQuery + " " + alias;
     }
     return "";
