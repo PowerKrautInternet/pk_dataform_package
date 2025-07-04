@@ -212,7 +212,7 @@ function dk_monitor(){
                 query += sources[s].alias ?? sources[s].schema
                 query += "'"
             } else if( type === "googleAds" ){
-                query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+                query += "'" (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
                 query += sources[s].alias ?? "'"
                 let names = name.split("_")
