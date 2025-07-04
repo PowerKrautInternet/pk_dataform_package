@@ -96,7 +96,7 @@ function ref(p1, p2, ifSource) {
             }
             refQuery += '\nSELECT *, '
             refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
-            refQuery += `${ref[r].account ?? "NULL"} as dealer,`
+            refQuery += `${getTypeSource(ref[r]) !== "NONE" ? (ref[r].account ?? "NULL") : "dealer"} as dealer,`
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
