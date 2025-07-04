@@ -130,7 +130,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
                 //KEY1
                 if(type === "googleAds"){
-                    query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+                    query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
                     query += sources[s].alias ?? "'"
                     let names = name.split("_")
