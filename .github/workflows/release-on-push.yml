@@ -10,7 +10,7 @@ jobs:
       - uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: patch
-          tag_prefix: ${{GITHUB_HEAD_REF}}
+          tag_prefix: ${{github.GITHUB_HEAD_REF}}
   main-deploy:
     runs-on: ubuntu-latest
     env:
