@@ -47,6 +47,8 @@ const sources = [
     name: "stg_openRdwData",
     alias: "GA4", // Hier vul je een naam in die meerdere bronnen kan groepen. In dit voorbeeld zou je bijvoorbeeld meerdere bronnen als GA4 kunnen defineren en zo altijd gezamelijk kunnen aanroepen in een ref()
     crm_id: "982", // Hiermee kan je aangeven op welk CRM_ID gefilterd moet worden. (BETA: nog niet overal geimplementeerd)
+    key1: "$.type", // Kan je mee aangeven welke key er uit de JSON payload gepakt moet worden voor key1. Dit werkt alleen voor dataproducers.
+    account: "Autobedrijf Ede", // Kan je aangeven vanuit welk account deze bron komt, hiermee kan je dus onderscheidt maken tussen meerdere duplicate bronnen die je hebt gelinkt via de alias optie.
   },
   {
     schema: ...
