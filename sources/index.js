@@ -33,11 +33,13 @@ function getSources() {
     return sources;
 }
 
+//used in the declarations.js
 function setSources(varSource){
     sources = [];
     for(let s in varSource){
         let v = varSource[s];
         v["noSuffix"] = true;
+        v["declaredSource"] = true;
         sources.push(v);
     }
 }
@@ -66,6 +68,9 @@ function ref(p1, p2, ifSource) {
             r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
+            r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
+            r.noSuffix = sources[s].noSuffix ?? null;
+            r.declaredSource = sources[s].declaredSource ?? false;
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
@@ -93,8 +98,9 @@ function ref(p1, p2, ifSource) {
             } else {
                 refQuery += "("
             }
-            refQuery += '\nSELECT * '
-            refQuery += getTypeSource(ref[r]) !== "NONE" ? ", " + (ref[r].alias ?? "NULL") + " as alias" : ""
+            refQuery += '\nSELECT *, '
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
+            refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "NULL") : "account"} as account,`
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
@@ -178,7 +184,7 @@ function ifNull(values, alias = ""){
             }
         }
     }
-    if(count != 0){
+    if(count !== 0){
         return ifnull + valueQuery + " " + alias;
     }
     return "";
