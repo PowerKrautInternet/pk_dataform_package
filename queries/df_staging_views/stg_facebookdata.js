@@ -5,7 +5,7 @@ let sources = pk.getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT
-  'Facebook' as bron,
+  'META' as bron,
   pk_crm_id,
   account_id,
   ad_id,
