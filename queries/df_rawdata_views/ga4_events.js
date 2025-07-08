@@ -4,6 +4,7 @@ let ref = pk.ref
 let query = `
 
 SELECT
+    account,
     event_date,
     CONCAT(IFNULL(user_pseudo_id, ""), "_", CAST(event_timestamp AS STRING), "_", event_name) AS unique_event_id,
     event_timestamp,
