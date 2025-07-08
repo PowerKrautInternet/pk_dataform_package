@@ -55,7 +55,7 @@ SELECT
       ${ifSource('gs_ga4_standaard_events','standaard_event.event_name as event_name_standaard,')}
       ${ifSource('gs_ga4_standaard_events','IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,')}
       ${ifSource('gs_conversie_mapping',"gs_mapping.conversie_mapping,")}
-      ${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
+      --${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
       ${ifSource('gs_conversie_mapping','gs_mapping.softhard as conversie_soft_hard, ')}
       ${ifSource('stg_pivot_targets','targets.soort_conversie as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.merk as target_merk,')}
