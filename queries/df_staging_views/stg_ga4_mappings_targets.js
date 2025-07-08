@@ -13,8 +13,9 @@ SELECT
         ${ifSource('gs_conversie_mapping', 'conversie_mapping, ')}
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
         ${ifSource('stg_pivot_targets','target_kanaal,')} 
+        ${ifSource('stg_pivot_targets','target_merk,')}
         ${ifSource('stg_pivot_targets','target_record_datum,')}
-         kanaal, event_date),
+         kanaal, event_date, merk_event),
     IF(event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, unique_event_id, NULL) as privacy_conversion_id, 
     ${ifNull([
@@ -26,6 +27,10 @@ SELECT
         "CAST(kanaal as string)",
         ifSource("stg_pivot_targets", "cast(target_kanaal as string)"),    
     ])} as kanaal,
+    ${ifNull([
+        "CAST(merk_event as string)",
+        ifSource("stg_pivot_targets", "cast(target_merk as string)"),    
+    ])} as merk_event,
     ${ifNull([
         "event_date",
         ifSource("stg_pivot_targets", "target_record_datum"),
