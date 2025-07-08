@@ -61,7 +61,7 @@ SELECT
       ${ifSource('stg_pivot_targets','targets.merk as target_merk,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
-      ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}
+      ${ifSource('stg_pivot_targets', 'targets.day_target AS conversie_target,')}
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
