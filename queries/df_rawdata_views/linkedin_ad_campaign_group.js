@@ -4,6 +4,7 @@ let ref = pk.ref
 let query = `
 
 SELECT
+    account,
     JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
     JSON_VALUE(PAYLOAD, '$.type') AS type,
     JSON_VALUE(PAYLOAD, '$.id') AS id,
