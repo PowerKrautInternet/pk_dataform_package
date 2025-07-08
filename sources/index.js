@@ -98,7 +98,7 @@ function ref(p1, p2, ifSource) {
             } else {
                 refQuery += "("
             }
-            refQuery += '\nSELECT *, '
+            refQuery += '\nSELECT * except(account), '
             refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
             refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "NULL") : "account"} as account,`
             refQuery += " FROM \n" + ref[r].query;
