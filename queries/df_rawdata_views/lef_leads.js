@@ -13,6 +13,7 @@ IFNULL(IFNULL(telefoon_1, telefoon_2), telefoon_3) as telefoon
 
 FROM(
 SELECT
+    account,
     JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
     JSON_VALUE(PAYLOAD, '$.type') AS type,
     JSON_VALUE(PAYLOAD, '$.LEFleadID') AS LEFleadID,
