@@ -6,6 +6,7 @@ let query = `
 
 WITH sequences AS(
   SELECT
+    account,
     json_value(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
     json_value(PAYLOAD, '$.type') AS type,
     json_value(PAYLOAD, '$.account_id') AS account_id,
