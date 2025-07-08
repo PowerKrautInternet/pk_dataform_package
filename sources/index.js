@@ -15,9 +15,9 @@ let refs = []
 function addSource(varsource) {
     //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
     if (varsource.type !== "function") {
-        varsource.noSuffix = false
+        varsource.noSuffix = varsource.noSuffix ?? false
     } else {
-        varsource.noSuffix = true
+        varsource.noSuffix = varsource.noSuffix ?? true
     }
     let source = {
         "name": varsource.name,
@@ -33,17 +33,19 @@ function getSources() {
     return sources;
 }
 
+//used in the declarations.js
 function setSources(varSource){
     sources = [];
     for(let s in varSource){
         let v = varSource[s];
         v["noSuffix"] = true;
+        v["declaredSource"] = true;
         sources.push(v);
     }
 }
 
 function addSuffix(schema) {
-    if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") {
+    if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") {
         return schema+"_"+dataform.projectConfig.schemaSuffix
     }
     return schema
@@ -57,16 +59,20 @@ function ref(p1, p2, ifSource) {
     let NrFound = 0;
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-            (p2 == "" && (sources[s].alias == p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) )
+            (p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) )
             ||
-            (p2 != "" && (sources[s].alias == p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') ) ) ) && sources[s].schema == p1)
+            (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1)
         ){
             let r = {}
             r.schema = sources[s].schema
             r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
+            r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
+            r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
+            r.noSuffix = sources[s].noSuffix ?? null;
+            r.declaredSource = sources[s].declaredSource ?? false;
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
-            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { r.query += "_" + dataform.projectConfig.schemaSuffix }
+            if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
             ref.push(r)
             if(sources[s].type !== "function") {
@@ -93,12 +99,9 @@ function ref(p1, p2, ifSource) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            if (ref[r].name.startsWith("ads_")) {
-                refQuery += ref[r].alias ?? "NULL"
-                refQuery += "as alias "
-            }
-            refQuery += "FROM \n"
-            refQuery += ref[r].query;
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
+            refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "NULL") : "account"} as account,`
+            refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
         return refQuery
@@ -135,7 +138,7 @@ function getRefs(){//getAndClearRef
 }
 
 function schemaSuffix(source) {
-    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
+    if(source.schema !== "rawdata" && source.schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { return "_" + dataform.projectConfig.schemaSuffix } else {return ""}
 }
 
 function crm_id(sourceName) {
@@ -181,7 +184,7 @@ function ifNull(values, alias = ""){
             }
         }
     }
-    if(count != 0){
+    if(count !== 0){
         return ifnull + valueQuery + " " + alias;
     }
     return "";
@@ -201,5 +204,16 @@ function ifSource(name, query){
     }
     return query;
 }
+
+function getTypeSource(source){
+    let type = "NONE";
+    let name = source.name ?? "";
+    if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
+    else if (name.endsWith("DataProducer")) type = "dataProducer"
+    else if (name === "events_*" || name === "events") type = "GA4"
+    else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_")) type = "DV360"
+    else if (name === "searchdata_url_impression") type = "google_search_console"
+    return type
+}
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource};

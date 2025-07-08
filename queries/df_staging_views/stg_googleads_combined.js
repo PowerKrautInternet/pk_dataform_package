@@ -4,7 +4,7 @@ let query = `
     
 SELECT 
     IFNULL(adgroup_stats.bron, perf_max_stats.bron) as bron,
-    IFNULL(adgroup_stats.account_id, perf_max_stats.customer_id) as account_id,
+    IFNULL(cast(adgroup_stats.account_id as STRING), cast(perf_max_stats.customer_id as string)) as account_id,
     IFNULL(adgroup_stats.account_name, perf_max_stats.account_name) as account_name,
     IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) as campaign_id,
     IFNULL(adgroup_stats.campaign_name, perf_max_stats.campaign_name) as campaign_name,

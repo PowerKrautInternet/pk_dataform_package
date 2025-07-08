@@ -47,6 +47,8 @@ const sources = [
     name: "stg_openRdwData",
     alias: "GA4", // Hier vul je een naam in die meerdere bronnen kan groepen. In dit voorbeeld zou je bijvoorbeeld meerdere bronnen als GA4 kunnen defineren en zo altijd gezamelijk kunnen aanroepen in een ref()
     crm_id: "982", // Hiermee kan je aangeven op welk CRM_ID gefilterd moet worden. (BETA: nog niet overal geimplementeerd)
+    key1: "$.type", // Kan je mee aangeven welke key er uit de JSON payload gepakt moet worden voor key1. Dit werkt alleen voor dataproducers.
+    account: "Autobedrijf Ede", // Kan je aangeven vanuit welk account deze bron komt, hiermee kan je dus onderscheidt maken tussen meerdere duplicate bronnen die je hebt gelinkt via de alias optie.
   },
   {
     schema: ...
@@ -54,12 +56,13 @@ const sources = [
     ...
   }
 ]
-
+let src = require("pk_dataform_package/sources")
+let declared = {}
 for (let s in sources) {
-    declare(sources[s]);
-    if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer")){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"})}
+  declare(sources[s]);
+  if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] != true){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"}); declared[sources[s].name] = true}
 };
-require("pk_dataform_package/sources").setSources(sources);
+src.setSources(sources);
 operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(sources))
 ```
 !! Let op: als deze stap word toegevoegd zullen ook automatisch alle "_lasttransation" schema's toegevoegd worden! Dit kan dus voor dubbele schema's zorgen.

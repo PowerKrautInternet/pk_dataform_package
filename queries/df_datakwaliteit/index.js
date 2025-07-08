@@ -1,7 +1,8 @@
 let sources = require("../../sources").getSources();
+let {getTypeSource} = require("../../sources");
 
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
-    let query = '';
+    let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, key1, bron FROM(';
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
@@ -14,7 +15,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (sources[s].freshnessDays == undefined) {
                     query += 1
                 } else {
@@ -55,14 +56,14 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "BRON, "
                 query += "KEY1"
 
-                query += "\n)\n"
+                query += "\n))\n"
                 rowNr += 1
             }
-            else if (name === "events_*") {
+            else if (type === "GA4") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += "SELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (typeof sources[s].freshnessDays == "undefined") {
                     query += 1
                 } else {
@@ -97,12 +98,14 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "BRON, "
                 query += "KEY1"
 
-                query += "\n)\n"
+                query += "\n))\n"
                 rowNr += 1
             }
             else if (type !== "NONE"){
-                if (rowNr > 0) query += "\nUNION ALL\n";
-                query += "SELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-";
+                if (rowNr > 0) {
+                    query += "\nUNION ALL\n\n"
+                }
+                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 query += sources[s].freshnessDays ?? 1;
                 query += ", NULL, ";
 
@@ -120,12 +123,14 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "_LATEST_DATE"
                 } else if (type === "DV360"){
                     query += "date"
+                } else if (type === "google_search_console"){
+                    query += "data_date"
                 }
                 query += ") AS MAX_RECEIVEDON,\n"
 
                 //KEY1
                 if(type === "googleAds"){
-                    query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+                    query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
                     query += sources[s].alias ?? "'"
                     let names = name.split("_")
@@ -136,6 +141,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                            query += names[i]
                     }
                     query += "'"
+                } else if (type === "google_search_console"){
+                    query += "site_url"
                 }
                 query += " AS KEY1,\n"
 
@@ -144,11 +151,13 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "'GoogleAds'";
                 } else if (type === "DV360"){
                     query += "'DV360'"
+                } else if (type === "google_search_console"){
+                    query += "'Google Search Console'"
                 }
                 query += " AS BRON,\n";
 
                 //FROM
-                query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n)\n"
+                query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n))\n"
                 rowNr += 1
             } else {
                 query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
@@ -157,17 +166,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Recency disabled! \n"
         }
     }
+    query += ") GROUP BY BRON, KEY1"
     return query
-}
-
-function getTypeSource(source){
-    let type = "NONE";
-    let name = source.name ?? "";
-    if (name.startsWith("ads_AdGroup_")) type = "googleAds"
-    else if (name.endsWith("DataProducer")) type = "dataProducer"
-    else if (name === "events_*") type = "GA4"
-    else if (name.startsWith("Dagelijkse_BQ_export_-_")) type = "DV360"
-    return type
 }
 
 function dk_monitor(){
@@ -186,20 +186,22 @@ function dk_monitor(){
             query += "\nSELECT stats.BRON, "
 
             query += "stats.KEY1"
-            query += ", stats.RECEIVEDON, MAX(maxdate.MAX_RECEIVEDON) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
+            query += ", date(stats.RECEIVEDON) as RECEIVEDON, date(MAX(maxdate.MAX_RECEIVEDON)) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
             //FROM ... database . schema . name AS BRON
-            query += "\nFROM ("
+            query += "\nFROM (\n"
             if(type === "dataProducer") {
-                query += "SELECT PAYLOAD, DATE(RECEIVEDON) AS RECEIVEDON, ACTION, "
+                query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
-                query += "SELECT 'insert' AS ACTION, PARSE_DATE(\"%Y%m%d\",event_date) AS RECEIVEDON, 'GA4' "
+                query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",event_date) as datetime) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             } else if (type === "DV360") {
                 query +=  "SELECT 'insert' AS ACTION, date as RECEIVEDON, 'DV360' "
+            } else if (type === "google_search_console"){
+                query += "SELECT 'insert' AS ACTION, data_date as receivedon, 'Google Search Console' "
             }
             query += " AS BRON, \n"
             //KEY1 ...
@@ -210,7 +212,7 @@ function dk_monitor(){
                 query += sources[s].alias ?? sources[s].schema
                 query += "'"
             } else if( type === "googleAds" ){
-                query += sources[s].alias ?? "'" + name.split("_")[2] + "'"
+                query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
                 query += sources[s].alias ?? "'"
                 let names = name.split("_")
@@ -221,6 +223,8 @@ function dk_monitor(){
                     query += names[i]
                 }
                 query += "'"
+            } else if (type === "google_search_console"){
+                query += "site_url"
             }
             query += " AS KEY1 "
 
@@ -228,14 +232,14 @@ function dk_monitor(){
 
             //JOIN
             query += "\nLEFT JOIN `" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
-            if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
+            if(dataform.projectConfig.schemaSuffix != "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { query += "_" + dataform.projectConfig.schemaSuffix }
             query += ".dk_maxReceivedon` as maxdate ON "
 
-            query += "stats.BRON = maxdate.BRON AND date(stats.RECEIVEDON) = maxdate.MAX_RECEIVEDON "
+            query += "stats.BRON = maxdate.BRON AND stats.RECEIVEDON = maxdate.MAX_RECEIVEDON "
 
             //KEY1 ...
                 query += "AND "
-                query += "stats.KEY1 = maxdate.KEY1 "
+                query += "IFNULL(stats.KEY1, '') = IFNULL(maxdate.KEY1, '') "
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
@@ -244,7 +248,7 @@ function dk_monitor(){
 
             query += "GROUP BY "
             query += "BRON, "
-                query += "KEY1, "
+            query += "KEY1, "
             query += "RECEIVEDON"
 
             query += "\n"
@@ -261,7 +265,7 @@ function dk_healthRapport() {
 
     query += "FROM "
     query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
-    if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
+    if(dataform.projectConfig.schemaSuffix != "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { query += "_" + dataform.projectConfig.schemaSuffix }
     query += ".dk_monitor` WHERE MAX_RECEIVEDON IS NOT NULL"
 
     return query;
@@ -272,7 +276,7 @@ function dk_errormessages() {
 
     query += "SELECT if(alerts.issues_found is null, 'all good', ERROR(FORMAT('ATTENTION: Data has potential quality issues: %t. ', stringify_alert_list))) AS stringify_alert_list FROM ( SELECT array_to_string ( array_agg ( alert IGNORE NULLS ), '; ' ) as stringify_alert_list, array_length(array_agg(alert IGNORE NULLS)) as issues_found from ( select if(recency_check = 1,CONCAT(bron, ':', key1, '(', date_diff(DATE, MAX_RECEIVEDON, DAY), ' days old)' ), NULL) as alert from "
     query += "`" + dataform.projectConfig.defaultDatabase + ".df_datakwaliteit"
-    if(dataform.projectConfig.schemaSuffix != "") { query += "_" + dataform.projectConfig.schemaSuffix }
+    if(dataform.projectConfig.schemaSuffix != "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { query += "_" + dataform.projectConfig.schemaSuffix }
     query += ".dk_healthRapport` WHERE DATE = CURRENT_DATE() "
     query += " ) as row_conditions ) as alerts"
 

@@ -5,7 +5,7 @@ let sources = pk.getSources().map((s) => s.alias ?? s.name )
 let query = `
 
 SELECT
-  'Facebook' as bron,
+  'META' as bron,
   pk_crm_id,
   account_id,
   ad_id,
@@ -56,6 +56,5 @@ GROUP BY
   date_start
 
 `
-if(!sources.includes("facebookDataProducer")){query = `ERROR: facebook is geen bron!`}
 let refs = pk.getRefs()
 module.exports = {query, refs}
