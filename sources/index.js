@@ -205,9 +205,28 @@ function ifSource(name, query){
     return query;
 }
 
+/**
+ * @brief Bepaalt het type gegevensbron op basis van de naam of alias van de bron.
+ *
+ * Deze functie inspecteert het `alias` of `name` attribuut van een bronobject en
+ * classificeert de bron in een van de bekende types of "NONE" als geen match wordt gevonden.
+ *
+ * @param {Object} source - Een object dat informatie bevat over een gegevensbron.
+ * @param {string} [source.alias] - Een optionele alias voor de bron.
+ * @param {string} [source.name] - De naam van de bron.
+ * Wanneer Alias null is, wordt de name gepakt.
+ *
+ * @returns {string} Het type van de gegevensbron. Mogelijke waarden:
+ *   - "googleAds"
+ *   - "dataProducer"
+ *   - "GA4"
+ *   - "DV360"
+ *   - "google_search_console"
+ *   - "NONE" (standaardwaarde als er geen match is)
+ */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.name ?? "";
+    let name = source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
