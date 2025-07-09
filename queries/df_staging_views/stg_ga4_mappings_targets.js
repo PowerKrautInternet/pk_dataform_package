@@ -15,6 +15,7 @@ SELECT
         ${ifSource('stg_pivot_targets','target_kanaal,')} 
         ${ifSource('stg_pivot_targets','target_merk,')}
         ${ifSource('stg_pivot_targets','target_record_datum,')}
+        ${ifSource('stg_pivot_targets','target_account,')}
          kanaal, event_date, merk_event),
     IF(event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, unique_event_id, NULL) as privacy_conversion_id, 
@@ -35,6 +36,10 @@ SELECT
         "event_date",
         ifSource("stg_pivot_targets", "target_record_datum"),
     ])} as event_date,
+    ${ifNull([
+        "account",
+        ifSource("stg_pivot_targets", "target_account"),
+    ])} as account,
     CASE
         WHEN regexp_contains(session_source,'dv360') 
         OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
@@ -62,6 +67,7 @@ SELECT
       ${ifSource('gs_conversie_mapping',"gs_mapping.conversie_mapping,")}
       --${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
       ${ifSource('gs_conversie_mapping','gs_mapping.softhard as conversie_soft_hard, ')}
+      ${ifSource('stg_pivot_targets','targets.account as target_account,')}
       ${ifSource('stg_pivot_targets','targets.soort_conversie as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.merk as target_merk,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
@@ -70,8 +76,8 @@ SELECT
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
-    ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name)")}
-    ${join("left join","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name)")}
+    ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name) AND events_sessies.account = standaard_event.account")}
+    ${join("left join","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name) AND events_sessies.account = gs_mapping.account")}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 
