@@ -87,7 +87,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //SELECT ...
                 query += "\n\tSELECT "
                 query += "\n\tDATE(MAX(CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime))) AS MAX_RECEIVEDON, '"
-                query += sources[s].alias ?? sources[s].schema
+                query += sources[s].account ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
                 //FROM ... database . schema . name
@@ -209,7 +209,7 @@ function dk_monitor(){
                     query += `JSON_VALUE(PAYLOAD, '${key1}')`
             } else if (type === "GA4") {
                 query += "'"
-                query += sources[s].alias ?? sources[s].schema
+                query += sources[s].account ?? sources[s].schema
                 query += "'"
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
