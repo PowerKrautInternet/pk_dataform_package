@@ -86,7 +86,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",CAST(event_date AS STRING)))) AS MAX_RECEIVEDON, '"
+                query += "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime) AS MAX_RECEIVEDON, '"
                 query += sources[s].alias ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
