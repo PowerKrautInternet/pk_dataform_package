@@ -5,6 +5,7 @@ let query = `
     
     SELECT 
     "LinkedIn" AS bron,
+    MAX(ads_analytics.account) AS account,
     ads_analytics.pk_crm_id,
     ads_analytics.accountId,
     TRIM(REPLACE(ads_analytics.sponsoredCampaign, "urn:li:sponsoredCampaign:", "")) as campaign_id,
@@ -44,13 +45,13 @@ let query = `
     FROM ${ref('linkedin_ads_analytics')} ads_analytics
     
     LEFT JOIN ${ref("linkedin_ad_account")} ad_account
-    ON TRIM(ads_analytics.accountId) = TRIM(ad_account.id)
+    ON TRIM(ads_analytics.accountId) = TRIM(ad_account.id) AND ads_analytics.account = ad_account.account
     
     LEFT JOIN ${ref("linkedin_campaign_information")} campaign_information
-    ON TRIM(REPLACE(ads_analytics.sponsoredCampaign, "urn:li:sponsoredCampaign:", "")) = TRIM(campaign_information.id)
+    ON TRIM(REPLACE(ads_analytics.sponsoredCampaign, "urn:li:sponsoredCampaign:", "")) = TRIM(campaign_information.id) AND ads_analytics.account = campaign_information.account
     
     LEFT JOIN ${ref("linkedin_ad_campaign_group")} ad_campaign_group
-    ON TRIM(REPLACE(ads_analytics.sponsoredCampaignGroup, "urn:li:sponsoredCampaignGroup:", "")) = TRIM(ad_campaign_group.id)
+    ON TRIM(REPLACE(ads_analytics.sponsoredCampaignGroup, "urn:li:sponsoredCampaignGroup:", "")) = TRIM(ad_campaign_group.id) AND ads_analytics.account = ad_campaign_group.account
     
     GROUP BY
     pk_crm_id,

@@ -6,6 +6,7 @@ let query = `
 
 SELECT
   'META' as bron,
+  account,
   pk_crm_id,
   account_id,
   ad_id,
@@ -48,6 +49,7 @@ FROM
     ${ref("df_rawdata_views", "facebookdata")}
 
 GROUP BY
+  account,
   pk_crm_id,
   account_id,
   ad_id,
