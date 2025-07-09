@@ -108,7 +108,7 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
-  ROW_NUMBER() OVER(PARTITION BY account, LEFleadID ORDER BY event_timestamp ASC) AS lead_rank
+  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ORDER BY event_timestamp ASC) AS lead_rank
   
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
