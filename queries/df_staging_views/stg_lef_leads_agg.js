@@ -9,7 +9,7 @@ IFNULL(sessie_conversie_bron, kanaal) AS kanaal
 
 FROM(
   SELECT
-  account,
+  lef.account,
   pk_crm_id,
   type,
   LEFleadID,
