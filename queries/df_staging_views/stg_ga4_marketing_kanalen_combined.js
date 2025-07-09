@@ -18,6 +18,14 @@ SELECT
         ifSource("stg_activecampaign_ga4_sheets", "ac.bron")
     ])} as bron,
     ${ifNull([
+        "ga4.account",
+        ifSource("stg_marketingkanalen_combined", "marketing_kanalen.account"),
+        ifSource("stg_lef_leads_agg", "lef.account"),
+        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.account"),
+        ifSource("stg_syntec_leads_orders_combined", "syntec.account"),
+        ifSource("stg_activecampaign_ga4_sheets", "ac.account")
+    ])} as account,
+    ${ifNull([
         "ga4.kanaal",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
         ifSource("stg_lef_leads_agg", "lef.kanaal"),
