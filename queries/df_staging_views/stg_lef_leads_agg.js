@@ -9,6 +9,7 @@ IFNULL(sessie_conversie_bron, kanaal) AS kanaal
 
 FROM(
   SELECT
+  account,
   pk_crm_id,
   type,
   LEFleadID,
@@ -107,7 +108,7 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
-  ROW_NUMBER() OVER(PARTITION BY LEFleadID ORDER BY event_timestamp ASC) AS lead_rank
+  ROW_NUMBER() OVER(PARTITION BY account, LEFleadID ORDER BY event_timestamp ASC) AS lead_rank
   
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
@@ -118,7 +119,7 @@ FROM
   ${ref("df_staging_tables", "stg_ga4_events_sessies")} 
 WHERE event_name = "session_start"
 ) kanalen
-ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id)
+ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
 )
 WHERE lead_rank = 1
 `
