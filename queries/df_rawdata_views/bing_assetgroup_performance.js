@@ -26,7 +26,7 @@ SELECT
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.Revenue') AS Revenue,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.Spend') AS Spend
 
-FROM `pk-datalake-stellantis.df_rawdata_views_dev.bing_dataproducer_lasttransaction`
+FROM ${ref("bingAdsDataProducer_lasttransaction")}
 WHERE JSON_EXTRACT_SCALAR(PAYLOAD, '$.type') = 'AssetGroupPerformanceReportPublisher'
     
 `
