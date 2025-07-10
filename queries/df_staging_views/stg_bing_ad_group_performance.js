@@ -33,12 +33,13 @@ let query = `
         SUM(CAST(IFNULL(adgroup.spend, pf.spend) AS FLOAT64)) AS spend,
         MAX(quality_score) AS quality_score
     
-    FROM ${ref("df_rawdata_views", "bing_ad_group_performance")}
+    FROM ${ref("df_rawdata_views", "bing_ad_group_performance")} adgroup
     
     FULL OUTER JOIN ${ref("df_rawdata_views", "bing_assetgroup_performance")} pf
     ON 1=0
     
     GROUP BY
+        account,
         pk_crm_id,
         account_id,
         campaign_id,
