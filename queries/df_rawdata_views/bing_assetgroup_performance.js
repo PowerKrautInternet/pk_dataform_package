@@ -5,6 +5,7 @@ let ref = pk.ref
 let query = `
 
 SELECT  
+  account,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.type') AS type,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.AccountId') AS AccountId,
