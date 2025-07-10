@@ -5,6 +5,7 @@ let query = `
 
     SELECT
         'Microsoft Ads' as bron,
+        IFNULL(adgroup.account, pf.account) AS account,
         IFNULL(adgroup.pk_crm_id, pf.pk_crm_id) AS pk_crm_id,
         IFNULL(account_id, AccountId) AS account_id,
         IFNULL(campaign_id, CampaignId) AS campaign_id,
@@ -36,29 +37,13 @@ let query = `
     
     FULL OUTER JOIN ${ref("df_rawdata_views", "bing_assetgroup_performance")} pf
     ON 1=0
-             LEFT JOIN
-         (SELECT
-              session_source_medium,
-              event_date,
-              SUM(conversion_event) AS conversions_total,
-              session_campaign,
-              session_content
-          FROM
-              ${ref("df_staging_views", "stg_ga4_mappings_targets")}
-          WHERE session_source_medium = "bing / cpc"
-          GROUP BY session_source_medium,
-                   event_date,
-                   session_campaign,
-                   session_content
-         )
-         ON event_date = DATE(time_period)
-             AND session_campaign = campaign_name
-             AND session_content = adgroup_name
+    
     GROUP BY
         pk_crm_id,
         account_id,
         campaign_id,
         adgroup_id,
+        device_type,
         time_period
 
 `
