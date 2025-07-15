@@ -38,6 +38,7 @@ function setSources(varSource){
     sources = [];
     for(let s in varSource){
         let v = varSource[s];
+        v["database"] = sources[s].database ?? dataform.projectConfig.defaultDatabase
         v["noSuffix"] = true;
         v["declaredSource"] = true;
         sources.push(v);
