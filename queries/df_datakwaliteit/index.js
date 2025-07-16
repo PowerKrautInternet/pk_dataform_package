@@ -4,6 +4,9 @@ let {getTypeSource} = require("../../sources");
 /* @brief Genereert een SQL CASE-statement om recency te bepalen per publisher.
  * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.*/
 function getEnabledRecencyPublishers(source) {
+    if (!source.publishers || source.publishers.length === 0) {
+        return "1";
+    }
     const whenPublisher = source.publishers
         .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : 0}`)
         .join('\n');
