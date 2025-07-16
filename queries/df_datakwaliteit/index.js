@@ -8,7 +8,7 @@ function getEnabledRecencyPublishers(source) {
         return "1";
     }
     const whenPublisher = source.publishers
-        .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : 0}`)
+        .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : "NULL"}`)
         .join('\n');
 
     return `
