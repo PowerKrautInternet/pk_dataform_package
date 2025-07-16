@@ -19,6 +19,22 @@ function getEnabledRecencyPublishers(source) {
     `
 }
 
+function getFreshnessDays(source) {
+    if (!source.publishers || source.publishers.length === 0) {
+        return source.freshnessDays ?? 1;
+    }
+    const whenPublisher = source.publishers
+        .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.freshnessDays ?? 1}`)
+        .join('\n');
+
+    return `
+        CASE KEY1
+            ${whenPublisher}
+            ELSE ${source.freshnessDays ?? 1}
+        END
+    `
+}
+
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
     let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, key1, bron FROM(';
     let rowNr = 0;
@@ -33,18 +49,13 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
-                if (sources[s].freshnessDays == undefined) {
-                    query += 1
-                } else {
-                    query += sources[s].freshnessDays
-                }
-                query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK, *`
-                if (extraSelect != "") {
-                    query += ", "
-                }
-                query += extraSelect
-                query += " \n\nFROM ( "
+                query += `SELECT bron, key1, max_receivedon, recency_check\n
+                          FROM (\n
+                            SELECT \n
+                                IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,\n
+                                *\n
+                                \n
+                            FROM ( `
 
                 //SELECT ...
                 query += "\n\tSELECT "
