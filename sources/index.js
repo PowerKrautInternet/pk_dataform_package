@@ -43,11 +43,13 @@ function setSources(varSource){
         // Zorgt ervoor dat elke publisher in de array:
         // - een geldig 'name'-veld bevat (anders wordt deze uitgefilterd)
         // - altijd een 'recency'-veld heeft; standaard op true indien niet opgegeven
+        // - altijd een 'freshnessDays'-veld heeft; als deze niet gevuld wordt door de publisher dan wordt deze o.b.v. de producer gevuld en anders standaard op 1 gezet.
         v.publishers = (v.publishers ?? [])
-            .filter(publisher => !!publisher.name) // Alleen publishers met een 'name'
+            .filter(publisher => !!publisher.name)
             .map(publisher => ({
                 name: publisher.name,
-                recency: publisher.recency ?? true
+                recency: publisher.recency ?? true,
+                freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1
             }));
 
         v["noSuffix"] = true;
