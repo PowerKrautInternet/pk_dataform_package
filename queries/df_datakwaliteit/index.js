@@ -11,7 +11,8 @@ function getEnabledRecencyPublishers(source) {
     return `
         CASE KEY1
             ${whenPublisher}
-        ELSE 1
+            ELSE 1
+        END
     `
 }
 
