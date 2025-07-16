@@ -39,6 +39,17 @@ function setSources(varSource){
     for(let s in varSource){
         let v = varSource[s];
         v["database"] = typeof varSource[s].database !== "undefined" ? varSource[s].database : dataform.projectConfig.defaultDatabase;
+
+        // Zorgt ervoor dat elke publisher in de array:
+        // - een geldig 'name'-veld bevat (anders wordt deze uitgefilterd)
+        // - altijd een 'recency'-veld heeft; standaard op true indien niet opgegeven
+        v.publishers = (v.publishers ?? [])
+            .filter(publisher => !!publisher.name) // Alleen publishers met een 'name'
+            .map(publisher => ({
+                name: publisher.name,
+                recency: publisher.recency ?? true
+            }));
+
         v["noSuffix"] = true;
         v["declaredSource"] = true;
         sources.push(v);
