@@ -4,7 +4,7 @@ on:
     types: [submitted]
 jobs:
   build:
-    if: github.event.review.state == 'approved' && github.ref == 'refs/heads/main'
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     permissions:
       contents: read
