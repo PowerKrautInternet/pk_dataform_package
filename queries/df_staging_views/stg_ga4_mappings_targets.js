@@ -44,7 +44,7 @@ SELECT
         WHEN regexp_contains(session_source,'dv360') 
         OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
         WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'Facebook'
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'META'
         WHEN regexp_contains(session_source,'linkedin')
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
         WHEN regexp_contains(session_source,'google|adwords')
