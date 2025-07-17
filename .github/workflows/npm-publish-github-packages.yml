@@ -1,9 +1,9 @@
 name: Publish package to GitHub Packages
-on:
-  release:
+ON:
+  pull_request_review:
+    types: [submitted]
     branches:
       - 'main'
-    types: [published]
 jobs:
   build:
     if: github.event.review.state == 'approved'
