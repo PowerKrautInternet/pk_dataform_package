@@ -60,13 +60,13 @@ jobs:
             | jq -r '.[].name')
 
           if echo "$LABELS" | grep -q "Major"; then
-            npm version major
+            npm version major --no-git-tag-version
             echo "Applied major version bump"
           elif echo "$LABELS" | grep -q "Minor"; then
-            npm version minor
+            npm version minor --no-git-tag-version
             echo "Applied minor version bump"
           elif echo "$LABELS" | grep -q "Patch"; then
-            npm version patch
+            npm version patch --no-git-tag-version
             echo "Applied patch version bump"
           else
             echo "❌ No valid version label (Major/Minor/Patch) found. Exiting."
@@ -81,6 +81,12 @@ jobs:
           else
             echo "No changes to commit"
           fi
+
+      - name: Create custom prefix tag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          git tag release-$VERSION
+          git push origin release-$VERSION
 
       - name: Publish to GitHub Packages
         run: npm publish --registry=https://npm.pkg.github.com/
