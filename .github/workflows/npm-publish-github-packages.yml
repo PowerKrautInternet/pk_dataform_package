@@ -4,7 +4,7 @@ on:
     types: [submitted]
 jobs:
   build:
-    if: github.event.review.state == 'approved' && github.ref == 'refs/heads/main'
+    if: github.event.review.state == 'approved'  && github.ref == 'refs/heads/main' && github.actor == 'PowerkrautStijn'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -49,4 +49,4 @@ jobs:
 
       - run: npm publish --registry=https://npm.pkg.github.com/
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
