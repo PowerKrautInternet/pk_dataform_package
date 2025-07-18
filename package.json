@@ -1,6 +1,6 @@
 {
   "name": "@PowerKrautInternet/pk_dataform_package",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Automating Marketing Automation",
   "keywords": [
     "PowerKraut"
@@ -21,6 +21,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "publishConfig": {
-	"@PowerKrautInternet:registry": "https://npm.pkg.github.com"
-	}
+    "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
+  }
 }

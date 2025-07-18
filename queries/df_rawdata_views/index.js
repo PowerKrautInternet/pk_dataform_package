@@ -98,6 +98,21 @@ function bing_ad_group_performance () {
     pk.addSource(table);
     return table;
 }
+
+function bing_assetgroup_performance () {
+    let table = {
+        "name": "bing_assetgroup_performance",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./bing_assetgroup_performance').refs
+        },
+        "query": require('./bing_assetgroup_performance').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function facebookdata() {
     let table = {
         "name": "facebookdata",
@@ -190,6 +205,7 @@ module.exports = {
     activecampaign_edm,
     activecampaign_workflows,
     bing_ad_group_performance,
+    bing_assetgroup_performance,
     facebookdata,
     linkedin_ads_analytics,
     linkedin_ad_account,

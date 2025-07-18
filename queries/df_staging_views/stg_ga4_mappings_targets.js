@@ -13,8 +13,10 @@ SELECT
         ${ifSource('gs_conversie_mapping', 'conversie_mapping, ')}
         ${ifSource("stg_pivot_targets", "target_soort_conversie,")} 
         ${ifSource('stg_pivot_targets','target_kanaal,')} 
+        ${ifSource('stg_pivot_targets','target_merk,')}
         ${ifSource('stg_pivot_targets','target_record_datum,')}
-         kanaal, event_date),
+        ${ifSource('stg_pivot_targets','target_account,')}
+         kanaal, event_date, merk_event, account),
     IF(event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, 1, 0) AS conversion_event,
     IF(user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND event_name <> "" ${ifSource('gs_ga4_standaard_events', 'AND standaard_event = 0')}, unique_event_id, NULL) as privacy_conversion_id, 
     ${ifNull([
@@ -27,14 +29,22 @@ SELECT
         ifSource("stg_pivot_targets", "cast(target_kanaal as string)"),    
     ])} as kanaal,
     ${ifNull([
+        "CAST(merk_event as string)",
+        ifSource("stg_pivot_targets", "cast(target_merk as string)"),    
+    ])} as merk_event,
+    ${ifNull([
         "event_date",
         ifSource("stg_pivot_targets", "target_record_datum"),
     ])} as event_date,
+    ${ifNull([
+        "account",
+        ifSource("stg_pivot_targets", "target_account"),
+    ])} as account,
     CASE
         WHEN regexp_contains(session_source,'dv360') 
         OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
         WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'Facebook'
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'META'
         WHEN regexp_contains(session_source,'linkedin')
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
         WHEN regexp_contains(session_source,'google|adwords')
@@ -55,18 +65,19 @@ SELECT
       ${ifSource('gs_ga4_standaard_events','standaard_event.event_name as event_name_standaard,')}
       ${ifSource('gs_ga4_standaard_events','IF(standaard_event.event_name <> "", 1, 0) AS standaard_event,')}
       ${ifSource('gs_conversie_mapping',"gs_mapping.conversie_mapping,")}
-      ${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
+      --${ifSource('gs_conversie_mapping','gs_mapping.telmethode as conversie_telmethode,')}
       ${ifSource('gs_conversie_mapping','gs_mapping.softhard as conversie_soft_hard, ')}
+      ${ifSource('stg_pivot_targets','targets.account as target_account,')}
       ${ifSource('stg_pivot_targets','targets.soort_conversie as target_soort_conversie,')}
       ${ifSource('stg_pivot_targets','targets.merk as target_merk,')}
       ${ifSource('stg_pivot_targets','targets.kanaal as target_kanaal,')}
       ${ifSource('stg_pivot_targets', 'targets.record_datum as target_record_datum,')}
-      ${ifSource('stg_pivot_targets', 'CAST(targets.day_target AS INT64) AS conversie_target,')}
+      ${ifSource('stg_pivot_targets', 'targets.day_target AS conversie_target,')}
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
-    ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name)")}
-    ${join("left join","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name)")}
+    ${join("left join","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name) AND events_sessies.account = standaard_event.account")}
+    ${join("left join","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name) AND events_sessies.account = gs_mapping.account")}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 

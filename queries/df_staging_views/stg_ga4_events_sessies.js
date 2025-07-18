@@ -59,7 +59,8 @@ FROM(
 
     FROM(
         SELECT
-unique_event_id,
+    events.account,
+    unique_event_id,
     PARSE_DATE('%Y%m%d',event_date) as event_date,
     event_timestamp,
     events.event_name,
@@ -133,7 +134,9 @@ unique_event_id,
     FROM ${ref("ga4_events")} events
 
 LEFT JOIN ${ref("stg_ga4_sessie_assignment")} sessie_assignment
-ON events.user_pseudo_id = sessie_assignment.user_pseudo_id AND events.event_ga_session_id = sessie_assignment.ga_session_id)))
+ON events.user_pseudo_id = sessie_assignment.user_pseudo_id 
+AND events.event_ga_session_id = sessie_assignment.ga_session_id
+AND events.account = sessie_assignment.account)))
 
 `
 let refs = pk.getRefs()

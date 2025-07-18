@@ -4,10 +4,11 @@ let ref = pk.ref
 let query = `
 
 SELECT
+    account,
     JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
     JSON_VALUE(PAYLOAD, '$.type') AS type,
     JSON_VALUE(PAYLOAD, '$.id') AS id,
-    JSON_VALUE(PAYLOAD, '$.account') AS account,
+    JSON_VALUE(PAYLOAD, '$.account') AS account_id,
     JSON_VALUE(PAYLOAD, '$.response.runSchedule.start') AS runSchedule_start,
     JSON_VALUE(PAYLOAD, '$.response.runSchedule.end') AS runSchedule_end,
     JSON_VALUE(PAYLOAD, '$.response.test') AS test,

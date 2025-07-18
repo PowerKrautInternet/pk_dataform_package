@@ -4,6 +4,7 @@ let ref = pk.ref
 let query = `
     
 SELECT
+    account,
     user_pseudo_id,
     event_ga_session_id as ga_session_id,
     event_ga_session_number as ga_session_number,
@@ -78,6 +79,7 @@ SELECT
 
 FROM(
 SELECT 
+    account,
     event_date,
     unique_event_id,
     event_timestamp,

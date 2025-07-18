@@ -62,7 +62,7 @@ function lasttransaction (refVal) {
              AND cd.PRIMARYFIELDHASH = ld.PRIMARYFIELDHASH
              AND cd.RECEIVEDON = ld.max_receivedon
             WHERE cd.ACTION != 'delete'
-            GROUP BY cd.SCHEMA, cd.PRIMARYFIELDHASH, cd.ALIAS
+            GROUP BY cd.SCHEMA, cd.PRIMARYFIELDHASH, cd.account, cd.alias
         
         );
         END;
