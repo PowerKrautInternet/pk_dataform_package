@@ -1,27 +1,56 @@
 name: Publish package to GitHub Packages
+
 on:
   pull_request_review:
     types: [submitted]
+
 jobs:
   build:
-    if: github.event.review.state == 'approved' && github.event.pull_request.base.ref == 'main'
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     permissions:
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # nodig om versienummer goed te berekenen met git
-      - uses: actions/setup-node@v4
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
           scope: '@PowerkrautStijn'
-      - run: npm ci
 
-      - name: Set version from release label
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Get PR base branch
+        id: pr
+        run: |
+          PR_DATA=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }})
+          echo "base_ref=$(echo $PR_DATA | jq -r '.base.ref')" >> $GITHUB_OUTPUT
+
+      - name: Exit if not targeting main
+        if: steps.pr.outputs.base_ref != 'main'
+        run: |
+          echo "❌ PR is not targeting main. Skipping publish."
+          exit 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "PowerkrautStijn"
+          git config user.email "stijn@powerkraut.nl"
+
+      - name: Set version from PR labels
         id: versioning
         run: |
           LABELS=$(curl -s \
@@ -29,28 +58,31 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels \
             | jq -r '.[].name')
-            
+
           if echo "$LABELS" | grep -q "Major"; then
-          npm version major
-          echo "🔼 Applied major version bump"
+            npm version major
+            echo "Applied major version bump"
           elif echo "$LABELS" | grep -q "Minor"; then
-          npm version minor
-          echo "🔼 Applied minor version bump"
+            npm version minor
+            echo "Applied minor version bump"
           elif echo "$LABELS" | grep -q "Patch"; then
-          npm version patch
-          echo "🔼 Applied patch version bump"
+            npm version patch
+            echo "Applied patch version bump"
           else
-          echo "❌ No valid version label (major/minor/patch) found. Exiting."
-          exit 1
+            echo "❌ No valid version label (Major/Minor/Patch) found. Exiting."
+            exit 1
           fi
 
-      - name: Commit updated version
+      - name: Commit updated version (if needed)
         run: |
-          git config user.name "PowerkrautStijn"
-          git config user.email "stijn@powerkraut.nl"
-          git commit -am "chore: bump version based on release label"
-          git push origin HEAD:${{ github.ref_name }}
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -am "chore: bump version based on release label"
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No changes to commit"
+          fi
 
-      - run: npm publish --registry=https://npm.pkg.github.com/
+      - name: Publish to GitHub Packages
+        run: npm publish --registry=https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
