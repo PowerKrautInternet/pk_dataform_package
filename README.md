@@ -5,6 +5,7 @@ Current features:
 * Data monitoring
 * Freshness alerting
 * Declaration handling
+* Publisher-level recency control (nieuw)
 
 ### Deze package draait om twee principes:
 
@@ -49,10 +50,15 @@ const sources = [
     crm_id: "982", // Hiermee kan je aangeven op welk CRM_ID gefilterd moet worden. (BETA: nog niet overal geimplementeerd)
     key1: "$.type", // Kan je mee aangeven welke key er uit de JSON payload gepakt moet worden voor key1. Dit werkt alleen voor dataproducers.
     account: "Autobedrijf Ede", // Kan je aangeven vanuit welk account deze bron komt, hiermee kan je dus onderscheidt maken tussen meerdere duplicate bronnen die je hebt gelinkt via de alias optie.
+    publishers: [               //Je kunt per bron een lijst met publishers meegeven, inclusief een recency-waarde:
+      { name: "offertePublisher", recency: false },
+      { name: "anderePublisher", recency: true }
+    ],
+    recency: false // Je kan ook voor de hele bron de recency uitschakelen
   },
   {
-    schema: ...
-    name: ...
+    schema: "...",
+    name: "...",
     ...
   }
 ]

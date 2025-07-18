@@ -38,6 +38,20 @@ function setSources(varSource){
     sources = [];
     for(let s in varSource){
         let v = varSource[s];
+        v["database"] = typeof varSource[s].database !== "undefined" ? varSource[s].database : dataform.projectConfig.defaultDatabase;
+
+        // Zorgt ervoor dat elke publisher in de array:
+        // - een geldig 'name'-veld bevat (anders wordt deze uitgefilterd)
+        // - altijd een 'recency'-veld heeft; standaard op true indien niet opgegeven
+        // - altijd een 'freshnessDays'-veld heeft; als deze niet gevuld wordt door de publisher dan wordt deze o.b.v. de producer gevuld en anders standaard op 1 gezet.
+        v.publishers = (v.publishers ?? [])
+            .filter(publisher => !!publisher.name)
+            .map(publisher => ({
+                name: publisher.name,
+                recency: publisher.recency ?? true,
+                freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1
+            }));
+
         v["noSuffix"] = true;
         v["declaredSource"] = true;
         sources.push(v);
@@ -100,7 +114,7 @@ function ref(p1, p2, ifSource) {
             }
             refQuery += '\nSELECT *, '
             refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
-            refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "NULL") : "account"} as account,`
+            refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "NULL") + " as account," : ""} `
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
@@ -205,9 +219,28 @@ function ifSource(name, query){
     return query;
 }
 
+/**
+ * @brief Bepaalt het type gegevensbron op basis van de naam of alias van de bron.
+ *
+ * Deze functie inspecteert het `alias` of `name` attribuut van een bronobject en
+ * classificeert de bron in een van de bekende types of "NONE" als geen match wordt gevonden.
+ *
+ * @param {Object} source - Een object dat informatie bevat over een gegevensbron.
+ * @param {string} [source.alias] - Een optionele alias voor de bron.
+ * @param {string} [source.name] - De naam van de bron.
+ * Wanneer Alias null is, wordt de name gepakt.
+ *
+ * @returns {string} Het type van de gegevensbron. Mogelijke waarden:
+ *   - "googleAds"
+ *   - "dataProducer"
+ *   - "GA4"
+ *   - "DV360"
+ *   - "google_search_console"
+ *   - "NONE" (standaardwaarde als er geen match is)
+ */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.name ?? "";
+    let name = source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer")) type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"

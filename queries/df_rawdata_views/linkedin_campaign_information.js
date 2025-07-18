@@ -4,10 +4,11 @@ let ref = pk.ref
 let query = `
 
     SELECT
+        account,
         JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
         JSON_VALUE(PAYLOAD, '$.type') AS type,
         JSON_VALUE(PAYLOAD, '$.id') AS id,
-        JSON_VALUE(PAYLOAD, '$.account') AS account,
+        JSON_VALUE(PAYLOAD, '$.account') AS account_id,
         JSON_VALUE(PAYLOAD, '$.response.totalBudget.currencyCode') AS totalBudget_currencyCode,
         JSON_VALUE(PAYLOAD, '$.response.totalBudget.amount') AS totalBudget_amount,
         JSON_VALUE(PAYLOAD, '$.response.storyDeliveryEnabled') AS storyDeliveryEnabled,

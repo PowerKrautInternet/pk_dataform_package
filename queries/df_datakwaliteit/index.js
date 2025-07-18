@@ -1,6 +1,40 @@
 let sources = require("../../sources").getSources();
 let {getTypeSource} = require("../../sources");
 
+/* @brief Genereert een SQL CASE-statement om recency te bepalen per publisher.
+ * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.*/
+function getEnabledRecencyPublishers(source) {
+    if (!source.publishers || source.publishers.length === 0) {
+        return "1";
+    }
+    const whenPublisher = source.publishers
+        .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : "NULL"}`)
+        .join('\n');
+
+    return `
+        CASE KEY1
+            ${whenPublisher}
+            ELSE 1
+        END
+    `
+}
+
+function getFreshnessDays(source) {
+    if (!source.publishers || source.publishers.length === 0) {
+        return source.freshnessDays ?? 1;
+    }
+    const whenPublisher = source.publishers
+        .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.freshnessDays ?? 1}`)
+        .join('\n');
+
+    return `
+        CASE KEY1
+            ${whenPublisher}
+            ELSE ${source.freshnessDays ?? 1}
+        END
+    `
+}
+
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
     let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, key1, bron FROM(';
     let rowNr = 0;
@@ -15,18 +49,13 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
-                if (sources[s].freshnessDays == undefined) {
-                    query += 1
-                } else {
-                    query += sources[s].freshnessDays
-                }
-                query += ", NULL, 1) AS RECENCY_CHECK, *"
-                if (extraSelect != "") {
-                    query += ", "
-                }
-                query += extraSelect
-                query += " \n\nFROM ( "
+                query += `SELECT bron, key1, max_receivedon, recency_check\n
+                          FROM (\n
+                            SELECT \n
+                                IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,\n
+                                *\n
+                                \n
+                            FROM ( `
 
                 //SELECT ...
                 query += "\n\tSELECT "
@@ -42,7 +71,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //WHERE ... CRMID
                 if (sources[s].crm_id != undefined) {
                     query += "\nWHERE "
-                    query += "JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') IN ('"
+                    query += "JSON_VALUE(PAYLOAD, '$.PK_CRM_ID') IN ('"
                     if (Array.isArray(sources[s].crm_id)) {
                         query += sources[s].crm_id.join("','")
                     } else {
@@ -86,8 +115,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tDATE(MAX(PARSE_DATE(\"%Y%m%d\",event_date))) AS MAX_RECEIVEDON, '"
-                query += sources[s].alias ?? sources[s].schema
+                query += "\n\tDATE(MAX(CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime))) AS MAX_RECEIVEDON, '"
+                query += sources[s].account ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
                 //FROM ... database . schema . name
@@ -195,7 +224,7 @@ function dk_monitor(){
                 query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
-                query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",event_date) as datetime) AS RECEIVEDON, 'GA4' "
+                query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             } else if (type === "DV360") {
@@ -209,7 +238,7 @@ function dk_monitor(){
                     query += `JSON_VALUE(PAYLOAD, '${key1}')`
             } else if (type === "GA4") {
                 query += "'"
-                query += sources[s].alias ?? sources[s].schema
+                query += sources[s].account ?? sources[s].schema
                 query += "'"
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"

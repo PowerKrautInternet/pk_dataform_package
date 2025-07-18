@@ -5,6 +5,7 @@ let query = `
 
     SELECT
         'GSC' as bron,
+        account,
         data_date,
         url,
         query,

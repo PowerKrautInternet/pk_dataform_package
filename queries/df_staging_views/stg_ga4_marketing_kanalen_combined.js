@@ -7,8 +7,9 @@ SELECT
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
-    user_pseudo_id),
-    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk),")}
+    user_pseudo_id,
+    account),
+    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account),")}
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
@@ -17,6 +18,14 @@ SELECT
         ifSource("stg_syntec_leads_orders_combined", "syntec.bron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.bron")
     ])} as bron,
+    ${ifNull([
+        "ga4.account",
+        ifSource("stg_marketingkanalen_combined", "marketing_kanalen.account"),
+        ifSource("stg_lef_leads_agg", "lef.account"),
+        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.account"),
+        ifSource("stg_syntec_leads_orders_combined", "syntec.account"),
+        ifSource("stg_activecampaign_ga4_sheets", "ac.account")
+    ])} as account,
     ${ifNull([
         "ga4.kanaal",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),

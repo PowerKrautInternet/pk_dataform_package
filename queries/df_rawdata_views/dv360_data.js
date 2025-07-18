@@ -6,6 +6,7 @@ let query = `
 
     SELECT
         'DV360' as bron,
+        account,
         advertiser_id,
         campaign_id,
         MAX(advertiser) AS advertiser,
@@ -52,6 +53,7 @@ let query = `
     FROM (SELECT DISTINCT * FROM ${ref("DV360")})
 
     GROUP BY
+        account,
         advertiser_id,
         campaign_id,
         insertion_order_id,
