@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function loadTables(dirPath, schema, type, pk) {
+function loadTable(dirPath, schema, type, pk) {
     const exportsMap = {};
 
     fs.readdirSync(dirPath).forEach(file => {
@@ -32,4 +32,4 @@ function loadTables(dirPath, schema, type, pk) {
     return exportsMap;
 }
 
-module.exports = loadTables;
+module.exports = loadTable;
