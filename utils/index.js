@@ -1,35 +1,41 @@
-const fs = require('node:fs');
-const path = require('path');
+const pk = require('../sources');
 
-function loadTable(dirPath, schema, type, pk) {
-    const exportsMap = {};
+function exportTables(defaultType, schema, definitions) {
+    const output = {};
 
-    fs.readdirSync(dirPath).forEach(file => {
-        const fullPath = path.join(dirPath, file);
-        if (
-            fs.lstatSync(fullPath).isFile() &&
-            file.endsWith('.js') &&
-            file !== 'index.js'
-        ) {
-            const moduleName = path.basename(file, '.js');
-            exportsMap[moduleName] = function () {
-                const def = require(path.join(dirPath, file));
-                const table = {
-                    name: moduleName,
-                    config: {
-                        type: type,
-                        schema: schema,
-                        dependencies: def.refs
-                    },
-                    query: def.query
-                };
-                pk.addSource(table);
-                return table;
-            };
+    definitions.forEach(entry => {
+        let name, type, extraConfig;
+
+        if (typeof entry === 'string') {
+            name = entry;
+            type = defaultType;
+            extraConfig = {};
+        } else if (typeof entry === 'object') {
+            name = entry.name;
+            type = entry.type || defaultType;
+            extraConfig = { ...entry };
+            delete extraConfig.name;
+            delete extraConfig.type;
         }
+
+        output[name] = () => {
+            const mod = require(`./${name}`);
+            const table = {
+                name,
+                config: {
+                    type,
+                    schema,
+                    dependencies: mod.refs,
+                    ...extraConfig
+                },
+                query: mod.query
+            };
+            pk.addSource(table);
+            return table;
+        };
     });
 
-    return exportsMap;
+    return output;
 }
 
-module.exports = loadTable;
+module.exports = exportTables;

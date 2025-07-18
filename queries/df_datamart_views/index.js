@@ -1,4 +1,6 @@
-const loadTables = require('../../utils');
-const pk = require('../../sources');
+const exportTables = require('../../utils');
 
-module.exports = loadTables(__dirname, 'df_datamart_views', 'view', pk);
+module.exports.loadTables = exportTables(
+    "view", "df_datamart_views",
+    ["dm_hubspot_emailstats"]
+);
