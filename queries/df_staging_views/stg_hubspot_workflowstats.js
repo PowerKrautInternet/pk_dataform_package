@@ -6,9 +6,10 @@ SELECT
     hubspot.*,
     ${ifNull([
         ifSource("hubspot_bigquerylogging", "hubspot.hs_workflow_name"),
-        ifSource("gs_mapping_edmworkflow", "mapping.workflow_mapping"),
+        ifSource("gs_mapping_edmworkflow", "mapping.workflow_mapping")
+    ],
         "AS hs_workflow_name,"    
-    ])}
+    )}
     ${ifSource("gs_mapping_edmworkflow_campagne", `
         campagne.campaign AS hs_campaign,
         campagne.edm AS hs_edm,
