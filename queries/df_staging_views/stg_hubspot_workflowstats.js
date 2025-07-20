@@ -92,7 +92,7 @@ FROM (
             aantal.RECEIVEDON AS hs_RECEIVEDON,
         `)}
 
-    FROM ${ref("df_datamart_views", "dm_hubspot_emailsstats")} email 
+    FROM ${ref("df_datamart_views", "dm_hubspot_emailstats")} email 
         ${join("FULL OUTER JOIN", "df_rawdata_views", "hubspot_bigquerylogging", "AS flows ON 1=0")} 
         ${join("FULL OUTER JOIN", "df_rawdata_tables", "stg_hubspot_contact_count", "AS aantal ON 1=0")}
 ) hubspot
