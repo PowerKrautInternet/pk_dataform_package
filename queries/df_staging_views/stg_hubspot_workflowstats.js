@@ -3,7 +3,7 @@ const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
     
 SELECT
-    hubspot.*,
+    hubspot.* EXCEPT (hs_workflow_name),
     ${ifNull([
         ifSource("hubspot_bigquerylogging", "hubspot.hs_workflow_name"),
         ifSource("gs_mapping_edmworkflow", "mapping.workflow_mapping")
