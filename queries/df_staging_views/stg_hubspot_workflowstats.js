@@ -42,7 +42,7 @@ FROM (
         email.browser_name AS hs_browser_name,
         email.browser_type AS hs_browser_type,
         email.duration AS hs_duration,
-        email.deviceType AS hs_deviceType,
+        email.device_type AS hs_device_type,
         email.created AS hs_created,
         email.sent_by_created_dayofweek AS hs_sent_by_created_dayofweek,
         email.sent_by_created_hour AS hs_sent_by_created_hour,
