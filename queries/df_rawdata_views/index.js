@@ -197,15 +197,15 @@ function lef_leads() {
     return table;
 }
 
-function hubspot_emailcampagin () {
+function hubspot_emailcampaigns () {
     let table = {
-        "name": "hubspot_emailcampagin",
+        "name": "hubspot_emailcampaigns",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./hubspot_emailcampagin').refs
+            "dependencies": require('./hubspot_emailcampaigns').refs
         },
-        "query": require("./hubspot_emailcampagin").query
+        "query": require("./hubspot_emailcampaigns").query
     }
     pk.addSource(table);
     return table;
@@ -255,6 +255,6 @@ module.exports = {
     linkedin_ad_campaign_group,
     lef_leads,
     hubspot_bigquerylogging,
-    hubspot_emailcampagin,
+    hubspot_emailcampaigns,
     hubspot_emailevents
 }
