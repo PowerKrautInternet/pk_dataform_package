@@ -94,10 +94,10 @@ FROM (
 
     FROM ${ref("df_datamart_views", "dm_hubspot_emailstats")} email 
         ${join("FULL OUTER JOIN", "df_rawdata_views", "hubspot_bigquerylogging", "AS flows ON 1=0")} 
-        ${join("FULL OUTER JOIN", "df_rawdata_tables", "stg_hubspot_contacts_count", "AS aantal ON 1=0")}
+        ${join("FULL OUTER JOIN", "df_staging_tables", "stg_hubspot_contacts_count", "AS aantal ON 1=0")}
 ) hubspot
-${join("LEFT JOIN", "googleSheets", "gs_mapping_edmworkflow_campagne", `AS campagne ON hubspot.hs_campaign_name = campagne.edm ${ifSource("hubspot_bigquerylogging", "OR hubspot.hs_workflow_name = campagne.workflow")}`)}
-${join("LEFT JOIN", "googleSheets", "gs_mapping_edmworkflow", "AS mapping ON hubspot.hs_campaign_name = mapping.edm")}
+${join("LEFT JOIN", "googleSheets", "gs_mapping_edmworkflow_campagne", `AS campagne ON hubspot.edm_name = campagne.edm ${ifSource("hubspot_bigquerylogging", "OR hubspot.hs_workflow_name = campagne.workflow")}`)}
+${join("LEFT JOIN", "googleSheets", "gs_mapping_edmworkflow", "AS mapping ON hubspot.edm_name = mapping.edm")}
 `
 let refs = getRefs()
 module.exports = {query, refs}
