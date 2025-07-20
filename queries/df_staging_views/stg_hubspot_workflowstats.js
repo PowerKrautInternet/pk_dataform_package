@@ -26,7 +26,7 @@ FROM (
             ifSource("hubspot_bigquerylogging", "flows.source"),    
         ], "AS hs_source,")}
         'Hubspot' AS hs_bron,
-        email.workflow_name as hs_workflow_name,
+        flows.workflow_name as hs_workflow_name,
         email.id as hs_email_id,
         email.recipient AS hs_recipient,
         email.response_type AS hs_response_type,
