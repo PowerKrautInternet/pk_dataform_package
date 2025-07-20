@@ -77,7 +77,7 @@ FROM (
             flows.origin_action_execution_index AS hs_origin_action_execution_index,
             flows.extension_definition_version_id AS hs_extension_definition_version_id,
             flows.extension_definition_id AS hs_extension_definition_id,
-            flows.workflowId AS hs_workflow_id,
+            flows.workflow_id AS hs_workflow_id,
             flows.action_id AS hs_action_id,
             flows.context_enrollment_id AS hs_context_enrollment_id,
             flows.context_action_execution_index AS hs_context_action_execution_index,
