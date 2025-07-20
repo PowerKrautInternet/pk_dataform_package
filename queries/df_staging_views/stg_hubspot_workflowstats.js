@@ -4,9 +4,11 @@ let query = `
     
 SELECT
     hubspot.*,
-    ${ifSource(["hubspot_bigquerylogging", "gs_mapping_edmworkflow"], `
-        IFNULL(hubspot.hs_workflow_name, mapping.workflow_mapping) AS hs_workflow_name,
-    `)}
+    ${ifNull([
+        ifSource("hubspot_bigquerylogging", "hubspot.hs_workflow_name"),
+        ifSource("gs_mapping_edmworkflow", "mapping.workflow_mapping"),
+        "AS hs_workflow_name,"    
+    ])}
     ${ifSource("gs_mapping_edmworkflow_campagne", `
         campagne.campaign AS hs_campaign,
         campagne.edm AS hs_edm,
@@ -68,7 +70,7 @@ FROM (
         IF(email.email_gedropped = 'gedropped', 1,0) AS email_gedropped,
         ${ifSource("hubspot_bigquerylogging",`
             flows.hs_callback_id,
-            flows.callback_id AS hs_callback_id,
+            flows.callback_id AS hs_data_callback_id,
             flows.portal_id AS hs_portal_id,
             flows.user_id AS hs_user_id,
             flows.action_definition_id AS hs_action_definition_id,
@@ -87,7 +89,7 @@ FROM (
             flows.input_fields_associate_contact AS hs_input_fields_associate_contact,
             flows.source_flow AS hs_source_flow,
         `)}
-        ${ifSource("stg_hubspot_contact_count", `
+        ${ifSource("stg_hubspot_contacts_count", `
             aantal.count AS hs_count,
             aantal.RECEIVEDON AS hs_RECEIVEDON,
         `)}
