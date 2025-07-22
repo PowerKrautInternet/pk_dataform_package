@@ -3,14 +3,16 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 
-    SELECT soort_conversie,
+    SELECT account,
+        soort_conversie,
            kanaal,
            merk,
            CAST(target as FLOAT64)                       as month_target,
            date                                          as record_datum,
            CAST(target / ARRAY_LENGTH(dates) as FLOAT64) as day_target
 
-    FROM (SELECT soort_conversie,
+    FROM (SELECT account, 
+              soort_conversie,
                  kanaal,
                  merk,
                  PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
@@ -20,7 +22,8 @@ let query = `
                          LAST_DAY(PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)), MONTH)
                  )                                         as dates
 
-          FROM (SELECT soort_conversie,
+          FROM (SELECT account,
+                        soort_conversie,
                        kanaal,
                        merk,
                        jaar,

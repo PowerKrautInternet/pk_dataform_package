@@ -197,12 +197,54 @@ function lef_leads() {
     return table;
 }
 
-module.exports = { 
+function hubspot_emailcampaigns () {
+    let table = {
+        "name": "hubspot_emailcampaigns",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_emailcampaigns').refs
+        },
+        "query": require("./hubspot_emailcampaigns").query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function hubspot_bigquerylogging() {
+    let table = {
+        "name": "hubspot_bigquerylogging",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_bigquerylogging').refs
+        },
+        "query": require('./hubspot_bigquerylogging').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function hubspot_emailevents() {
+    let table = {
+        "name": "hubspot_emailevents",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_emailevents').refs
+        },
+        "query": require('./hubspot_emailevents').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = {
+    activecampaign_edm,
     ga4_events,
     syntec_orders,
     syntec_leads,
     dv360_data,
-    activecampaign_edm,
     activecampaign_workflows,
     bing_ad_group_performance,
     bing_assetgroup_performance,
@@ -211,5 +253,8 @@ module.exports = {
     linkedin_ad_account,
     linkedin_campaign_information,
     linkedin_ad_campaign_group,
-    lef_leads
+    lef_leads,
+    hubspot_bigquerylogging,
+    hubspot_emailcampaigns,
+    hubspot_emailevents
 }
