@@ -44,7 +44,7 @@ END IF;
 SELECT
 *
 FROM
-\`${ref("googleSheets", refVal.name)}\`
+${ref("googleSheets", refVal.name)}
     );
         
       END;
