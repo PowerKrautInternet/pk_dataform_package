@@ -44,7 +44,7 @@ END IF;
 SELECT
 *
 FROM
-\`${dataform.projectConfig.defaultDatabase}.googleSheets.${refVal.name}\`
+\`${refVal.database ?? dataform.projectConfig.defaultDatabase}.googleSheets.${refVal.name}\`
     );
         
       END;
