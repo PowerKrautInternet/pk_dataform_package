@@ -99,7 +99,7 @@ function setupFunctions(sources){
             query.push(lasttransaction(sources[s]));
             declared[sources[s].name] = true;
         } else if (typeof sources[s].schema != "undefined" && typeof sources[s].name != "undefined" && sources[s].schema === "googleSheets" && declared[sources[s].name] !== true) {
-            query.push(googleSheetTable(sources[s]));
+            //query.push(googleSheetTable(sources[s]));
             declared[sources[s].name] = true;
         }
     }
