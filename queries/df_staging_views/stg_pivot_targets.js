@@ -54,7 +54,7 @@ let query = `
                            ] AS ROW
 
                 FROM (SELECT *
-                      FROM ${ref("gs_conversie_targets")})) as targets
+                      FROM ${ref("df_googlesheets_tables", "gs_conversie_targets")})) as targets
                    CROSS JOIN
                UNNEST(targets.row) AS r) as date_mapping
              CROSS JOIN

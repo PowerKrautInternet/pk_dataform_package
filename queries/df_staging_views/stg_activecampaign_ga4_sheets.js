@@ -32,10 +32,11 @@ ${ref("df_staging_views", "stg_activecampaign_workflow_edm")} ac
 
 ${join( 
     "LEFT JOIN(SELECT mapping_edm, mapping_flows, mapping_thema FROM", 
+    "df_googlesheets_tables",
     "gs_activecampaign_ga4_mapping", 
     "GROUP BY mapping_edm, mapping_flows, mapping_thema) campaign ON ac.campaign_name = campaign.mapping_edm AND ac.name = campaign.mapping_flows"
 )}
-${join("FULL OUTER JOIN", "gs_activecampaign_totalcontacts", "AS contacts ON 1=0")}
+${join("FULL OUTER JOIN", "df_googlesheets_tables","gs_activecampaign_totalcontacts", "AS contacts ON 1=0")}
     
     `
 let refs = getRefs()

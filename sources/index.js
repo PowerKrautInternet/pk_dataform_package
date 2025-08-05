@@ -249,4 +249,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix};
