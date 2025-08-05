@@ -4,9 +4,11 @@ let query = `
 
 SELECT 
 "LEF" AS bron,
-* EXCEPT(sessie_conversie_bron, kanaal, lead_rank, event_timestamp),
-IFNULL(sessie_conversie_bron, kanaal) AS kanaal
-
+* EXCEPT(sessie_conversie_bron, kanaal, lead_rank, event_timestamp ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk')} ),
+IFNULL(sessie_conversie_bron, kanaal) AS kanaal,
+${ifNull(['merk_session', 'gewenstMerk', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
+${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop Nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'])'AS uitgave_categorie' )} 
+                                                                     
 FROM(
   SELECT
   lef.account,
@@ -103,6 +105,7 @@ FROM(
     WHEN regexp_contains(session_source,'bing')
     AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
     WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
+    WHEN regexp_contains(LOWER(session_source),'hs_') OR regexp_contains(LOWER(session_source),'hubspot') THEN 'Hubspot'
     ELSE NULL
   END AS sessie_conversie_bron,
   session_campaign,
@@ -120,7 +123,8 @@ FROM
 WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
-)
+) lef
+${join("LEFT JOIN", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem")}
 WHERE lead_rank = 1
 `
 let refs = getRefs()
