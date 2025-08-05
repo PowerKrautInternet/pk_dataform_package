@@ -2,7 +2,7 @@ let pk = require("../sources")
 let ref = pk.ref
 
 function googleSheetTable (refVal) {
-    if(typeof refVal.name == "undefined") {return "0"} return "1"/*
+    if(typeof refVal.name == "undefined") {return "0"} return refVal.name/*
     let config = {
         "type": "table",
         "schema": "df_googleSheets_tables"
