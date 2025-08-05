@@ -5,7 +5,7 @@ function googleSheetTable (refVal) {
     if(typeof refVal.name == "undefined") {return ""}
     let config = {
         "type": "table",
-        "schema": "df_googleSheets_tables",
+        "schema": "df_googleSheets_tables"
     }
     pk.addSource({
         "name": refVal.name,
