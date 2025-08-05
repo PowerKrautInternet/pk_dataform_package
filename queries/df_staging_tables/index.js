@@ -20,18 +20,4 @@ function stg_ga4_events_sessies () {
     return table;
 }
 
-function stg_hubspot_contacts_count () {
-    let table = {
-        "name": "stg_hubspot_contacts_count",
-        "config": {
-            "type": "incremental",
-            "schema": "df_staging_tables",
-            "dependencies": require('./stg_hubspot_contacts_count').refs,
-        },
-        "query": require('./stg_hubspot_contacts_count').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
-module.exports = { stg_ga4_events_sessies, stg_hubspot_contacts_count }
+module.exports = { stg_ga4_events_sessies }

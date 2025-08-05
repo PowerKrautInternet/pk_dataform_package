@@ -16,8 +16,7 @@ SELECT
         ifSource("stg_lef_leads_agg", "lef.bron"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.bron"),
-        ifSource("stg_activecampaign_ga4_sheets", "ac.bron"),
-        ifSource("stg_hubspot_workflowstats", "hs_bron")
+        ifSource("stg_activecampaign_ga4_sheets", "ac.bron")
     ])} as bron,
     ${ifNull([
         "ga4.account",
@@ -39,8 +38,7 @@ SELECT
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
         ifSource("stg_lef_leads_agg", "lef.session_campaign"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.onderwerp"),
-        ifSource("stg_hubspot_workflowstats", "hs_source")
+        ifSource("stg_syntec_leads_orders_combined", "syntec.onderwerp")
     ])} as campaign_name,
     ${ifNull([
         "ga4.event_date",
@@ -48,8 +46,7 @@ SELECT
         ifSource("stg_lef_leads_agg", "CAST(lef.aangemaaktDatum AS DATE)"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
-        ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
-        ifSource("stg_hubspot_workflowstats", "hs_date")    
+        ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum")
     ])} as record_date,
     ${ifNull([
         "ga4.session_campaign_id",
@@ -78,7 +75,7 @@ SELECT
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.sum_position as gsc_sum_position,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.average_position as gsc_average_position,")}
-    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account),")}
+    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk),")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","mapping_thema"), ifSource(["stg_activecampaign_ga4_sheets", "gs_activecampaign_ga4_mapping"], "flow_thema")], "AS ac_flow_thema,")} 
     ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.ac_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_name")], "AS ac_name,")} 
     ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.campaign_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_campaign")],"AS ac_campaign,")} 
@@ -146,7 +143,6 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
-    ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_campaign, hs_bron),")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
@@ -155,7 +151,6 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingdashboard_searchcons
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
-${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}
 
 `
 let refs = getRefs()

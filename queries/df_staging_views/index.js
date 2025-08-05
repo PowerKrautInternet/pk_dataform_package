@@ -238,34 +238,6 @@ function stg_googleads_perfmax_combined() {
     return table;
 }
 
-function stg_hubspot_emailevents_campaigns() {
-    let table = {
-        "name": "stg_hubspot_emailevents_campaigns",
-        "config": {
-            "type": "view",
-            "schema": "df_staging_views",
-            "dependencies": require('./stg_hubspot_emailevents_campaigns').refs
-        },
-        "query": require('./stg_hubspot_emailevents_campaigns').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
-function stg_hubspot_workflowstats() {
-    let table = {
-        "name": "stg_hubspot_workflowstats",
-        "config": {
-            "type": "view",
-            "schema": "df_staging_views",
-            "dependencies": require('./stg_hubspot_workflowstats').refs
-        },
-        "query": require('./stg_hubspot_workflowstats').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -283,7 +255,5 @@ module.exports = {
     stg_activecampaign_workflow_edm,
     stg_lef_leads_agg,
     stg_googleads_combined,
-    stg_googleads_perfmax_combined,
-    stg_hubspot_emailevents_campaigns,
-    stg_hubspot_workflowstats
+    stg_googleads_perfmax_combined
 }
