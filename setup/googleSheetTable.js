@@ -3,6 +3,7 @@ let ref = pk.ref
 
 function googleSheetTable (refVal) {
     if(typeof refVal.name == "undefined") {return "//ERROR: googleSheetTable.js"}
+    let name = refVal.alias ?? refVal.name
     let config = {
         "type": "table",
         "schema": "df_googlesheets_tables"
@@ -25,16 +26,16 @@ END;
       DECLARE dataform_table_type DEFAULT (
   SELECT ANY_VALUE(table_type)
   FROM \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
-  WHERE table_name = '${refVal.name}'
+  WHERE table_name = '${name}'
 );
           IF dataform_table_type IS NOT NULL THEN
-      IF dataform_table_type = 'VIEW' THEN DROP VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${refVal.name}\`;
-ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${refVal.name}\`;
+      IF dataform_table_type = 'VIEW' THEN DROP VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${name}\`;
+ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${name}\`;
 END IF;
     END IF;
       BEGIN
         
-            CREATE OR REPLACE TABLE \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${refVal.name}\`
+            CREATE OR REPLACE TABLE \`${dataform.projectConfig.defaultDatabase}.df_googlesheets_tables${pk.schemaSuffix(config)}.${name}\`
     
     
     OPTIONS()
