@@ -7,6 +7,7 @@ let query = `
 SELECT 
     IFNULL(leads.bron, orders.bron) as bron,
     IFNULL(CAST(leads.aangelegd AS DATE), orders.date_delivery) as record_date,
+    IFNULL(leads.account,orders.account) as account,
     lead_id as syntec_lead_id,
     kanaal,
     kanaal_groep as syntec_kanaal_groep,
