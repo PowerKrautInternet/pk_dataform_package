@@ -42,9 +42,9 @@ END IF;
       
 
 SELECT
-*, ${refVal.alias ?? "NULL"} as alias, ${refVal.account ?? "NULL"} as account,
+*
 FROM
-\`${refVal.database ?? dataform.projectConfig.defaultDatabase}.googleSheets.${refVal.name}\`
+\`${ref("googleSheets", refVal.name)}\`
     );
         
       END;
