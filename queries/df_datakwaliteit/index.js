@@ -69,16 +69,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
 
                 //WHERE ... CRMID
-                if (sources[s].crm_id != undefined) {
-                    query += "\nWHERE "
-                    query += "IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) IN ('"
-                    if (Array.isArray(sources[s].crm_id)) {
-                        query += sources[s].crm_id.join("','")
-                    } else {
-                        query += sources[s].crm_id
-                    }
-                    query += "') "
-                }
+                query += whereCrmId(sources[s])
 
                 //GROUP BY ...
                 query += "\n\n\tGROUP BY "
@@ -271,9 +262,7 @@ function dk_monitor(){
                 query += "IFNULL(stats.KEY1, '') = IFNULL(maxdate.KEY1, '') "
 
             //WHERE ... CRMID
-            if(sources[s].crm_id != undefined) {
-                query += "\nWHERE IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) = '" + sources[s].crm_id + "' "
-            }
+            query += whereCrmId(sources[s])
 
             query += "GROUP BY "
             query += "BRON, "
@@ -310,6 +299,21 @@ function dk_errormessages() {
     query += " ) as row_conditions ) as alerts"
 
     return query;
+}
+
+function whereCrmId(source){
+    let query = ''
+    if (source.crm_id !== undefined) {
+        query += "\nWHERE "
+        query += "IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) IN ('"
+        if (Array.isArray(source.crm_id)) {
+            query += source.crm_id.join("','")
+        } else {
+            query += source.crm_id
+        }
+        query += "') "
+    }
+    return query
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
