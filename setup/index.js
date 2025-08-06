@@ -1,4 +1,5 @@
 let lasttransaction = require("./lasttransaction");
+let googleSheetTable = require("./googleSheetTable");
 let pk = require("../sources");
 const {ifSource} = require("../sources");
 
@@ -94,8 +95,11 @@ function setupFunctions(sources){
     query[3] = getTelefoon();
     let declared = {}
     for(let s in sources){
-        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] != true){
+        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] !== true){
             query.push(lasttransaction(sources[s]));
+            declared[sources[s].name] = true;
+        } else if (typeof sources[s].schema != "undefined" && typeof sources[s].name != "undefined" && sources[s].schema === "googleSheets" && declared[sources[s].name] !== true) {
+            query.push(googleSheetTable(sources[s]));
             declared[sources[s].name] = true;
         }
     }
