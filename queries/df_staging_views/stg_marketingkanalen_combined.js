@@ -5,8 +5,8 @@ let query = `
 SELECT 
     *,
    ${ifNull([
-        ifSource("afhankelijke_query", "uitgave_merk"),
-        `${ref("lookupTable")}(event_merk_concat, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
+        ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
+        `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
     ], "as merk_event,")}
 FROM (
     SELECT
