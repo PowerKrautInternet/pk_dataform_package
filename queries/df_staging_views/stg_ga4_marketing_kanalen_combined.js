@@ -12,6 +12,7 @@ SELECT
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
+    ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
