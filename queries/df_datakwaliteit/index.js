@@ -40,7 +40,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
+        let key1 = sources[s].key1 ?? "$.PK_CRM_ID" //pk_crm_id meot geimplementeerd worden
         if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
@@ -71,7 +71,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //WHERE ... CRMID
                 if (sources[s].crm_id != undefined) {
                     query += "\nWHERE "
-                    query += "JSON_VALUE(PAYLOAD, '$.PK_CRM_ID') IN ('"
+                    query += "IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) IN ('"
                     if (Array.isArray(sources[s].crm_id)) {
                         query += sources[s].crm_id.join("','")
                     } else {
@@ -205,7 +205,7 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID"
+        let key1 = sources[s].key1 ?? "$.PK_CRM_ID"
 
         //for each data source
         if (type !== "NONE") {
@@ -272,7 +272,7 @@ function dk_monitor(){
 
             //WHERE ... CRMID
             if(sources[s].crm_id != undefined) {
-                query += "\nWHERE JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') = '" + sources[s].crm_id + "' "
+                query += "\nWHERE IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) = '" + sources[s].crm_id + "' "
             }
 
             query += "GROUP BY "
