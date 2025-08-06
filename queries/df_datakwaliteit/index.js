@@ -303,7 +303,7 @@ function dk_errormessages() {
 
 function whereCrmId(source){
     let query = ''
-    if (source.crm_id !== undefined) {
+    if ("crm_id" in source) {
         query += "\nWHERE "
         query += "IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) IN ('"
         if (Array.isArray(source.crm_id)) {
