@@ -1,7 +1,9 @@
 /*config*/
 const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
-SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,")}
+SELECT
+* ${orSource(["stg_handmatige_uitgaves_pivot", "gs_kostenlefmapping"], "EXCEPT(campagnegroep), IFNULL(campagnegroep, uitgave_categorie) AS campagnegroep")}
+SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,")}
 
 FROM(
 SELECT
@@ -152,7 +154,7 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_campaign, hs_bron),")}
-    ${ifNull([ifSource("handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie,"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie,"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
