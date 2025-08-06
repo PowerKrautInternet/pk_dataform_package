@@ -124,7 +124,7 @@ WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
 ) lef
-${join("LEFT JOIN", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem")}
+${join("LEFT JOIN", "df_googlesheets_tables", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem")}
 WHERE lead_rank = 1
 `
 let refs = getRefs()
