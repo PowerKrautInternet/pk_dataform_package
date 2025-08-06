@@ -1,13 +1,19 @@
 /*config*/
-let {ref, getRefs, join, ifNull, ifSource} = require("../../sources")
+let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT 
-    *,
+    * ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT merk, model')},
    ${ifNull([
+        orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk')},
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
         `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
-    ], "as merk,")}
+    ], "as merk,")},
+    ${ifNull([
+        orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model')},
+        ifSource('gs_modellen', `${ref("lookupTable")}(campaign_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`),
+        ifSource('gs_modellen', `${ref("lookupTable")}(ad_group_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`)
+    ], "as model,")},
 FROM (
     SELECT
         ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
@@ -59,6 +65,10 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
+        ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.campagnegroep'), ifSource('googleads_campaignlabel','google_ads.campagnegroep')], 'AS campagnegroep,')}
+        ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.merk'), ifSource('googleads_campaignlabel','google_ads.merk')], 'AS merk,')}
+        ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.model'), ifSource('googleads_campaignlabel','google_ads.model')], 'AS model,')}
+        
     FROM 
         ${ref("df_staging_views", "stg_googleads_combined")} google_ads
 
