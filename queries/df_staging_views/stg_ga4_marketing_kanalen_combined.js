@@ -73,7 +73,7 @@ SELECT
     ${ifNull([
         "ga4.merk_event",                         
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_lef_leads_agg", "lef.gewenstMerk"),
+        ifSource("stg_lef_leads_agg", "lef.merk_session"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
         "'Overig'"
     ], "as merk,")}
