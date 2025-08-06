@@ -1,5 +1,5 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources");
 let query = `
 SELECT
 * ${orSource(["stg_handmatige_uitgaves_pivot", "gs_kostenlefmapping"], "EXCEPT(campagnegroep), IFNULL(campagnegroep, uitgave_categorie) AS campagnegroep")}
