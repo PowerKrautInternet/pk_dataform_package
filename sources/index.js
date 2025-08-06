@@ -219,6 +219,25 @@ function ifSource(name, query){
     return query;
 }
 
+function orSource(name, query) {
+    if (Array.isArray(name)) {
+        // Check of minstens één bron bestaat
+        let anyExists = name.some(
+            s => !ref(s, "", true).startsWith("NOT FOUND")
+        );
+        if (!anyExists) {
+            return "/* NOT FOUND // " + query + "*/";
+        }
+    } else {
+        // Enkelvoudige bron
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
+            return "/* NOT FOUND // " + query + "*/";
+        }
+    }
+    return query;
+}
+
+
 /**
  * @brief Bepaalt het type gegevensbron op basis van de naam of alias van de bron.
  *
@@ -249,4 +268,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, orSource};
