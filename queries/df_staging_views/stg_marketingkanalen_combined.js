@@ -57,8 +57,8 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.reactions,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.likes,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
-        ${ifSource('handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
-        ${ifSource('handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
+        ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
+        ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
     FROM 
         ${ref("df_staging_views", "stg_googleads_combined")} google_ads
 
@@ -66,7 +66,7 @@ FROM (
     ${join("full outer join", "df_rawdata_views", "dv360_data", "AS dv360 ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_bing_ad_group_performance", "AS microsoft ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_linkedin_ads_combined", "AS linkedin ON 1=0")}
-    ${join("full outer join", "df_staging_views", "handmatige_uitgaves_pivot", "AS handmatig ON 1=0")}
+    ${join("full outer join", "df_staging_views", "stg_handmatige_uitgaves_pivot", "AS handmatig ON 1=0")}
 
 )
     `
