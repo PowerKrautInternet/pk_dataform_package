@@ -49,7 +49,7 @@ SELECT uitgave_bron,
                            ] AS ROW
 
                 FROM (SELECT *
-                      FROM ${ref("gs_handmatigekosten")})) as uitgaven_totaal
+                      FROM ${ref("googleSheets", "gs_handmatigekosten")})) as uitgaven_totaal
                    CROSS JOIN
                UNNEST(uitgaven_totaal.row) AS r) as date_mapping
              CROSS JOIN
