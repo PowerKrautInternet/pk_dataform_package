@@ -4,7 +4,7 @@ let query = `
 SELECT
 * ${orSource(["stg_handmatige_uitgaves_pivot", "gs_kostenlefmapping"], "EXCEPT(campagnegroep), IFNULL(campagnegroep, uitgave_categorie) AS campagnegroep")}
 FROM(
-SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,")}
+SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne, account), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, ga_ads.account AS account")}
 
 FROM(
 SELECT
