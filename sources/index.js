@@ -271,11 +271,11 @@ function getTypeSource(source){
     let type = "NONE";
     let name = source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
-    else if (name.endsWith("DataProducer")) type = "dataProducer"
+    else if (name.endsWith("DataProducer") || name.endsWith("DataExporter")) type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_")) type = "DV360"
     else if (name === "searchdata_url_impression") type = "google_search_console"
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, orSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource};

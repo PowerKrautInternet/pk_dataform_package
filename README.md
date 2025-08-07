@@ -66,7 +66,8 @@ let src = require("pk_dataform_package/sources")
 let declared = {}
 for (let s in sources) {
   declare(sources[s]);
-  if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] != true){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"}); declared[sources[s].name] = true}
+  if(require("pk_dataform_package/sources").getTypeSource(sources[s]) === "dataProducer" && declared[sources[s].name] != true){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"}); declared[sources[s].name] = true}
+  if(typeof sources[s].name != "undefined" && sources[s].schema == "googleSheets"){declare({schema: "df_googlesheets_tables", name: sources[s].alias ?? sources[s].name})}
 };
 src.setSources(sources);
 operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(sources))

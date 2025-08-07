@@ -2,7 +2,8 @@ let sources = require("../../sources").getSources();
 let {getTypeSource} = require("../../sources");
 
 /* @brief Genereert een SQL CASE-statement om recency te bepalen per publisher.
- * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.*/
+ * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.
+ *      if publisher.name is "NULL" then this value will be the else  */
 function getEnabledRecencyPublishers(source) {
     if (!source.publishers || source.publishers.length === 0) {
         return "1";
@@ -12,9 +13,9 @@ function getEnabledRecencyPublishers(source) {
         .join('\n');
 
     return `
-        CASE KEY1
+        CASE IFNULL(KEY1, "NULL")
             ${whenPublisher}
-            ELSE 1
+            ELSE ${source.recency ?? 1}
         END
     `
 }
@@ -40,11 +41,11 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID" //pk_crm_id meot geimplementeerd worden
+        let key1 = sources[s].key1 ?? "$.PK_CRM_ID" //pk_crm_id meot geimplementeerd worden
         if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
-            if (name.endsWith("DataProducer")) {
+            if (type === "dataProducer") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
@@ -69,16 +70,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
 
                 //WHERE ... CRMID
-                if (sources[s].crm_id != undefined) {
-                    query += "\nWHERE "
-                    query += "JSON_VALUE(PAYLOAD, '$.PK_CRM_ID') IN ('"
-                    if (Array.isArray(sources[s].crm_id)) {
-                        query += sources[s].crm_id.join("','")
-                    } else {
-                        query += sources[s].crm_id
-                    }
-                    query += "') "
-                }
+                query += whereCrmId(sources[s])
 
                 //GROUP BY ...
                 query += "\n\n\tGROUP BY "
@@ -205,7 +197,7 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.DTCMEDIA_CRM_ID"
+        let key1 = sources[s].key1 ?? "$.PK_CRM_ID"
 
         //for each data source
         if (type !== "NONE") {
@@ -271,9 +263,7 @@ function dk_monitor(){
                 query += "IFNULL(stats.KEY1, '') = IFNULL(maxdate.KEY1, '') "
 
             //WHERE ... CRMID
-            if(sources[s].crm_id != undefined) {
-                query += "\nWHERE JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') = '" + sources[s].crm_id + "' "
-            }
+            query += whereCrmId(sources[s])
 
             query += "GROUP BY "
             query += "BRON, "
@@ -310,6 +300,21 @@ function dk_errormessages() {
     query += " ) as row_conditions ) as alerts"
 
     return query;
+}
+
+function whereCrmId(source){
+    let query = ''
+    if ("crm_id" in source) {
+        query += "\nWHERE "
+        query += "IFNULL(JSON_VALUE(PAYLOAD, '$.PK_CRM_ID'), JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID')) IN ('"
+        if (Array.isArray(source.crm_id)) {
+            query += source.crm_id.join("','")
+        } else {
+            query += source.crm_id
+        }
+        query += "') "
+    }
+    return query
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
