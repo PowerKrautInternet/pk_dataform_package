@@ -35,7 +35,7 @@ FROM ${ref('df_staging_views', 'stg_google_ads_adgroup_combined')} adgroup_stats
 FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_combined')} perf_max_stats
 ON 1=0
 
-${join("LEF JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
+${join("LEFT JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
 
     
 `
