@@ -164,7 +164,7 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingdashboard_searchcons
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
-${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")})
+${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}) ga4_ads
 ${join("LEFT JOIN", "gs_campagnegroepen", "AS groep ON campaign_name LIKE CONCAT(\"%\", groep.campagnegroep, \"%\") OR lef_kwalificatie LIKE CONCAT(\"%\", groep.campagnegroep, \"%\")")})
 
 `
