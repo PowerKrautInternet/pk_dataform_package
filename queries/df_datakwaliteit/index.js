@@ -2,7 +2,8 @@ let sources = require("../../sources").getSources();
 let {getTypeSource} = require("../../sources");
 
 /* @brief Genereert een SQL CASE-statement om recency te bepalen per publisher.
- * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.*/
+ * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.
+ *      if publisher.name is "NULL" then this value will be the else  */
 function getEnabledRecencyPublishers(source) {
     if (!source.publishers || source.publishers.length === 0) {
         return "1";
@@ -11,10 +12,14 @@ function getEnabledRecencyPublishers(source) {
         .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : "NULL"}`)
         .join('\n');
 
+    // Bepaal de ELSE waarde op basis van de "NULL" named publisher
+    const nullPublisher = source.publishers.find(p => p.name === "NULL");
+    const elseValue = nullPublisher ? (nullPublisher.recency ? 1 : "NULL") : 1;
+
     return `
         CASE KEY1
             ${whenPublisher}
-            ELSE 1
+            ELSE ${elseValue}
         END
     `
 }
