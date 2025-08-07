@@ -3,6 +3,7 @@ const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources"
 let query = `
 SELECT
 * ${orSource(["stg_handmatige_uitgaves_pivot", "gs_kostenlefmapping"], "EXCEPT(campagnegroep), IFNULL(campagnegroep, uitgave_categorie) AS campagnegroep")}
+FROM(
 SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,")}
 
 FROM(
@@ -164,7 +165,7 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined"
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")})
-${join("LEFT JOIN", "gs_campagnegroepen", "AS groep ON campaign_name LIKE CONCAT(\"%\", groep.campagnegroep, \"%\") OR kwalificatie LIKE CONCAT(\"%\", groep.campagnegroep, \"%\")")}
+${join("LEFT JOIN", "gs_campagnegroepen", "AS groep ON campaign_name LIKE CONCAT(\"%\", groep.campagnegroep, \"%\") OR kwalificatie LIKE CONCAT(\"%\", groep.campagnegroep, \"%\")")})
 
 `
 let refs = getRefs()
