@@ -24,12 +24,19 @@ SELECT
     IFNULL(adgroup_stats.clicks, perf_max_stats.clicks) as clicks,
     IFNULL(adgroup_stats.conversions, perf_max_stats.conversions) as conversions,
     IFNULL(adgroup_stats.conversions_value, perf_max_stats.conversions_value) as conversions_value,
-    IFNULL(adgroup_stats.Cost, perf_max_stats.Cost) as cost
+    IFNULL(adgroup_stats.Cost, perf_max_stats.Cost) as cost,
+    ${ifSource("googleads_campaignlabel","label.merk AS merk,")}
+    ${ifSource("googleads_campaignlabel","label.model AS model,")}
+    ${ifSource("googleads_campaignlabel","label.campagnegroep AS campagnegroep,")}
+
 
 FROM ${ref('df_staging_views', 'stg_google_ads_adgroup_combined')} adgroup_stats
 
 FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_combined')} perf_max_stats
 ON 1=0
+
+${join("LEFT JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
+
     
 `
 let refs = getRefs()

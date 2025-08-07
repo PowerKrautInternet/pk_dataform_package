@@ -266,6 +266,20 @@ function stg_hubspot_workflowstats() {
     return table;
 }
 
+function stg_handmatige_uitgaves_pivot() {
+    let table = {
+        "name": "stg_handmatige_uitgaves_pivot",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_handmatige_uitgaves_pivot').refs
+        },
+        "query": require('./stg_handmatige_uitgaves_pivot').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -285,5 +299,6 @@ module.exports = {
     stg_googleads_combined,
     stg_googleads_perfmax_combined,
     stg_hubspot_emailevents_campaigns,
-    stg_hubspot_workflowstats
+    stg_hubspot_workflowstats,
+    stg_handmatige_uitgaves_pivot
 }

@@ -239,6 +239,20 @@ function hubspot_emailevents() {
     return table;
 }
 
+function googleads_campaignlabel() {
+    let table = {
+        "name": "googleads_campaignlabel",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./googleads_campaignlabel').refs
+        },
+        "query": require('./googleads_campaignlabel').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     activecampaign_edm,
     ga4_events,
@@ -256,5 +270,6 @@ module.exports = {
     lef_leads,
     hubspot_bigquerylogging,
     hubspot_emailcampaigns,
-    hubspot_emailevents
+    hubspot_emailevents,
+    googleads_campaignlabel
 }
