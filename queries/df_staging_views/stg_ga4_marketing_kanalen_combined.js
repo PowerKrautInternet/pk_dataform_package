@@ -1,7 +1,12 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources");
 let query = `
+SELECT
+* ${orSource(["stg_handmatige_uitgaves_pivot", "gs_kostenlefmapping"], "EXCEPT(campagnegroep), IFNULL(campagnegroep, uitgave_categorie) AS campagnegroep")}
+FROM(
+SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne, account), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, ga4_ads.account AS account")}
 
+FROM(
 SELECT
     ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
@@ -9,7 +14,10 @@ SELECT
     session_source_medium,
     user_pseudo_id,
     account),
-    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account),")}
+    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
+    ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
+    ${ifSource("stg_marketingkanalen_combined", "),")}
+    ${ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie AS handmatige_uitgave_categorie,")}
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
@@ -70,7 +78,7 @@ SELECT
     ${ifNull([
         "ga4.merk_event",                         
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_lef_leads_agg", "lef.gewenstMerk"),
+        ifSource("stg_lef_leads_agg", "lef.merk_session"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
         "'Overig'"
     ], "as merk,")}
@@ -78,7 +86,8 @@ SELECT
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.sum_position as gsc_sum_position,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.average_position as gsc_average_position,")}
-    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account),")}
+    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account, model),")}
+    ${ifSource("stg_syntec_leads_orders_combined", "syntec.model AS syntec_model,")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","mapping_thema"), ifSource(["stg_activecampaign_ga4_sheets", "gs_activecampaign_ga4_mapping"], "flow_thema")], "AS ac_flow_thema,")} 
     ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.ac_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_name")], "AS ac_name,")} 
     ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.campaign_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_campaign")],"AS ac_campaign,")} 
@@ -147,6 +156,7 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_campaign, hs_bron),")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
@@ -155,7 +165,8 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingdashboard_searchcons
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
-${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}) ga4_ads
+${join("LEFT JOIN", "gs_campagnegroepen", "AS groep ON campaign_name LIKE CONCAT(\"%\", groep.campagnegroep, \"%\") OR lef_kwalificatie LIKE CONCAT(\"%\", groep.campagnegroep, \"%\")")})
 
 `
 let refs = getRefs()

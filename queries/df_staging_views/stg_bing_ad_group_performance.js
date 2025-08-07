@@ -31,7 +31,11 @@ let query = `
         SUM(CAST(IFNULL(adgroup.impressions, pf.impressions) AS INT64)) AS impressions,
         SUM(CAST(IFNULL(adgroup.clicks, pf.clicks) AS INT64)) AS clicks,
         SUM(CAST(IFNULL(adgroup.spend, pf.spend) AS FLOAT64)) AS spend,
-        MAX(quality_score) AS quality_score
+        MAX(quality_score) AS quality_score,
+        MAX(IFNULL(adgroup.campagnegroep, pf.campagnegroep)) AS campagnegroep,
+        MAX(IFNULL(adgroup.merk, pf.merk)) AS merk,
+        MAX(IFNULL(adgroup.model, pf.model)) AS model,
+        
 
     FROM ${ref("df_rawdata_views", "bing_ad_group_performance")} adgroup
     

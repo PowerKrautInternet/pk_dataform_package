@@ -25,7 +25,11 @@ SELECT
   JSON_VALUE(PAYLOAD, '$.response.Impressions') AS impressions,
   JSON_VALUE(PAYLOAD, '$.response.ReturnOnAdSpend') AS return_on_ad_spend,
   JSON_VALUE(PAYLOAD, '$.response.Revenue') AS revenue,
-  JSON_VALUE(PAYLOAD, '$.response.Spend') AS spend
+  JSON_VALUE(PAYLOAD, '$.response.Spend') AS spend,
+  REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Campagnegroep:\s*([^;]+)') AS campagnegroep,
+  REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Merk:\s*([^;]+)') AS merk,
+  REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Model:\s*([^;]+)') AS model
+
 
 FROM ${ref("bingAdsDataProducer_lasttransaction")}
 WHERE JSON_VALUE(PAYLOAD, '$.type') = 'AssetGroupPerformanceReportPublisher'

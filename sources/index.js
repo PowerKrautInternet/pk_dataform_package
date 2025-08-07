@@ -219,6 +219,35 @@ function ifSource(name, query){
     return query;
 }
 
+/* @brief Controleert of minstens één van de opgegeven bronnen bestaat.
+*
+* Als er geen enkele bron gevonden wordt, wordt een "NOT FOUND"-commentaar
+* met de query teruggegeven. Als minstens één bron bestaat, wordt de
+* originele query teruggegeven.
+*
+* @param name  Naam van de bron of een array met meerdere bronnamen.
+* @param query De query die moet worden teruggegeven als de bron(nen) bestaan.
+* @return {string} De originele query of een "NOT FOUND"-commentaar.
+*/
+function orSource(name, query) {
+    if (Array.isArray(name)) {
+        // Check of minstens één bron bestaat
+        let anyExists = name.some(
+            s => !ref(s, "", true).startsWith("NOT FOUND")
+        );
+        if (!anyExists) {
+            return "/* NOT FOUND // " + query + "*/";
+        }
+    } else {
+        // Enkelvoudige bron
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
+            return "/* NOT FOUND // " + query + "*/";
+        }
+    }
+    return query;
+}
+
+
 /**
  * @brief Bepaalt het type gegevensbron op basis van de naam of alias van de bron.
  *
@@ -249,4 +278,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource};

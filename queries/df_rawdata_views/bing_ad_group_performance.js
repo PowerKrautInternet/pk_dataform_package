@@ -47,7 +47,11 @@ let query = `
         JSON_VALUE(PAYLOAD, '$.response.RelativeCtr') AS relative_ctr,
         JSON_VALUE(PAYLOAD, '$.response.QualityScore') AS quality_score,
         JSON_VALUE(PAYLOAD, '$.response.Spend') AS spend,
-        JSON_VALUE(PAYLOAD, '$.response.BaseCampaignId') AS base_campaign_id
+        JSON_VALUE(PAYLOAD, '$.response.BaseCampaignId') AS base_campaign_id,
+        REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Campagnegroep:\s*([^;]+)') AS campagnegroep,
+        REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Merk:\s*([^;]+)') AS merk,
+        REGEXP_EXTRACT(JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.AdGroupLabels'), r'Model:\s*([^;]+)') AS model
+
 
     FROM ${ref("bingAdsDataProducer_lasttransaction")}
     WHERE JSON_VALUE(PAYLOAD, '$.type') = 'AdGroupPerformanceReportPublisher'
