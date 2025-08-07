@@ -5,7 +5,7 @@ let query = `
 SELECT 
     * ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
    ${ifNull([
-        orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk')},
+        orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
         `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
     ], "as merk,")},
