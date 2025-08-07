@@ -9,18 +9,13 @@ function getEnabledRecencyPublishers(source) {
         return "1";
     }
     const whenPublisher = source.publishers
-        .filter(publisher => publisher.name !== "NULL")
         .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : "NULL"}`)
         .join('\n');
 
-    // Bepaal de ELSE waarde op basis van de "NULL" named publisher
-    const nullPublisher = source.publishers.find(p => p.name === "NULL");
-    const elseValue = nullPublisher ? (nullPublisher.recency ? 1 : "NULL") : 1;
-
     return `
-        CASE KEY1
+        CASE IFNULL(KEY1, "NULL")
             ${whenPublisher}
-            ELSE ${elseValue}
+            ELSE ${source.recency ?? 1}
         END
     `
 }
