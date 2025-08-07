@@ -6,6 +6,7 @@ let query = `
 SELECT 
     ga4.* EXCEPT(kanaal, sessie_conversie_bron),
     IFNULL(sessie_conversie_bron, kanaal) as kanaal,
+    kanaal as kanaal_groep
 
 FROM(
 SELECT
