@@ -8,12 +8,12 @@ SELECT
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
         `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
-    ], "as merk,")},
+    ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),
         ifSource('gs_modellen', `${ref("lookupTable")}(campaign_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`),
         ifSource('gs_modellen', `${ref("lookupTable")}(ad_group_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`)
-    ], "as model,")},
+    ], "as model,")}
 FROM (
     SELECT
         ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
