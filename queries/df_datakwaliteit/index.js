@@ -44,7 +44,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
         if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
             //for each data source
             let name = sources[s].name ?? "";
-            if (name.endsWith("DataProducer")) {
+            if (type === "dataProducer") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
