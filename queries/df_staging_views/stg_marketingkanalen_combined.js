@@ -64,7 +64,7 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.likes,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
-        ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron,')} 
+        ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron AS uitgave_bron_org,')} 
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
         ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.campagnegroep'), ifSource('googleads_campaignlabel','google_ads.campagnegroep')], 'AS campagnegroep,')}
         ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.merk'), ifSource('googleads_campaignlabel','google_ads.merk')], 'AS merk,')}
