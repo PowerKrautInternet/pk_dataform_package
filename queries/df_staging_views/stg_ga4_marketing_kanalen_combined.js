@@ -166,7 +166,7 @@ ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined"
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}) ga4_ads
-${join("LEFT JOIN", "gs_campagnegroepen", "AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT(\"%\", groep.campagnegroep, \"%\")) OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT(\"%\", groep.campagnegroep, \"%\"))")})
+${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", "AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT(\"%\", groep.campagnegroep, \"%\")) OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT(\"%\", groep.campagnegroep, \"%\"))")})
 
 `
 let refs = getRefs()
