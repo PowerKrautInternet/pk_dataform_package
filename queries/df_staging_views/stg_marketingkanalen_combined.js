@@ -16,7 +16,7 @@ SELECT
     ], "as model,")}
 FROM (
     SELECT
-        ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
+        ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
         ${ifNull(['google_ads.account_name', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account')])} as account,
         ${ifNull(['CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_id'), ifSource('dv360_data','CAST(dv360.advertiser_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.account_id'), ifSource('stg_linkedin_ads_combined','linkedin.accountId')])} as account_id,
         ${ifNull(['google_ads.account_name', ifSource('stg_facebookdata','facebook.account_name'), ifSource('dv360_data','dv360.advertiser'), ifSource('stg_bing_ad_group_performance','microsoft.account_name'), ifSource('stg_linkedin_ads_combined','linkedin.account_name')])} as account_name,
@@ -64,6 +64,7 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.likes,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
+        ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron,')} 
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
         ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.campagnegroep'), ifSource('googleads_campaignlabel','google_ads.campagnegroep')], 'AS campagnegroep,')}
         ${ifNull([ifSource('stg_bing_ad_group_performance','microsoft.merk'), ifSource('googleads_campaignlabel','google_ads.merk')], 'AS merk,')}
