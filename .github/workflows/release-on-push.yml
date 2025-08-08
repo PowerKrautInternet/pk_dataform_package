@@ -11,3 +11,13 @@ jobs:
         with:
           bump_version_scheme: patch
           tag_prefix: ${{github.GITHUB_HEAD_REF}}
+  nondev_deply:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: minor
+          tag_prefix: ${{github.GITHUB_HEAD_REF}}
