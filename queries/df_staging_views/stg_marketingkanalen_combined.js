@@ -7,12 +7,12 @@ SELECT
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
-        `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("gs_merken")})))`
+        `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables", "gs_merken")})))`
     ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),
-        ifSource('gs_modellen', `${ref("lookupTable")}(campaign_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`),
-        ifSource('gs_modellen', `${ref("lookupTable")}(ad_group_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("gs_modellen")}))))`)
+        ifSource('gs_modellen', `${ref("lookupTable")}(campaign_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen")}))))`),
+        ifSource('gs_modellen', `${ref("lookupTable")}(ad_group_name, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen")}))))`)
     ], "as model,")}
 FROM (
     SELECT
