@@ -9,7 +9,7 @@ function googleSheetTable (refVal) {
         "schema": "df_googlesheets_tables"
     }
     pk.addSource({
-        "name": refVal.name,
+        "name": name,
         "config": config
     });
     return `BEGIN
