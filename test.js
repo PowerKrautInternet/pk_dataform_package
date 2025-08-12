@@ -1,5 +1,5 @@
 const assert = require('assert');  // Node's built-in assert module
-const { setupFunctions } = require('./path_to_your_module');  // Adjust the path to your actual module
+const { setupFunctions } = require('./setup');  // Adjust the path to your actual module
 
 // Custom test runner functions
 function describe(description, fn) {
