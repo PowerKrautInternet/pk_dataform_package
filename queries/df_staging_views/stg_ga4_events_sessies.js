@@ -130,6 +130,13 @@ FROM(
     IFNULL(events.event_formfields_soort, sessie_assignment.event_formfields_soort) AS event_formfields_soort,
     IFNULL(events.event_formfields_titel, sessie_assignment.event_formfields_titel) AS event_formfields_titel,
     IFNULL(events.event_formfields_vestiging, sessie_assignment.event_formfields_vestiging) AS event_formfields_vestiging,
+    IFNULL(events.event_buy_bouwjaar, sessie_assignment.event_buy_bouwjaar) AS event_buy_bouwjaar,
+    IFNULL(events.event_buy_kleur, sessie_assignment.event_buy_kleur) AS event_buy_kleur,
+    IFNULL(events.event_buy_type, sessie_assignment.event_buy_type) AS event_buy_type,
+    IFNULL(events.event_buy_item_id, sessie_assignment.event_buy_item_id) AS event_buy_item_id,
+    IFNULL(events.event_trade_in_bouwjaar, sessie_assignment.event_trade_in_bouwjaar) AS event_trade_in_bouwjaar,
+    IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
+
 
     FROM ${ref("ga4_events")} events
 
