@@ -42,8 +42,4 @@ function lookup(needle, haystack){
 }
 `;
 
-eval(lookup_function_string);
-
-lookup_function_string += '\nreturn lookup(needle, haystack);';
-
-module.exports = {lookup_function_string, lookup}
+module.exports = string = lookup_function_string
