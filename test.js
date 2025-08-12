@@ -22,7 +22,6 @@ function beforeEach(fn) {
 }
 
 // Your tests
-
 describe('setupFunctions', () => {
     let mockSources;
 
@@ -45,4 +44,7 @@ describe('setupFunctions', () => {
     it('should handle unique data producers and google sheets', () => {
         const result = setupFunctions(mockSources);
 
-        // Ensure
+        // Ensure the proper handling of data producers
+        assert.strictEqual(result.length, 4);  // Adjust based on expected result length
+    });
+});
