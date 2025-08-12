@@ -18,7 +18,7 @@
   "type": "commonjs",
   "main": "sources/index.js",
   "scripts": {
-    "test": node test.js
+    "test": "node test.js"
   },
   "publishConfig": {
     "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
