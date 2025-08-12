@@ -1,6 +1,6 @@
 // functions.test.js
 const assert = require('assert');  // Node's built-in assert module
-const { setupFunctions } = require('./path_to_your_module');  // Adjust the path to your actual module
+const { setupFunctions } = require('./setup');  // Adjust the path to your actual module
 
 // Example of the mock data you want to test
 describe('setupFunctions', () => {
