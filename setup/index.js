@@ -59,4 +59,4 @@ function setupFunctions(sources){
     return query
 }
 
-module.exports = {setupFunctions, function_config};
+module.exports = {setupFunctions};
