@@ -4,7 +4,7 @@ class FunctionObject {
         this.schema = config.schema ?? "rawdata";
         this.name = config.name ?? null;
         this.function = config.function ?? null;
-        this.vars = config.vars ?? {}
+        this.varsForFunction = config.vars ?? {}
         this.return_type = config.return_type ?? "STRING"
         this.sql = this;
     }
@@ -28,9 +28,13 @@ class FunctionObject {
 
     // Helper method to format the parameters for the function signature
     get vars() {
-        return Object.entries(this.vars)
+        return Object.entries(this.varsForFunction)
             .map(([param, type]) => `${param} ${type}`)
             .join(", ");
+    }
+
+    set vars(parameterVars) {
+        this.varsForFunction = parameterVars
     }
 
     // Helper method to format the actual parameters in the return statement
