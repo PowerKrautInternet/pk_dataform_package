@@ -17,21 +17,21 @@ let function_config = [
         schema: "rawdata",
         name: "getEmail",
         vars: {json_row: "STRING"},
-        function: require("getEmail_function")
+        function: require("./getEmail_function")
     },
     {
         database: dataform.projectConfig.defaultDatabase,
         schema: "rawdata",
         name: "getAdres",
         vars: {json_row: "STRING", field_name: "STRING"},
-        function: require("getAdres_function")
+        function: require("./getAdres_function")
     },
     {
         database: dataform.projectConfig.defaultDatabase,
         schema: "rawdata",
         name: "getTelefoon",
         vars: {json_row: "STRING"},
-        function: require("getTelefoon_function")
+        function: require("./getTelefoon_function")
     },
 ]
 
