@@ -48,7 +48,7 @@ class FunctionObject {
                 database: this.database,
                 schema: this.schema
             },
-            type: "operation",
+            type: "operations",
             name: this.name
         }
     }
