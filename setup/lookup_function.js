@@ -1,4 +1,4 @@
-let lookup_function_string = `
+let string = `
 function removeAccents(strAccents) {
     strAccents = strAccents ?? "";
     strAccents = strAccents.split('');
@@ -42,4 +42,4 @@ function lookup(needle, haystack){
 }
 `;
 
-module.exports = string = lookup_function_string
+module.exports = string
