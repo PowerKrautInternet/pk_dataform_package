@@ -1,17 +1,17 @@
 let string = `
-function removeAccents(strAccents) {
-    strAccents = strAccents ?? "";
+
+
+function removeAccents(strAccents = "") {
     strAccents = strAccents.split('');
-    let strAccentsOut = [];
-    const strAccentsLen = strAccents.length;
-    const accents = "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-    const accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
-    for (let y = 0; y < strAccentsLen; y++) {
-        if (accents.indexOf(strAccents[y]) !== -1) {
-            strAccentsOut[y] = accentsOut.substring(accents.indexOf(strAccents[y])-1, accents.indexOf(strAccents[y]));
-        } else strAccentsOut[y] = strAccents[y];
+    const accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+    const accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnssYyyZz";
+    for (let i in accents){
+        let j = strAccents.indexOf(accents[i]);
+        if(j !== -1) {
+            strAccents[j] = accentsOut[i];
+        }
     }
-    return strAccentsOut.join('');
+    return strAccents.join('');
 }
 
 function lookup(needle, haystack){
@@ -30,16 +30,20 @@ function lookup(needle, haystack){
     string = string.replace(/\\s+/gi, " ");
     string = string.replace(/\\\\/gi, " ");
     string = string.toLowerCase();
-    string = string.split(" ")
     
-    for (const word of string) {
-        for (const option of options) {
-            if(option === word){
-                return (option.charAt(0).toUpperCase() + option.slice(1));
-            }
-        }
+    const pattern = '\\\\b('+options.sort((a, b) => b.length - a.length).join("|")+')\\\\b'
+    const regexp = new RegExp(pattern, "gim");
+    
+    let matches = [...string.matchAll(regexp)];
+    if(matches.length < 1){
+        return null  //return null if empty
+    } else if(matches[0][0].length > 3){
+        return matches[0][0].charAt(0).toUpperCase() + matches[0][0].slice(1)   
+    } else {
+        return matches[0][0].toUpperCase()
     }
 }
+
 `;
 
 module.exports = string
