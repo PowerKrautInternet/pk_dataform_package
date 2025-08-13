@@ -4,21 +4,21 @@ class FunctionObject {
         this.schema = config.schema ?? "rawdata";
         this.name = config.name ?? null;
         this.function = config.function ?? null;
-        this.varsForFunction = config.vars ?? {}
+        this.vars = config.vars ?? {}
         this.return_type = config.return_type ?? "STRING"
         this.sql = this;
     }
 
     get sql() {
         if(this.function && this.name){
-            return this.sql
+            return this.sqlForFunction
         }else{
             return `//NO VALID CONFIG FOR ${this.name}`
         }
     }
 
     set sql(the_function_object) {
-        `CREATE OR REPLACE FUNCTION 
+        this.sqlForFunction = `CREATE OR REPLACE FUNCTION 
         \`${the_function_object.database}.${the_function_object.schema}.${the_function_object.name}\` (${the_function_object.vars}) 
         RETURNS ${the_function_object.return_type} LANGUAGE js AS R""" 
             ${the_function_object.function}
@@ -39,7 +39,7 @@ class FunctionObject {
 
     // Helper method to format the actual parameters in the return statement
     get params() {
-        return Object.keys(this.vars).join(", ");
+        return Object.keys(this.varsForFunction).join(", ");
     }
 
     get source(){

@@ -51,7 +51,7 @@ function setupFunctions(sources){
     }
 
     //Add functions to the dataform operation query
-    for(let f in function_array){
+    for(let f of function_array){
         query.push(f.sql);   //add to query
         addSource(f.source); //make the function available for internal use
     }
