@@ -14,7 +14,7 @@ function removeAccents(strAccents = "") {
     return strAccents.join('');
 }
 
-function lookup(needle, haystack){
+function lookupTable(needle, haystack){
     const lookupTable = JSON.parse(haystack);
     let options = []
     for (let m of lookupTable) {
