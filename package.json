@@ -1,6 +1,6 @@
 {
   "name": "@PowerKrautInternet/pk_dataform_package",
-  "version": "1.4.8",
+  "version": "1.12.0",
   "description": "Automating Marketing Automation",
   "keywords": [
     "PowerKraut"
@@ -18,7 +18,7 @@
   "type": "commonjs",
   "main": "sources/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/lookupFunctionTests.js"
   },
   "publishConfig": {
     "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
