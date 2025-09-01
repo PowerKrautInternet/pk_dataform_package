@@ -36,21 +36,21 @@ for(let config of function_config){
 
 const haystack = "[\"Abarth\",\"AC\", \"volkswagen\", \"audi\", \"alfa romeo\", \"skoda\", \"citroen\", \"vw\", \"vw professional\"]"
 
-let test1 = lookup("this is an test for audi, and not for volkswagen", haystack)
+let test1 = lookupTable("this is an test for audi, and not for volkswagen", haystack)
 console.log(`Test 1: ${test1}`)
 assert.ok(
      test1 === "Audi",
     "Test 1: 2 merken"
 )
 
-let test2 = lookup("This is another test with some $ extra ' special \n characters to see if it fails, but with volkswagen and not audi", haystack)
+let test2 = lookupTable("This is another test with some $ extra ' special \n characters to see if it fails, but with volkswagen and not audi", haystack)
 console.log(`Test 2: ${test2}`)
 assert.ok(
     test2 === "Volkswagen",
     "Test 2: 2 merken with breaking characters"
 )
 
-let test3 = lookup("Will i buy an alfa romeo or an audi? Nobody knows!", haystack)
+let test3 = lookupTable("Will i buy an alfa romeo or an audi? Nobody knows!", haystack)
 console.log(`Test 3: ${test3}`)
 assert.ok(
     test3 === "Alfa romeo",
@@ -65,9 +65,9 @@ function test_an_function(name, function_result, result, description) {
     )
 }
 
-test_an_function('test 4', lookup("Now i want to maybe buy an Škoda or maybe an Citroën", haystack), 'Skoda', '2 merken met speciale characters')
-test_an_function('test 5', lookup("Now i want an beautiful vw professional truck", haystack), 'Vw professional', 'VW professional ipv VW')
-test_an_function('test 6', lookup("Now i want an beautiful vw truck", haystack), 'VW', 'VW full word uppercase')
+test_an_function('test 4', lookupTable("Now i want to maybe buy an Škoda or maybe an Citroën", haystack), 'Skoda', '2 merken met speciale characters')
+test_an_function('test 5', lookupTable("Now i want an beautiful vw professional truck", haystack), 'Vw professional', 'VW professional ipv VW')
+test_an_function('test 6', lookupTable("Now i want an beautiful vw truck", haystack), 'VW', 'VW full word uppercase')
 
 
 console.log("✓ implementation tests passed");
