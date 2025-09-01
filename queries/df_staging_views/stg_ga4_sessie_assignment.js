@@ -111,6 +111,7 @@ SELECT
     event_buy_kleur,
     event_buy_type,
     event_buy_item_id,
+    event_buy_bouwjaar,
     event_trade_in_model, 
     event_trade_in_brand, 
     event_trade_in_bouwjaar,
