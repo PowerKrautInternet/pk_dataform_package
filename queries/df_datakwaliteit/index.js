@@ -60,7 +60,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                           FROM (\n
                             SELECT \n
                                 IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,
-                                ${getFreshnessDays()} as freshnessDays,
+                                ${getFreshnessDays(sources[s])} as freshnessDays,
                                 ${getEnabledRecencyPublishers(sources[s])} as enabledRecency,
                                 *\n
                                 \n
@@ -107,7 +107,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "1"
                 }
                 query += `) AS RECENCY_CHECK,
-                                ${getFreshnessDays()} as freshnessDays,
+                                ${getFreshnessDays(sources[s])} as freshnessDays,
                                 ${getEnabledRecencyPublishers(sources[s])} as enabledRecency,
                                 *`
                 if (extraSelect !== "") {
@@ -144,7 +144,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 //if the noWeekend is set the true statement of the recency if is always 0
                 sources[s].noWeekend === true ? query += "0" : query += "1"
                 query += `) AS RECENCY_CHECK,
-                                ${getFreshnessDays()} as freshnessDays,
+                                ${getFreshnessDays(sources[s])} as freshnessDays,
                                 ${getEnabledRecencyPublishers(sources[s])} as enabledRecency,
                                  *`
                 query += " \n\nFROM ( "
