@@ -43,7 +43,7 @@ function getFreshnessDays(source) {
 }
 
 function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", extraGroupBy = "") {
-    let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, freshnessDays, enabledRecency, key1, bron FROM(';
+    let query = 'SELECT max(max_receivedon) as max_receivedon, max(recency_check) as recency_check, max(freshnessDays) as freshnessDays, max(enabledRecency) as enabledRecency, key1, bron FROM(';
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
@@ -56,7 +56,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += `SELECT bron, key1, max_receivedon, recency_check\n
+                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
                           FROM (\n
                             SELECT \n
                                 IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,
@@ -92,7 +92,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += "SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
+                query += "SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \n\tIF(MAX_RECEIVEDON >= CURRENT_DATE()-"
                 if (typeof sources[s].freshnessDays == "undefined") {
                     query += 1
                 } else {
@@ -137,7 +137,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += `SELECT bron, key1, max_receivedon, recency_check\nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
+                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
                 query += sources[s].freshnessDays ?? 1;
                 query += ", NULL, ";
 
