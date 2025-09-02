@@ -5,6 +5,9 @@ let {getTypeSource} = require("../../sources");
  * @param {Array} source.publishers - Een array van publishers, elk met `name` en `recency`.
  *      if publisher.name is "NULL" then this value will be the else  */
 function getEnabledRecencyPublishers(source) {
+    if(!source){
+        return "NULL"
+    }
     if (!source.publishers || source.publishers.length === 0) {
         return "1";
     }
@@ -21,6 +24,9 @@ function getEnabledRecencyPublishers(source) {
 }
 
 function getFreshnessDays(source) {
+    if (!source){
+        return 1
+    }
     if (!source.publishers || source.publishers.length === 0) {
         return source.freshnessDays ?? 1;
     }
