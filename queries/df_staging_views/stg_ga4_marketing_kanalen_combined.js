@@ -173,4 +173,3 @@ ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", "AS groep ON
 `
 let refs = getRefs()
 module.exports = {query, refs}
- ${ifSource("gs_mapping_edmworkflow_campagne",
