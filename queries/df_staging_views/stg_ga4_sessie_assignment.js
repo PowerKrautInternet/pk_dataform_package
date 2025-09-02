@@ -107,7 +107,6 @@ SELECT
     event_buy_model, 
     event_buy_plaats, 
     event_buy_brand, 
-    event_buy_bouwjaar,
     event_buy_kleur,
     event_buy_type,
     event_buy_item_id,
