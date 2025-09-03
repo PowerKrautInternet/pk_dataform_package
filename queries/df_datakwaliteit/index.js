@@ -9,7 +9,7 @@ function getEnabledRecencyPublishers(source) {
         return "NULL"
     }
     if (!source.publishers || source.publishers.length === 0) {
-        return "1";
+        return source.recency ? 1 : "NULL";
     }
     const whenPublisher = source.publishers
         .map(publisher => `WHEN '${publisher.name}' THEN ${publisher.recency ? 1 : "NULL"}`)
@@ -18,7 +18,7 @@ function getEnabledRecencyPublishers(source) {
     return `
         CASE IFNULL(KEY1, "NULL")
             ${whenPublisher}
-            ELSE ${source.recency ?? 1}
+            ELSE ${source.recency ? 1 : "NULL"}
         END
     `
 }
@@ -47,8 +47,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.PK_CRM_ID" //pk_crm_id meot geimplementeerd worden
-        if ((sources[s].recency !== "false" && !sources[s].recency === false) || typeof sources[s].recency == "undefined") {
+        let key1 = sources[s].key1 ?? "$.type"
             //for each data source
             let name = sources[s].name ?? "";
             if (type === "dataProducer") {
@@ -197,9 +196,6 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
             } else {
                 query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
             }
-        } else {
-            query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Recency disabled! \n"
-        }
     }
     query += ") GROUP BY BRON, KEY1"
     return query
