@@ -35,11 +35,11 @@ SELECT
 FROM (
   SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
     FROM
-       ${ref("sam_data_producer_last_transaction")} as first
+       ${ref("samDataProducer_lasttransaction")} as first
        WHERE SCHEMA IN (SELECT schema FROM ${ref("sam_table_hashes")} WHERE tableName = 'OFFERTEVTR')
        AND RECEIVEDON = (
           SELECT MAX(RECEIVEDON)
-          FROM ${ref("sam_data_producer_last_transaction")} as second
+          FROM ${ref("samDataProducer_lasttransaction")} as second
           WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
       GROUP BY PRIMARYFIELDHASH
 ))
