@@ -575,15 +575,15 @@ function sam_trajects_def_offerte() {
     return table;
 }
 
-function sam_tajects_extern() {
+function sam_trajects_extern() {
     let table = {
-        "name": "sam_tajects_extern",
+        "name": "sam_trajects_extern",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./sam_tajects_extern').refs
+            "dependencies": require('./sam_trajects_extern').refs
         },
-        "query": require('./sam_tajects_extern').query
+        "query": require('./sam_trajects_extern').query
     }
     pk.addSource(table);
     return table;
