@@ -611,7 +611,7 @@ module.exports = {
     sam_adres,
     sam_aflever_trajecten,
     sam_aflevering,
-    sam_aflever_model,
+    sam_aflevering_model,
     sam_afsluitreden,
     sam_automerk,
     sam_dealer,
