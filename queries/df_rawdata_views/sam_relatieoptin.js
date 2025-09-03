@@ -3,11 +3,6 @@
 let pk = require("../../sources")
 let ref = pk.ref
 let query = `
-config {
-    type: "view",
-    schema: "df_rawdata_views"
-}
-
 SELECT
         JSON_VALUE(PAYLOAD, '$.RELATIEOPTINID') as RELATIEOPTIN_RELATIEOPTINID,
         JSON_VALUE(PAYLOAD, '$.RELATIEID') as RELATIEOPTIN_RELATIEID,
