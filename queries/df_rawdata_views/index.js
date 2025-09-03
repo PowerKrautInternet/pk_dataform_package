@@ -436,15 +436,15 @@ function sam_relatie() {
     return table;
 }
 
-function sam_relatie_optin() {
+function sam_relatieoptin() {
     let table = {
-        "name": "sam_relatie_optin",
+        "name": "sam_relatieoptin",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./sam_relatie_optin').refs
+            "dependencies": require('./sam_relatieoptin').refs
         },
-        "query": require('./sam_relatie_optin').query
+        "query": require('./sam_relatieoptin').query
     }
     pk.addSource(table);
     return table;
