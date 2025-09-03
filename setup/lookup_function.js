@@ -2,6 +2,7 @@ let string = `
 
 
 function removeAccents(strAccents = "") {
+    strAccents = strAccents ?? ""
     strAccents = strAccents.split('');
     const accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
     const accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnssYyyZz";
@@ -15,6 +16,8 @@ function removeAccents(strAccents = "") {
 }
 
 function lookupTable(needle, haystack){
+    needle = needle ?? "";
+    haystack = haystack ?? "";
     const lookupTable = JSON.parse(haystack);
     let options = []
     for (let m of lookupTable) {

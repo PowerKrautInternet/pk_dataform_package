@@ -280,6 +280,89 @@ function stg_handmatige_uitgaves_pivot() {
     return table;
 }
 
+function sam_offerte_merk_model_occasion() {
+    let table = {
+        "name": "sam_offerte_merk_model_occasion",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./sam_offerte_merk_model_occasion').refs
+        },
+        "query": require('./sam_offerte_merk_model_occasion').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_offerte_merk_model_occasion_def_offerte() {
+    let table = {
+        "name": "sam_offerte_merk_model_occasion_def_offerte",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./sam_offerte_merk_model_occasion_def_offerte').refs
+        },
+        "query": require('./sam_offerte_merk_model_occasion_def_offerte').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_trajects_leads() {
+    let table = {
+        "name": "sam_trajects_leads",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./sam_trajects_leads').refs
+        },
+        "query": require('./sam_trajects_leads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_trajects_offertes() {
+    let table = {
+        "name": "sam_trajects_offertes",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./sam_trajects_offertes').refs
+        },
+        "query": require('./sam_trajects_offertes').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_sam_offertes() {
+    let table = {
+        "name": "stg_sam_offertes",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_sam_offertes').refs
+        },
+        "query": require('./stg_sam_offertes').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_sam_orders() {
+    let table = {
+        "name": "stg_sam_orders",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_sam_orders').refs
+        },
+        "query": require('./stg_sam_orders').query
+    }
+    pk.addSource(table);
+    return table;
+}
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -300,5 +383,11 @@ module.exports = {
     stg_googleads_perfmax_combined,
     stg_hubspot_emailevents_campaigns,
     stg_hubspot_workflowstats,
-    stg_handmatige_uitgaves_pivot
+    stg_handmatige_uitgaves_pivot,
+    sam_offerte_merk_model_occasion,
+    sam_offerte_merk_model_occasion_def_offerte,
+    sam_trajects_leads,
+    sam_trajects_offertes,
+    stg_sam_offertes,
+    stg_sam_orders
 }
