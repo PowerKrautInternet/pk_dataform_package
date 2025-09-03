@@ -1,0 +1,29 @@
+
+/*config*/
+let pk = require("../../sources")
+let ref = pk.ref
+let query = `
+SELECT
+        TRAJECT_TRAJECTID,
+        TRAJECT_RELATIEID,
+        TRAJECT_DEALERID,
+        TRAJECTSTATUSID,
+        TRAJECT_SOORTTRAJECTID,
+        TRAJECT_DEFINITIEFOFFERTEID,
+        TRAJECT_LEADSGROEPID,
+        TRAJECT_PREVTRAJECTID,
+        TRAJECT_CREATIEDATUM,
+        TRAJECT_AFGERONDDATUM,
+        TRAJECT_EXTERNLEADID,
+        TRAJECT_DTCMEDIA_CRM_ID,
+        TRAJECT_OMSCHRIJVING,
+        TRAJECT_EERSTEKWALIFICATIE,
+        TRAJECT_SOORTLEADSBRONID,
+        TRAJECT_LEADKLASSEID,
+        TRAJECT_AUTONAAMKORT,
+        TRAJECT_AUTONAAMLANG
+FROM ${ref("df_rawdata_views", "sam_traject")}
+
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}

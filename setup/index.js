@@ -33,6 +33,13 @@ let function_config = [
         vars: {json_row: "STRING"},
         function: require("./getTelefoon_function")
     },
+    {
+        database: dataform.projectConfig.defaultDatabase,
+        schema: "rawdata",
+        name: "getTableName",
+        vars: {json_row: "STRING"},
+        function: require("./getTableName_function")
+    }
 ]
 
 let function_array = function_config.map(config => new FunctionObject(config));
