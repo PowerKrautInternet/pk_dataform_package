@@ -3,11 +3,6 @@
 let pk = require("../../sources")
 let ref = pk.ref
 let query = `
-config {
-    type: "view",
-    schema: "df_rawdata_views"
-}
-
 SELECT 
 RELATIEOPTIN_DTCMEDIA_CRM_ID,
 RELATIEOPTIN_RELATIEID,
