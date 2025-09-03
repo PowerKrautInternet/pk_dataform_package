@@ -207,7 +207,7 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.PK_CRM_ID"
+        let key1 = sources[s].key1 ?? "$.type"
 
         //for each data source
         if (type !== "NONE") {
