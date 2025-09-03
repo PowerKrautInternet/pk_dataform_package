@@ -4,4 +4,4 @@ function getTableName(obj) {
     return contact.replace(/ID$/ig, '');
 }`
 
-module.exports = {string}
+module.exports = string
