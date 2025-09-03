@@ -54,7 +54,8 @@ const sources = [
       { name: "offertePublisher", recency: false },
       { name: "anderePublisher", recency: true }
     ],
-    recency: false // Je kan ook voor de hele bron de recency uitschakelen
+    recency: false, // Je kan ook voor de hele bron de recency uitschakelen
+    type: "dataProducer" //wanneer de naam afwijkt maar het wel werkt met een payload.  
   },
   {
     schema: "...",
