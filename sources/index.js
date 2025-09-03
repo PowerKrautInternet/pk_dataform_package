@@ -46,11 +46,17 @@ function setSources(varSource){
         // - altijd een 'freshnessDays'-veld heeft; als deze niet gevuld wordt door de publisher dan wordt deze o.b.v. de producer gevuld en anders standaard op 1 gezet.
         v.publishers = (v.publishers ?? [])
             .filter(publisher => !!publisher.name)
-            .map(publisher => ({
-                name: publisher.name,
-                recency: publisher.recency ?? true,
-                freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1
-            }));
+            .flatMap(publisher => {
+                // Zorg dat publisher.name altijd een array is
+                const names = Array.isArray(publisher.name) ? publisher.name : [publisher.name];
+
+                return names.map(name => ({
+                    name,
+                    recency: publisher.recency ?? true,
+                    freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1
+                }));
+            });
+
 
         v["noSuffix"] = true;
         v["declaredSource"] = true;
