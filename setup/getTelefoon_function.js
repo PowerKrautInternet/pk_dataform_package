@@ -6,4 +6,4 @@ function getTelefoon(obj) {
 }
 
 `
-module.exports = {string}
+module.exports = string
