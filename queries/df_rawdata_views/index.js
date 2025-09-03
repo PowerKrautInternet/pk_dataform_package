@@ -450,15 +450,15 @@ function sam_relatieoptin() {
     return table;
 }
 
-function sam_relatieoptingdpr_pivot() {
+function sam_relatieoptinsgdpr_pivot() {
     let table = {
-        "name": "sam_relatieoptingdpr_pivot",
+        "name": "sam_relatieoptinsgdpr_pivot",
         "config": {
             "type": "view",
             "schema": "df_rawdata_views",
-            "dependencies": require('./sam_relatieoptingdpr_pivot').refs
+            "dependencies": require('./sam_relatieoptinsgdpr_pivot').refs
         },
-        "query": require('./sam_relatieoptingdpr_pivot').query
+        "query": require('./sam_relatieoptinsgdpr_pivot').query
     }
     pk.addSource(table);
     return table;
@@ -635,7 +635,7 @@ module.exports = {
     sam_offertes,
     sam_relatie,
     sam_relatieoptin,
-    sam_relatieoptingdpr_pivot,
+    sam_relatieoptinsgdpr_pivot,
     sam_sales_trajecten,
     sam_soortbrandstof,
     sam_soortklantcategorie,
