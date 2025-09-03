@@ -4,4 +4,4 @@ function getEmail(obj) {
  return ((contact) ? contact.value : null)
 }`
 
-module.exports = {string}
+module.exports = string
