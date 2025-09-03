@@ -534,6 +534,19 @@ function sam_trajectfilterleads() {
     return table;
 }
 
+function sam_trajectfilterorders() {
+    let table = {
+        "name": "sam_trajectfilterorders",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_trajectfilterorders').refs
+        },
+        "query": require('./sam_trajectfilterorders').query
+    }
+    pk.addSource(table);
+    return table;
+}
 function sam_trajects() {
     let table = {
         "name": "sam_trajects",
