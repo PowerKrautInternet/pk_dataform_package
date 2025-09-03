@@ -22,4 +22,4 @@ FROM (
 
 `
 let refs = pk.getRefs()
-module.exports = {query, refs}V
+module.exports = {query, refs}
