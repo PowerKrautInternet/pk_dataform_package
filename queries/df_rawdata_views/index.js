@@ -253,6 +253,342 @@ function googleads_campaignlabel() {
     return table;
 }
 
+function sam_adres() {
+    let table = {
+        "name": "sam_adres",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_adres').refs
+        },
+        "query": require('./sam_adres').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+
+function sam_aflever_trajecten() {
+    let table = {
+        "name": "sam_aflever_trajecten",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_aflever_trajecten').refs
+        },
+        "query": require('./sam_aflever_trajecten').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_aflevering() {
+    let table = {
+        "name": "sam_aflevering",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_aflevering').refs
+        },
+        "query": require('./sam_aflevering').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_aflevering_model() {
+    let table = {
+        "name": "sam_aflevering_model",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_aflevering_model').refs
+        },
+        "query": require('./sam_aflevering_model').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_afsluitreden() {
+    let table = {
+        "name": "sam_afsluitreden",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_afsluitreden').refs
+        },
+        "query": require('./sam_afsluitreden').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_automerk() {
+    let table = {
+        "name": "sam_automerk",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_automerk').refs
+        },
+        "query": require('./sam_automerk').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_dealer() {
+    let table = {
+        "name": "sam_dealer",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_dealer').refs
+        },
+        "query": require('./sam_dealer').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_herkomst() {
+    let table = {
+        "name": "sam_herkomst",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_herkomst').refs
+        },
+        "query": require('./sam_herkomst').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_occasion() {
+    let table = {
+        "name": "sam_occasion",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_occasion').refs
+        },
+        "query": require('./sam_occasion').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_offerte_status() {
+    let table = {
+        "name": "sam_offerte_status",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_offerte_status').refs
+        },
+        "query": require('./sam_offerte_status').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_offerte_vtr() {
+    let table = {
+        "name": "sam_offerte_vtr",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_offerte_vtr').refs
+        },
+        "query": require('./sam_offerte_vtr').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_offertes() {
+    let table = {
+        "name": "sam_offertes",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_offertes').refs
+        },
+        "query": require('./sam_offertes').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_relatie() {
+    let table = {
+        "name": "sam_relatie",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_relatie').refs
+        },
+        "query": require('./sam_relatie').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_relatie_optin() {
+    let table = {
+        "name": "sam_relatie_optin",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_relatie_optin').refs
+        },
+        "query": require('./sam_relatie_optin').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_relatieoptingdpr_pivot() {
+    let table = {
+        "name": "sam_relatieoptingdpr_pivot",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_relatieoptingdpr_pivot').refs
+        },
+        "query": require('./sam_relatieoptingdpr_pivot').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_sales_trajecten() {
+    let table = {
+        "name": "sam_sales_trajecten",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_sales_trajecten').refs
+        },
+        "query": require('./sam_sales_trajecten').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_soortbrandstof() {
+    let table = {
+        "name": "sam_soortbrandstof",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_soortbrandstof').refs
+        },
+        "query": require('./sam_soortbrandstof').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_soortklantcategorie() {
+    let table = {
+        "name": "sam_soortklantcategorie",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_soortklantcategorie').refs
+        },
+        "query": require('./sam_soortklantcategorie').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_table_hashes() {
+    let table = {
+        "name": "sam_table_hashes",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_table_hashes').refs
+        },
+        "query": require('./sam_table_hashes').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_trajectfilterleads() {
+    let table = {
+        "name": "sam_trajectfilterleads",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_trajectfilterleads').refs
+        },
+        "query": require('./sam_trajectfilterleads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_trajects() {
+    let table = {
+        "name": "sam_trajects",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_trajects').refs
+        },
+        "query": require('./sam_trajects').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_trajects_def_offerte() {
+    let table = {
+        "name": "sam_trajects_def_offerte",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_trajects_def_offerte').refs
+        },
+        "query": require('./sam_trajects_def_offerte').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_tajects_extern() {
+    let table = {
+        "name": "sam_tajects_extern",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_tajects_extern').refs
+        },
+        "query": require('./sam_tajects_extern').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function sam_verkoper() {
+    let table = {
+        "name": "sam_verkoper",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./sam_verkoper').refs
+        },
+        "query": require('./sam_verkoper').query
+    }
+    pk.addSource(table);
+    return table;
+}
 module.exports = {
     activecampaign_edm,
     ga4_events,
@@ -271,5 +607,31 @@ module.exports = {
     hubspot_bigquerylogging,
     hubspot_emailcampaigns,
     hubspot_emailevents,
-    googleads_campaignlabel
+    googleads_campaignlabel,
+    sam_adres,
+    sam_aflever_trajecten,
+    sam_aflevering,
+    sam_aflever_model,
+    sam_afsluitreden,
+    sam_automerk,
+    sam_dealer,
+    sam_herkomst,
+    sam_occasion,
+    sam_offerte_status,
+    sam_offerte_vtr,
+    sam_offertes,
+    sam_relatie,
+    sam_relatieoptin,
+    sam_relatieoptingdpr_pivot,
+    sam_sales_trajecten,
+    sam_soortbrandstof,
+    sam_soortklantcategorie,
+    sam_table_hashes,
+    sam_trajectfilterleads,
+    sam_trajectfilterorders,
+    sam_trajects,
+    sam_trajects_def_offerte,
+    sam_trajects_extern,
+    sam_verkoper
+    
 }
