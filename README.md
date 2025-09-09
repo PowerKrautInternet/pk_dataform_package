@@ -11,6 +11,7 @@ Current features:
 
 1. **Het definiëren van bronnen**
 2. **Het definiëren van welke query's je wilt gebruiken**
+   
 
 Deze structuur is opgezet om consistent, herbruikbaar en modulair om te gaan met verschillende databronnen en lagen in je datamodel, met gebruik van [Dataform](https://dataform.co/).
 
