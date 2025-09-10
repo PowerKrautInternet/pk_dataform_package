@@ -15,7 +15,7 @@ FROM (
     SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
         FROM
            ${ref("samDataProducer_lasttransaction")} as first
-           WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "samtablehashes")} WHERE tableName = 'GEBRUIKER')
+           WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "sam_table_hashes")} WHERE tableName = 'GEBRUIKER')
            AND RECEIVEDON = (
               SELECT MAX(RECEIVEDON)
               FROM ${ref("samDataProducer_lasttransaction")} as second
