@@ -13,7 +13,7 @@ FROM (
   SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
     FROM
        ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as first
-       WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "samtablehashes")}  WHERE tableName = 'TRAJECTEXTERNGU')
+       WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "sam_table_hashes")}  WHERE tableName = 'TRAJECTEXTERNGU')
        AND RECEIVEDON = (
           SELECT MAX(RECEIVEDON)
           FROM ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as second
