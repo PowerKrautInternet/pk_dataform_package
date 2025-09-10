@@ -23,7 +23,7 @@ SELECT
         TRAJECT_HERKOMSTID,
         TRAJECT_DTCMEDIA_CRM_ID,
         --TRAJECTAFSLUITREDEN_OMSCHRIJVING
-FROM ${ref("df_rawdata_views", "sam_traject")} TRAJECT
+FROM ${ref("df_rawdata_views", "sam_trajects")} TRAJECT
 
 WHERE TRAJECT_SOORTTRAJECTID = "2" AND TRAJECTSTATUSID IN ("1", "2", "3")
 

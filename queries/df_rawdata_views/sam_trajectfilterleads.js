@@ -22,7 +22,7 @@ SELECT
         TRAJECT_LEADKLASSEID,
         TRAJECT_AUTONAAMKORT,
         TRAJECT_AUTONAAMLANG
-FROM ${ref("df_rawdata_views", "sam_traject")}
+FROM ${ref("df_rawdata_views", "sam_trajects")}
 
 `
 let refs = pk.getRefs()
