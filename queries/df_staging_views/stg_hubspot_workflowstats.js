@@ -16,6 +16,9 @@ SELECT
         campagne.workflow AS hs_workflow,
         campagne.edmworkflow AS type,
     `)}
+    session_campaign,
+    session_source_medium,
+    kanaal
 
 FROM (
     SELECT
@@ -101,6 +104,28 @@ FROM (
 ) hubspot
 ${join("LEFT JOIN", "df_googlesheets_tables", "gs_mapping_edmworkflow_campagne", `AS campagne ON hubspot.edm_name = campagne.edm ${ifSource("hubspot_bigquerylogging", "OR hubspot.hs_workflow_name = campagne.workflow")}`)}
 ${join("LEFT JOIN", "df_googlesheets_tables", "gs_mapping_edmworkflow", "AS mapping ON hubspot.edm_name = mapping.edm")}
+${join(`LEFT JOIN (SELECT
+MAX(IFNULL(session_source, first_user_source)) as session_source,
+MAX(IFNULL(session_medium, first_user_medium)) as session_medium,
+MAX(IFNULL(session_campaign, first_user_campaign_name)) as session_campaign,
+MAX(session_source_medium) as session_source_medium,
+MAX(IFNULL(kanaal,
+    CASE
+        WHEN regexp_contains(session_source,'dv360') 
+        OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
+        WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'META'
+        WHEN regexp_contains(session_source,'linkedin')
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
+        WHEN regexp_contains(session_source,'google|adwords')
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Google Ads'
+        WHEN regexp_contains(session_source,'bing')
+        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
+        WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
+        ELSE NULL
+    END)) AS kanaal,
+session_content
+FROM`, "df_staging_tables", "stg_ga4_events_sessies", "GROUP BY session_content) AS campagnes ON session_content = hs_email_campaignId")}
 `
 let refs = getRefs()
 module.exports = {query, refs}
