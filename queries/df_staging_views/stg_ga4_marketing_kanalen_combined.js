@@ -13,7 +13,7 @@ SELECT
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    account),
+    account, hs_workflow_name, edm_name),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
