@@ -6,7 +6,9 @@ let query = `
 SELECT 
     ga4.* EXCEPT(kanaal, sessie_conversie_bron),
     IFNULL(sessie_conversie_bron, kanaal) as kanaal,
-    kanaal as kanaal_groep
+    kanaal as kanaal_groep,
+    ${ifSource("stg_hubspot_workflowstats" ,`hs_workflow_name,
+    edm_name,`)}
 
 FROM(
 SELECT
@@ -82,6 +84,12 @@ SELECT
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 
+    ${join(`LEFT JOIN (SELECT
+MAX(hs_workflow_name) AS hs_workflow_name,
+MAX(edm_name) AS edm_name,
+hs_email_campaignId
+FROM`,"stg_hubspot_workflowstats", "AS hs GROUP BY hs_email_campaignId) ON session_content = hs_email_campaignId")}
+
 
 `
 

@@ -13,7 +13,7 @@ SELECT
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    account),
+    account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
@@ -41,14 +41,15 @@ SELECT
         ifSource("stg_lef_leads_agg", "lef.kanaal"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.kanaal"),
-        ifSource("stg_activecampaign_ga4_sheets", "ac.kanaal")
+        ifSource("stg_activecampaign_ga4_sheets", "ac.kanaal"),
+        ifSource("stg_hubspot_workflowstats","hs.kanaal")
     ])} as kanaal,
     ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
         ifSource("stg_lef_leads_agg", "lef.session_campaign"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.onderwerp"),
-        ifSource("stg_hubspot_workflowstats", "hs_source")
+        ifSource("stg_hubspot_workflowstats", "hs.session_campaign"),
     ])} as campaign_name,
     ${ifNull([
         "ga4.event_date",
@@ -126,7 +127,8 @@ SELECT
     ], "AS session_geo_city,")}
     
     ${ifNull(["ga4.session_source_medium",
-        ifSource("stg_lef_leads_agg","lef.session_source_medium")
+        ifSource("stg_lef_leads_agg","lef.session_source_medium"),
+        ifSource("stg_hubspot_workflowstats", "hs.session_source_medium")
     ], "AS session_source_medium,")}
 
     ${ifNull(["ga4.user_pseudo_id",
@@ -156,7 +158,9 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_sam_offertes","offerte_SALESTRAJECT_TRAJECTID, offerte_SALESTRAJECT_AFGERONDDATUM, offerte_SALESTRAJECT_CREATIEDATUM, offerte_OFFERTESTATUS_OMSCHRIJVING, offerte_OFFERTE_TOTAALBEDRAG, offerte_HERKOMST_OMSCHRIJVING, offerte_OFFERTE_OFFERTEID, getekende_offertes, offerte_SALESTRAJECT_TRAJECTSTATUSID, offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, offerte_MERK_OMSCHRIJVING, offerte_AFLEVERINGMODEL_OMSCHRIJVING, offerte_DEALER_NAAM, offerte_VERKOPER_NAAM,")}
-    ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron),")}
+    ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
+    ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
+    ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal")], "AS uitgave_bron,")}
 
