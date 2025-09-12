@@ -16,6 +16,9 @@ SELECT
         campagne.workflow AS hs_workflow,
         campagne.edmworkflow AS type,
     `)}
+    session_campaign,
+    session_source_medium,
+    kanaal
 
 FROM (
     SELECT
