@@ -128,7 +128,7 @@ ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = ka
 
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID")}
 ) lef
-${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem")}
+${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging")}
 
 WHERE lead_rank = 1
 `
