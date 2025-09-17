@@ -119,9 +119,9 @@ FROM (
     MAX(datum_tenaamstelling) AS datum_tenaamstelling
   FROM`, "stg_openRdwData", 
          `GROUP BY
-    kenteken)
+    kenteken) rdw
 ON
-  REPLACE(trade_in_license_plate, "-", "") = kenteken`)} rdw
+  REPLACE(trade_in_license_plate, "-", "") = kenteken`)} 
 ${join(`LEFT JOIN (
   SELECT
   * EXCEPT(rank)
