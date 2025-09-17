@@ -62,7 +62,7 @@ SELECT
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
         ifSource("stg_hubspot_workflowstats", "hs_date"),
-        ifSource("stg_otm_aggregated", "taxation_date_otm")
+        ifSource("stg_otm_aggregated", "DATE(taxation_date_otm)")
     ])} as record_date,
     ${ifNull([
         "ga4.session_campaign_id",
