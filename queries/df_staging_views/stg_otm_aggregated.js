@@ -137,8 +137,7 @@ ${join(`LEFT JOIN (
        `WHERE bron = "Taxatie Module Online")
   WHERE rank = 1) lef
 ON REPLACE(huidigKenteken, '-', '') = kenteken AND DATE(created_at) = aangemaaktDatum
-WHERE
-  rank = 1`)}
+`)}
 ${join(`LEFT JOIN (SELECT
 MAX(IFNULL(session_campaign, first_user_campaign_name)) as session_campaign,
 MAX(session_source_medium) as session_source_medium,
@@ -162,7 +161,8 @@ FROM`, "df_staging_tables", "stg_ga4_events_sessies", `
 GROUP BY submission_id_otm) AS ga4 
 ON submission_id_otm = submission_id`
 )}
-
+WHERE
+  rank = 1
 `
 let refs = getRefs()
 module.exports = {query, refs}
