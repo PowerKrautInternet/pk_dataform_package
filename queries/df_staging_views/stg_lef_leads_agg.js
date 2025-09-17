@@ -121,7 +121,7 @@ LEFT JOIN
 (SELECT
 *
 FROM
-  ${ref("df_staging_tables", "stg_ga4_events_sessies")} 
+  ${resolve("df_staging_tables", "stg_ga4_events_sessies")}
 WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
