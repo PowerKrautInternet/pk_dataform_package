@@ -159,7 +159,7 @@ MAX(IFNULL(kanaal,
 submission_id_otm
 FROM`, "df_staging_tables", "stg_ga4_events_sessies", `
 GROUP BY submission_id_otm) AS ga4 
-ON submission_id_otm = submission_id`
+ON CAST(submission_id_otm AS STRING) = submission_id`
 )}
 WHERE
   rank = 1
