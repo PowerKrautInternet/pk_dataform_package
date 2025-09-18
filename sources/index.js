@@ -211,15 +211,15 @@ function ifNull(values, alias = ""){
 }
 
 function ifSource(name, query){
-    if(Array.isArray(name)) {
-        for(let s in name) {
-            if (ref(name, "", true).startsWith("NOT FOUND")) {
+    if (Array.isArray(name)) {
+        for (let s in name) {
+            if (ref(name[s], "", true).startsWith("NOT FOUND")) {
                 return "/* NOT FOUND // " + query + "*/";
             }
         }
     } else {
         if (ref(name, "", true).startsWith("NOT FOUND")) {
-            return "/* NOT FOUND // " + query + "*/"
+            return "/* NOT FOUND // " + query + "*/";
         }
     }
     return query;
