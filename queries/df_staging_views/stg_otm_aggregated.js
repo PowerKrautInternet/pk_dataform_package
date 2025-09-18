@@ -43,11 +43,11 @@ SELECT
   taxation_date AS taxation_date_otm,
   LEFleadID AS LEFleadID_otm,
   DATE(created_at) AS created_at_date_otm,
-  ${ifSource(["stg_openRdwData", "lef_leads"], `
+  ${ifSource("stg_openRdwData", `
     datum_tenaamstelling AS datum_tenaamstelling_otm,
     IF(DATE(datum_tenaamstelling) >= DATE(created_at), 1,0) AS verkocht_otm,`)}
   DATE(lef.aangemaaktDatum) AS aangemaaktDatum_otm,
-  ${ifSource("stg_openRdwData", `
+  ${ifSource(["stg_openRdwData", "lef_leads"], `
     IF(heeftOrder = "true" AND DATE(datum_tenaamstelling) < DATE(created_at), 1,0) AS in_aflevering_otm,
     IF(DATE(datum_tenaamstelling) >= DATE(created_at) AND (lef.heeftOrder = "false" OR lef.heeftOrder IS NULL), 1,0) AS elders_verkocht_otm,
     IF(lef.heeftOrder = 'true', 1,0) AS heeft_order_otm,
