@@ -122,6 +122,7 @@ MAX(IFNULL(kanaal,
         WHEN regexp_contains(session_source,'bing')
         AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
         WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
+        WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
         ELSE NULL
     END)) AS kanaal,
 session_content
