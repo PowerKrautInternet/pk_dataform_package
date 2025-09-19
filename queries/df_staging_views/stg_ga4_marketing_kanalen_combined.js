@@ -13,7 +13,9 @@ SELECT
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}),
+    submission_id_otm,
+    account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
+    ),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
@@ -168,7 +170,8 @@ SELECT
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal")], "AS uitgave_bron,")}
-    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(taxation_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm )")}
+    ${ifNull(["ga4.submission_id_otm", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
+    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(taxation_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm)")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
