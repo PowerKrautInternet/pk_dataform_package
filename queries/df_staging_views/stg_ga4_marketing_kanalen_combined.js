@@ -64,7 +64,7 @@ SELECT
         ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
         ifSource("stg_hubspot_workflowstats", "hs_date"),
-        ifSource("stg_otm_aggregated", "DATE(taxation_date_otm)")
+        ifSource("stg_otm_aggregated", "created_at_date_otm")
     ])} as record_date,
     ${ifNull([
         "ga4.session_campaign_id",
@@ -171,7 +171,7 @@ SELECT
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie")], "AS uitgave_categorie,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal")], "AS uitgave_bron,")}
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
-    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(taxation_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm)")}
+    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(created_at_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm)")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
