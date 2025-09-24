@@ -81,7 +81,10 @@ SELECT
     geo_city as session_geo_city,
     geo_country as session_geo_country,
     geo_region as session_geo_region,
-    geo_continent as session_geo_continent
+    geo_continent as session_geo_continent,
+    ${ifSource("stg_ga4_dealerevents", `dealer_sessie AS dealer_sessie,
+    dealer_event AS dealer_event,
+    email AS email`)}
 
 FROM(
 SELECT 
@@ -170,6 +173,9 @@ SELECT
     event_formfields_soort,
     event_formfields_titel,
     event_formfields_vestiging,
+    ${ifSource("stg_ga4_dealerevents", `dealer_sessie AS dealer_sessie,
+    dealer_event AS dealer_event,
+    email AS email`)}
 
 FROM ${ref("ga4_events")}
 
