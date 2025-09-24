@@ -32,9 +32,9 @@ SELECT
         ifSource("stg_pivot_targets", "cast(target_kanaal as string)"),    
     ])} as kanaal,
     ${ifNull([
-        "CAST(merk_event as string)",
-        ifSource("stg_pivot_targets", "cast(target_merk as string)"),    
-    ])} as merk_event,
+        ifSource("gs_merken", "CAST(merk_event as string)"),
+        ifSource("stg_pivot_targets", "cast(target_merk as string)")    
+    ], "as merk_event,")}
     ${ifNull([
         "event_date",
         ifSource("stg_pivot_targets", "target_record_datum"),
