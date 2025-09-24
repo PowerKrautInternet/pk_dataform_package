@@ -13,10 +13,10 @@ FROM(
     * EXCEPT(session_default_channel_group),
     ${ifSource("gs_merken", `${ref("lookupTable")}(
         event_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))
     ) as merk_event,
     ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))) as merk_session,`)}
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))) as merk_session,`)}
     session_default_channel_group,
     CASE
     WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
