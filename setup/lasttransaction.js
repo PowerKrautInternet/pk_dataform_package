@@ -14,7 +14,7 @@ function lasttransaction (refVal) {
     return `
     
         BEGIN
-        CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}\` OPTIONS(location="EU");
+        CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}\` OPTIONS(location="${dataform.projectConfig.defaultLocation ?? 'europe-west4'}");
         EXCEPTION WHEN ERROR THEN
         IF NOT CONTAINS_SUBSTR(@@error.message, "already exists: dataset") AND
         NOT CONTAINS_SUBSTR(@@error.message, "too many dataset metadata update operations") AND
