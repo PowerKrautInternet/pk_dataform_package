@@ -4,20 +4,20 @@ let ref = pk.ref
 let query = `
 
 SELECT
-* EXCEPT(merk_event, merk_session),
+* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
     IFNULL(merk_event, merk_session) AS merk_event,
-    IFNULL(merk_session, merk_event) AS merk_session,
+    IFNULL(merk_session, merk_event) AS merk_session`)},
     IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal
 
 FROM(
     SELECT
     * EXCEPT(session_default_channel_group),
-    ${ref("lookupTable")}(
+    ${ifSource("gs_merken", `${ref("lookupTable")}(
         event_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))
     ) as merk_event,
     ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))) as merk_session,
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))) as merk_session,`)}
     session_default_channel_group,
     CASE
     WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
