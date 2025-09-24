@@ -602,6 +602,20 @@ function sam_verkoper() {
     pk.addSource(table);
     return table;
 }
+
+function taxatiemoduleonline() {
+    let table = {
+        "name": "taxatiemoduleonline",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./taxatiemoduleonline').refs
+        },
+        "query": require('./taxatiemoduleonline').query
+    }
+    pk.addSource(table);
+    return table;
+}
 module.exports = {
     activecampaign_edm,
     ga4_events,
@@ -645,6 +659,7 @@ module.exports = {
     sam_trajects,
     sam_trajects_def_offerte,
     sam_trajects_extern,
-    sam_verkoper
+    sam_verkoper,
+    taxatiemoduleonline
     
 }

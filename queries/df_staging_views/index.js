@@ -363,6 +363,21 @@ function stg_sam_orders() {
     pk.addSource(table);
     return table;
 }
+
+function stg_otm_aggregated() {
+    let table = {
+        "name": "stg_otm_aggregated",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_otm_aggregated').refs
+        },
+        "query": require('./stg_otm_aggregated').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -389,5 +404,6 @@ module.exports = {
     sam_trajects_leads,
     sam_trajects_offertes,
     stg_sam_offertes,
-    stg_sam_orders
+    stg_sam_orders,
+    stg_otm_aggregated
 }
