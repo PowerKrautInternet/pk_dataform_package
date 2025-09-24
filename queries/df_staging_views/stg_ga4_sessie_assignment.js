@@ -1,6 +1,5 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
+let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
     
 SELECT
@@ -184,5 +183,5 @@ AND event_name = 'session_start'
 )
 
 `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
