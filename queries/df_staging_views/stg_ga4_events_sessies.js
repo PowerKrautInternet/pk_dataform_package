@@ -1,6 +1,5 @@
 /*config*/
 let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
-let ref = pk.ref
 let query = `
 
 SELECT
