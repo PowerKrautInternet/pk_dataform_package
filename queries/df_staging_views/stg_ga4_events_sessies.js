@@ -146,5 +146,5 @@ AND events.event_ga_session_id = sessie_assignment.ga_session_id
 AND events.account = sessie_assignment.account)))
 
 `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
