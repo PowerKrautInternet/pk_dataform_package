@@ -7,7 +7,7 @@ SELECT
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
-        `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`
+        ifSource("gs_merken", `${ref("lookupTable")}(campaign_name, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`)
     ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),

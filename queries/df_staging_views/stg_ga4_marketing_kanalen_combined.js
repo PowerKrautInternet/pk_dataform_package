@@ -83,7 +83,7 @@ SELECT
     ], "as device_category,")}
     ${ifNull(["ga4.session_geo_country",                ifSource("stg_marketingdashboard_searchconsole",    "searchconsole.country")],              "as geo_country,")}
     ${ifNull([
-        "ga4.merk_event",                         
+        ifSource("gs_merken", "ga4.merk_event"),                         
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
         ifSource("stg_lef_leads_agg", "lef.merk_session"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
