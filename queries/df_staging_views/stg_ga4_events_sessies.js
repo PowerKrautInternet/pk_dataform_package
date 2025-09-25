@@ -1,23 +1,22 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
+let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
-* EXCEPT(merk_event, merk_session),
+* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
     IFNULL(merk_event, merk_session) AS merk_event,
-    IFNULL(merk_session, merk_event) AS merk_session,
+    IFNULL(merk_session, merk_event) AS merk_session`)},
     IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal
 
 FROM(
     SELECT
     * EXCEPT(session_default_channel_group),
-    ${ref("lookupTable")}(
+    ${ifSource("gs_merken", `${ref("lookupTable")}(
         event_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))
     ) as merk_event,
     ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken")}))) as merk_session,
+        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))) as merk_session,`)}
     session_default_channel_group,
     CASE
     WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
@@ -137,6 +136,9 @@ FROM(
     IFNULL(events.event_buy_item_id, sessie_assignment.event_buy_item_id) AS event_buy_item_id,
     IFNULL(events.event_trade_in_bouwjaar, sessie_assignment.event_trade_in_bouwjaar) AS event_trade_in_bouwjaar,
     IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
+    ${ifSource("stg_ga4_dealerevents", `IFNULL(events.dealer_sessie, sessie_assignment.dealer_sessie) AS dealer_sessie,
+    IFNULL(events.dealer_event, sessie_assignment.dealer_event) AS dealer_event,
+    IFNULL(events.email, sessie_assignment.email) AS email`)}
 
 
     FROM ${ref("ga4_events")} events
@@ -147,5 +149,5 @@ AND events.event_ga_session_id = sessie_assignment.ga_session_id
 AND events.account = sessie_assignment.account)))
 
 `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
