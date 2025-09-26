@@ -1,7 +1,7 @@
-config {
-    type: "view",
-    schema: "df_rawdata_views"
-}
+/*config*/
+let pk = require("../../sources")
+let ref = pk.ref
+let query = `
 
 SELECT
   JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
@@ -43,3 +43,7 @@ SELECT
 FROM
     ${ref("vistar_media_dataproducer_lasttransaction")}
 WHERE JSON_VALUE(PAYLOAD, '$.type') = "VistarMediaReportPublisher"
+
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}
