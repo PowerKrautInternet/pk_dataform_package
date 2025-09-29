@@ -279,7 +279,7 @@ function getTypeSource(source){
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || source.type === "dataProducer") type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
-    else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_")) type = "DV360"
+    else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_") || name === "DV360") type = "DV360"
     else if (name === "searchdata_url_impression") type = "google_search_console"
     return type
 }
