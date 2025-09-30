@@ -95,6 +95,7 @@ FROM(
     session_landingpage_location,
     session_landingpage_title,
     submission_id_otm,
+    conversion_value_ga4,
     IFNULL(session_engaged, IFNULL(events.event_engaged_session_event, 0)) AS session_engaged,
     IFNULL(sessie_assignment.user_first_touch_timestamp, events.user_first_touch_timestamp) AS user_first_touch_timestamp,
     IFNULL(sessie_assignment.is_active_user, events.is_active_user) as is_active_user,
