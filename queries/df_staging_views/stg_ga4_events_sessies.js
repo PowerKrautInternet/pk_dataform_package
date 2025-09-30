@@ -19,18 +19,19 @@ FROM(
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))) as merk_session,`)}
     session_default_channel_group,
     CASE
+    WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
     WHEN session_source = '(direct)' AND (session_medium IN ('(not set)', '(none)') OR session_medium IS NULL) THEN 'Direct'
     WHEN REGEXP_CONTAINS(session_campaign, 'cross-network') THEN 'Cross-network'
     WHEN (REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart') OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$')) AND REGEXP_CONTAINS(session_medium, '^(.*cp.*|ppc|paid.*)$') THEN 'Paid Shopping'
     WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex|adwords')
     AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Search'
-    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|Facebook|fb|instagram|ig|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|paid.*)$') THEN 'Paid Social'
+    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|Facebook|fb|instagram|ig|linkedin|pinterest|tiktok|twitter|social|meta') AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|paid.*)$') THEN 'Paid Social'
     WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
     AND REGEXP_CONTAINS(session_medium,'^(.*cp.*|ppc|paid.*)$') THEN 'Paid Video'
     WHEN session_medium IN ('display', 'banner', 'expandable', 'interstitial', 'cpm') THEN 'Display'
     WHEN REGEXP_CONTAINS(session_source,'alibaba|amazon|google shopping|shopify|etsy|ebay|stripe|walmart')
     OR REGEXP_CONTAINS(session_campaign, '^(.*(([^a-df-z]|^)shop|shopping).*)$') THEN 'Organic Shopping'
-    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|fb|instagram|linkedin|pinterest|tiktok|twitter|whatsapp|social|meta') OR session_medium IN ('social', 'social-network', 'social-media', 'sm', 'social network', 'social media') THEN 'Organic Social'
+    WHEN REGEXP_CONTAINS(session_source,'badoo|facebook|fb|instagram|linkedin|pinterest|tiktok|twitter|social|meta') OR session_medium IN ('social', 'social-network', 'social-media', 'sm', 'social network', 'social media') THEN 'Organic Social'
     WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
     OR REGEXP_CONTAINS(session_medium,'^(.*video.*)$') THEN 'Organic Video'
     WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex') OR session_medium = 'organic' THEN 'Organic Search'

@@ -95,6 +95,7 @@ FROM(
   session_medium,
   session_source_medium,
   CASE
+    WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
     WHEN regexp_contains(session_source,'dv360') 
     OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
     WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
@@ -107,7 +108,6 @@ FROM(
     AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
     WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
     WHEN regexp_contains(LOWER(session_source),'hs_') OR regexp_contains(LOWER(session_source),'hubspot') THEN 'Hubspot'
-    WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
     ELSE NULL
   END AS sessie_conversie_bron,
   session_campaign,
