@@ -140,7 +140,7 @@ FROM(
     IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
     ${ifSource("stg_ga4_dealerevents", `IFNULL(events.dealer_sessie, sessie_assignment.dealer_sessie) AS dealer_sessie,
     IFNULL(events.dealer_event, sessie_assignment.dealer_event) AS dealer_event,
-    IFNULL(events.email, sessie_assignment.email) AS email`)}
+    events.email AS email`)}
 
 
     FROM ${ref("ga4_events")} events
