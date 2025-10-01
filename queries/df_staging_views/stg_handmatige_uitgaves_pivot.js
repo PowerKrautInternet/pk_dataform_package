@@ -5,7 +5,7 @@ let query = `
 SELECT uitgave_bron,
 uitgave_merk,
 uitgave_categorie,
-date AS record_datum,
+jaar_maand AS record_datum,
 uitgaven AS uitgaven,
 FROM(
 SELECT uitgave_bron,
@@ -13,11 +13,6 @@ SELECT uitgave_bron,
                  uitgave_categorie,
                  PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
                  uitgaven,
-                 GENERATE_DATE_ARRAY(
-                         PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)),
-                         LAST_DAY(PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)), MONTH)
-                 )                                         as dates
-
           FROM (SELECT uitgave_bron,
                        uitgave_merk,
                        uitgave_categorie,
@@ -52,9 +47,6 @@ SELECT uitgave_bron,
                       FROM ${ref("googleSheets", "gs_handmatigekosten")})) as uitgaven_totaal
                    CROSS JOIN
                UNNEST(uitgaven_totaal.row) AS r) as date_mapping
-             CROSS JOIN
-         UNNEST(dates) as date
-
 `
 let refs = pk.getRefs()
 module.exports = {query, refs}
