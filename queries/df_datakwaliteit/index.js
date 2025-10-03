@@ -247,15 +247,17 @@ function dk_monitor(){
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
-                query += sources[s].alias ?? "'"
+                let key1_query = ""
                 let names = name.split("_")
                 for(let i = 4; names[i] !== "dv360"; i++){
                     if (i > 4){
-                        query += " "
+                        key1_query += " "
                     }
-                    query += names[i]
+                    key1_query += names[i]
                 }
-                query += "'"
+                key1_query = sources[s].alias ?? key1_query;
+                key1_query = "'" + key1_query + "'"
+                query += key1_query;
             } else if (type === "google_search_console"){
                 query += "site_url"
             }
