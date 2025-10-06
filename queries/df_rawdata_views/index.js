@@ -57,6 +57,20 @@ function dv360_data () {
     return table;
 }
 
+function vistar_media_ads () {
+    let table = {
+        "name": "vistar_media_ads",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./vistar_media_ads').refs
+        },
+        "query": require('./vistar_media_ads').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function activecampaign_edm () {
     let table = {
         "name": "activecampaign_edm",
