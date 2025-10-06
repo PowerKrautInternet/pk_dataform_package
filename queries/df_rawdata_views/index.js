@@ -636,6 +636,7 @@ module.exports = {
     syntec_orders,
     syntec_leads,
     dv360_data,
+    vistar_media_ads,
     activecampaign_workflows,
     bing_ad_group_performance,
     bing_assetgroup_performance,
