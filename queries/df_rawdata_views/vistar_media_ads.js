@@ -41,7 +41,7 @@ SELECT
   CAST(JSON_VALUE(PAYLOAD, '$.response.advertiser_eCPM') AS FLOAT64) AS advertiser_ecpm
 
 FROM
-    ${ref("vistar_media_dataproducer_lasttransaction")}
+    ${ref("vistarMediaDataProducerStellantis_lasttransaction")}
 WHERE JSON_VALUE(PAYLOAD, '$.type') = "VistarMediaReportPublisher"
 
 `
