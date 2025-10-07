@@ -9,6 +9,7 @@ SELECT
 
 FROM(
   SELECT
+  account,
   advertiser_name,
   media_owner_display_name,
   venue_type,
@@ -32,6 +33,7 @@ FROM
   ${ref("vistar_media_ads")} placements
 
 GROUP BY
+  account,
   advertiser_name,
   media_owner_display_name,
   venue_type,
