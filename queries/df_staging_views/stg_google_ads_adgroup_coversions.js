@@ -48,3 +48,6 @@ GROUP BY
     segments_device,
     segments_conversion_action_name
 
+`
+let refs = pk.getRefs()
+module.exports = {query, refs}
