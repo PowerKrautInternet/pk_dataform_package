@@ -1,7 +1,7 @@
-config {
-    type: "view",
-    schema: "df_staging_views"
-}
+/*config*/
+let pk = require("../../sources")
+let ref = pk.ref
+let query = `
 
 SELECT 
     ad_group.customer_id,
