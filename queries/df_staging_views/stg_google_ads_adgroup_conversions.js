@@ -23,15 +23,15 @@ SELECT
     SUM(ad_group_conversions.metrics_conversions) AS conversions,
     SUM(ad_group_conversions.metrics_conversions_value) AS conversions_value
 
-FROM ${ref('googleAds', 'ads_AdGroup_7594935172')} ad_group 
+FROM ${ref('ads_AdGroup_7594935172')} ad_group 
 
-LEFT JOIN ${ref('googleAds', 'ads_AdGroupConversionStats_7594935172')} ad_group_conversions
+LEFT JOIN ${ref('ads_AdGroupConversionStats_7594935172')} ad_group_conversions
 ON
   ad_group.customer_id = ad_group_conversions.customer_id 
   AND ad_group.campaign_id = ad_group_conversions.campaign_id
   AND ad_group.ad_group_id = ad_group_conversions.ad_group_id
 
-LEFT JOIN (SELECT * FROM ${ref('googleAds', 'ads_Campaign_7594935172')} WHERE _DATA_DATE = _LATEST_DATE) ad_campaign 
+LEFT JOIN (SELECT * FROM ${ref('ads_Campaign_7594935172')} WHERE _DATA_DATE = _LATEST_DATE) ad_campaign 
 ON 
     ad_group.customer_id = ad_campaign.customer_id 
     AND ad_group.campaign_id = ad_campaign.campaign_id
