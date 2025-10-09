@@ -37,9 +37,9 @@ FROM(
     SUM(campaign_stats.metrics_clicks) AS clicks,
     (SUM(campaign_stats.metrics_cost_micros) / 1000000) AS Cost,
 
-FROM ${ref('googleAds', 'ads_Campaign_7594935172')} ad_campaign 
+FROM ${ref('ads_Campaign_7594935172')} ad_campaign 
 
-LEFT JOIN ${ref('googleAds', 'ads_CampaignBasicStats_7594935172')} campaign_stats
+LEFT JOIN ${ref('ads_CampaignBasicStats_7594935172')} campaign_stats
 ON
   ad_campaign.customer_id = campaign_stats.customer_id 
   AND ad_campaign.campaign_id = campaign_stats.campaign_id
