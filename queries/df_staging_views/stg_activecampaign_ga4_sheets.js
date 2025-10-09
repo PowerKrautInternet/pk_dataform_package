@@ -27,7 +27,7 @@ IFNULL(campaign_date, date) AS record_datum,
     "ActiveCampaign" AS bron,
     "ActiveCampaign" AS kanaal,
     aantal AS aantal_contacts,
-    account,
+    ac.account,
 FROM
 ${ref("df_staging_views", "stg_activecampaign_workflow_edm")} ac
 
