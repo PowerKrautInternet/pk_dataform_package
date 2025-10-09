@@ -4,6 +4,7 @@ let ref = pk.ref
 let query = `
 
 SELECT 
+    ad_campaign.account,
     ad_campaign.customer_id,
     ad_campaign.campaign_id,
     MAX(ad_campaign.campaign_name) AS campaign_name,
@@ -29,6 +30,7 @@ AND ad_campaign.campaign_advertising_channel_type = 'PERFORMANCE_MAX'
 AND campaign_conversions.segments_date IS NOT NULL
 
 GROUP BY
+    account,
     customer_id,
     campaign_id,
     segments_date,
