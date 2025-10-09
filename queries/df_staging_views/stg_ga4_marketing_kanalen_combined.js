@@ -12,8 +12,9 @@ SELECT
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
-    user_pseudo_id,
-    submission_id_otm,
+    user_pseudo_id
+    ${ifSource("stg_otm_aggregated", ", submission_id_otm")}
+    ,
     account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
