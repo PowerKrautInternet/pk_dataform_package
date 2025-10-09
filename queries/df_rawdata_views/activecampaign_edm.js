@@ -23,6 +23,7 @@ JSON_VALUE(PAYLOAD, "$.dtcmedia_crm_id") AS dtcmedia_crm_id,
     JSON_VALUE(PAYLOAD, "$.response.unsubscribe_rate") AS unsubscribe_rate,
     JSON_VALUE(PAYLOAD, "$.response.forward_rate") AS forward_rate,
     JSON_VALUE(PAYLOAD, "$.response.bounce_rate") AS bounce_rates,
+    account,
     "eDM" AS bron,
     FROM
 ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}

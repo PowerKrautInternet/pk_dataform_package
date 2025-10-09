@@ -27,6 +27,7 @@ SELECT
   CAST(NULLIF(click_to_open_ratio, "") AS FLOAT64) AS click_to_open_ratio,
   status AS workflow_status,
   IFNULL(workflows.bron, edm.bron) AS bron,
+  account,
 
 FROM
   ${ref("df_rawdata_views", "activecampaign_workflows")} workflows
