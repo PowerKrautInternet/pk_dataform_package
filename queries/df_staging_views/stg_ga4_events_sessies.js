@@ -143,7 +143,7 @@ FROM(
     events.email AS email`)}
 
 
-    FROM ${ref("ga4_events")} events
+    FROM ${ref("df_rawdata_views","ga4_events")} events
 
 LEFT JOIN ${ref("stg_ga4_sessie_assignment")} sessie_assignment
 ON events.user_pseudo_id = sessie_assignment.user_pseudo_id 
