@@ -76,9 +76,7 @@ FROM (
         ${ifSource("stg_vistar_media_ads", "vistar_media.deal AS vistar_media_deal,")}
         ${ifSource("stg_vistar_media_ads", "vistar_media.creative_name AS vistar_media_creative_name,")}
         ${ifSource("stg_vistar_media_ads", "vistar_media.spots AS vistar_media_spots,")}
-        ${ifSource("stg_vistar_media_ads", "vistar_media.media_cost AS vistar_media_owner_display_name,")}
-        ${ifSource("stg_vistar_media_ads", "vistar_media.media_owner_display_name AS vistar_media_cost,")}
-        
+        ${ifSource("stg_vistar_media_ads", "vistar_media.media_cost AS vistar_media_media_cost,")}        
     FROM 
         ${ref("df_staging_views", "stg_googleads_combined")} google_ads
 
