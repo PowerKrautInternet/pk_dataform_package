@@ -58,7 +58,7 @@ GROUP BY
     segments_date
 ) campaign_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'google_ads_campaign_conversions')} campaign_conversions
+FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
 ON 1=0
 
 `
