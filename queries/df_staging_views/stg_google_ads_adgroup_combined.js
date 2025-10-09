@@ -5,6 +5,7 @@ let query = `
 
 SELECT 
   'Google Ads' as bron,
+  COALESCE(ad_group_stats.account, ad_group_conversions.account) AS account,
   COALESCE(ad_group_stats.customer_id, ad_group_conversions.customer_id) AS customer_id,
   COALESCE(ad_group_stats.campaign_id, ad_group_conversions.campaign_id) AS campaign_id,
   COALESCE(ad_group_stats.campaign_name, ad_group_conversions.campaign_name) AS campaign_name,
@@ -30,6 +31,7 @@ SELECT
 
 FROM(
   SELECT 
+    ad_group.account,
     ad_group.customer_id,
     ad_group.campaign_id,
     MAX(ad_campaign.campaign_name) AS campaign_name,
@@ -68,6 +70,7 @@ ad_group._DATA_DATE = ad_group._LATEST_DATE
 AND ad_group_stats.segments_date IS NOT NULL
 
 GROUP BY
+    account,
     customer_id,
     campaign_id,
     ad_group_id,
