@@ -78,7 +78,7 @@ GROUP BY
     segments_device
 ) ad_group_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'google_ads_adgroup_conversions')} ad_group_conversions
+FULL OUTER JOIN ${ref('df_staging_views', 'stg_google_ads_adgroup_conversions')} ad_group_conversions
 ON 1=0
     
     `
