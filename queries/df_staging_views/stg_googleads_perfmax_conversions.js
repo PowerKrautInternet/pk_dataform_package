@@ -17,9 +17,9 @@ SELECT
     SUM(campaign_conversions.metrics_conversions) AS conversions,
     SUM(campaign_conversions.metrics_conversions_value) AS conversions_value
 
-FROM ${ref('ads_Campaign_7594935172')} ad_campaign 
+FROM ${ref('ads_Campaign')} ad_campaign 
 
-LEFT JOIN ${ref('ads_CampaignConversionStats_7594935172')} campaign_conversions
+LEFT JOIN ${ref('ads_CampaignConversionStats')} campaign_conversions
 ON ad_campaign.customer_id = campaign_conversions.customer_id 
 AND ad_campaign.campaign_id = campaign_conversions.campaign_id
 

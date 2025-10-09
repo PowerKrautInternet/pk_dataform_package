@@ -50,15 +50,15 @@ FROM(
     SUM(ad_group_stats.metrics_clicks) AS clicks,
     (SUM(ad_group_stats.metrics_cost_micros) / 1000000) AS Cost,
 
-FROM ${ref('ads_AdGroup_7594935172')} ad_group 
+FROM ${ref('ads_AdGroup')} ad_group 
 
-LEFT JOIN ${ref('ads_AdGroupBasicStats_7594935172')} ad_group_stats
+LEFT JOIN ${ref('ads_AdGroupBasicStats')} ad_group_stats
 ON
   ad_group.customer_id = ad_group_stats.customer_id 
   AND ad_group.campaign_id = ad_group_stats.campaign_id
   AND ad_group.ad_group_id = ad_group_stats.ad_group_id
 
-LEFT JOIN (SELECT * FROM ${ref('ads_Campaign_7594935172')} WHERE _DATA_DATE = _LATEST_DATE) ad_campaign 
+LEFT JOIN (SELECT * FROM ${ref('ads_Campaign')} WHERE _DATA_DATE = _LATEST_DATE) ad_campaign 
 ON 
     ad_group.customer_id = ad_campaign.customer_id 
     AND ad_group.campaign_id = ad_campaign.campaign_id
