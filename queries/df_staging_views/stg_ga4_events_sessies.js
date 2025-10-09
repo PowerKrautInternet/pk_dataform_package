@@ -145,7 +145,7 @@ FROM(
 
     FROM ${ref("df_rawdata_views","ga4_events")} events
 
-LEFT JOIN ${ref("stg_ga4_sessie_assignment")} sessie_assignment
+LEFT JOIN ${ref("df_staging_views","stg_ga4_sessie_assignment")} sessie_assignment
 ON events.user_pseudo_id = sessie_assignment.user_pseudo_id 
 AND events.event_ga_session_id = sessie_assignment.ga_session_id
 AND events.account = sessie_assignment.account)))
