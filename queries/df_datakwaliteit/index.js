@@ -97,14 +97,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 } else {
                     query += sources[s].freshnessDays
                 }
-                query += ", NULL, "
-
-                //if the noWeekend is set the true statement of the recency if is always 0
-                if (sources[s].noWeekend === true) {
-                    query += "0"
-                } else {
-                    query += "1"
-                }
+                query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}`
                 query += `) AS RECENCY_CHECK,
                                 ${getFreshnessDays(sources[s])} as freshnessDays,
                                 ${getEnabledRecencyPublishers(sources[s])} as enabledRecency,
@@ -138,10 +131,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 }
                 query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
                 query += sources[s].freshnessDays ?? 1;
-                query += ", NULL, ";
+                query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}`;
 
                 //if the noWeekend is set the true statement of the recency if is always 0
-                sources[s].noWeekend === true ? query += "0" : query += "1"
                 query += `) AS RECENCY_CHECK,
                                 ${getFreshnessDays(sources[s])} as freshnessDays,
                                 ${getEnabledRecencyPublishers(sources[s])} as enabledRecency,
