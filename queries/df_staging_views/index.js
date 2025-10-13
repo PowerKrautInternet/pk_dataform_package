@@ -140,6 +140,20 @@ function stg_google_ads_adgroup_combined() {
     return table;
 }
 
+function stg_google_ads_adgroup_conversions() {
+    let table = {
+        "name": "stg_google_ads_adgroup_conversions",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_google_ads_adgroup_conversions').refs
+        },
+        "query": require('./stg_google_ads_adgroup_conversions').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function stg_facebookdata () {
     let table = {
         "name": "stg_facebookdata",
@@ -149,6 +163,20 @@ function stg_facebookdata () {
             "dependencies": require('./stg_facebookdata').refs
         },
         "query": require('./stg_facebookdata').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_vistar_media_ads () {
+    let table = {
+        "name": "stg_vistar_media_ads",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_vistar_media_ads').refs
+        },
+        "query": require('./stg_vistar_media_ads').query
     }
     pk.addSource(table);
     return table;
@@ -233,6 +261,20 @@ function stg_googleads_perfmax_combined() {
             "dependencies": require('./stg_googleads_perfmax_combined').refs
         },
         "query": require('./stg_googleads_perfmax_combined').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_googleads_perfmax_conversions() {
+    let table = {
+        "name": "stg_googleads_perfmax_conversions",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_googleads_perfmax_conversions').refs
+        },
+        "query": require('./stg_googleads_perfmax_conversions').query
     }
     pk.addSource(table);
     return table;
@@ -389,13 +431,16 @@ module.exports = {
     stg_ga4_marketing_kanalen_combined,
     stg_ga4_mappings_targets,
     stg_google_ads_adgroup_combined,
+    stg_google_ads_adgroup_conversions,
     stg_facebookdata,
+    stg_vistar_media_ads,
     stg_bing_ad_group_performance,
     stg_linkedin_ads_combined,
     stg_activecampaign_workflow_edm,
     stg_lef_leads_agg,
     stg_googleads_combined,
     stg_googleads_perfmax_combined,
+    stg_googleads_perfmax_conversions,
     stg_hubspot_emailevents_campaigns,
     stg_hubspot_workflowstats,
     stg_handmatige_uitgaves_pivot,

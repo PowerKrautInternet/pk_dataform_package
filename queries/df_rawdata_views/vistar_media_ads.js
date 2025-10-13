@@ -4,6 +4,7 @@ let ref = pk.ref
 let query = `
 
 SELECT
+  account,
   JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
   JSON_VALUE(PAYLOAD, '$.type') AS type,
   JSON_VALUE(PAYLOAD, '$.response.year') AS year,
@@ -41,7 +42,7 @@ SELECT
   CAST(JSON_VALUE(PAYLOAD, '$.response.advertiser_eCPM') AS FLOAT64) AS advertiser_ecpm
 
 FROM
-    ${ref("vistar_media_dataproducer_lasttransaction")}
+    ${ref("df_rawdata_views", "stellantis_vistarMediaDataProducer_lasttransaction")}
 WHERE JSON_VALUE(PAYLOAD, '$.type') = "VistarMediaReportPublisher"
 
 `
