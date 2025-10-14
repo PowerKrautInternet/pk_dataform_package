@@ -1,5 +1,17 @@
 let pk = require('../../sources');
-
+function stg_vistar_media_ads () {
+    let table = {
+        "name": "stg_vistar_media_ads",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_vistar_media_ads').refs
+        },
+        "query": require('./stg_vistar_media_ads').query
+    }
+    pk.addSource(table);
+    return table;
+}
 function stg_ga4_events_sessies () {
     let table = {
         "name": "stg_ga4_events_sessies",
@@ -405,5 +417,6 @@ module.exports = {
     sam_trajects_offertes,
     stg_sam_offertes,
     stg_sam_orders,
-    stg_otm_aggregated
+    stg_otm_aggregated,
+    stg_vistar_media_ads
 }
