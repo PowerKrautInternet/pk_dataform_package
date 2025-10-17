@@ -4,8 +4,8 @@ let query = `
     
 SELECT 
     IFNULL(adgroup_stats.bron, perf_max_stats.bron) as bron,
-    IFNULL(cast(adgroup_stats.account_id as STRING), cast(perf_max_stats.customer_id as string)) as account_id,
-    cast(IFNULL(cast(adgroup_stats.account_name as string), cast(perf_max_stats.account_name as string)) as string) as account_name,
+    IFNULL(adgroup_stats.account, perf_max_stats.account) as account,
+    IFNULL(adgroup_stats.customer_id, perf_max_stats.customer_id) as account_id,
     IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) as campaign_id,
     IFNULL(adgroup_stats.campaign_name, perf_max_stats.campaign_name) as campaign_name,
     IFNULL(adgroup_stats.campaign_advertising_channel_type, perf_max_stats.campaign_advertising_channel_type) as campaign_advertising_channel_type,
@@ -19,16 +19,16 @@ SELECT
     ad_group_status,
     ad_group_type,
     ad_group_bidding_strategy_type,
+    IFNULL(adgroup_stats.segments_conversion_action_name, perf_max_stats.segments_conversion_action_name) as conversion_action_name,
     IFNULL(adgroup_stats.impressions, perf_max_stats.impressions) as impressions,
     IFNULL(adgroup_stats.interactions, perf_max_stats.interactions) as interactions,
     IFNULL(adgroup_stats.clicks, perf_max_stats.clicks) as clicks,
+    IFNULL(adgroup_stats.Cost, perf_max_stats.Cost) as cost,
     IFNULL(adgroup_stats.conversions, perf_max_stats.conversions) as conversions,
     IFNULL(adgroup_stats.conversions_value, perf_max_stats.conversions_value) as conversions_value,
-    IFNULL(adgroup_stats.Cost, perf_max_stats.Cost) as cost,
     ${ifSource("googleads_campaignlabel","label.merk AS merk,")}
     ${ifSource("googleads_campaignlabel","label.model AS model,")}
     ${ifSource("googleads_campaignlabel","label.campagnegroep AS campagnegroep,")}
-
 
 FROM ${ref('df_staging_views', 'stg_google_ads_adgroup_combined')} adgroup_stats
 
@@ -36,7 +36,6 @@ FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_combined')} per
 ON 1=0
 
 ${join("LEFT JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
-
     
 `
 let refs = getRefs()
