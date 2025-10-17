@@ -26,7 +26,8 @@ IFNULL(campaign_date, date) AS record_datum,
     ${ifSource("gs_activecampaign_ga4_mapping", "mapping_thema AS flow_thema,")}
     "ActiveCampaign" AS bron,
     "ActiveCampaign" AS kanaal,
-    aantal AS aantal_contacts
+    aantal AS aantal_contacts,
+    ac.account,
 FROM
 ${ref("df_staging_views", "stg_activecampaign_workflow_edm")} ac
 

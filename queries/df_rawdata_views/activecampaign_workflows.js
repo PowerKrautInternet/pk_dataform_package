@@ -22,6 +22,7 @@ SELECT
   CAST(JSON_VALUE(PAYLOAD, "$.response.unsubscribe_rate") AS FLOAT64) AS unsubscribe_rate,
   CAST(JSON_VALUE(PAYLOAD, "$.response.forward_rate") AS FLOAT64) AS forward_rate,
   CAST(JSON_VALUE(PAYLOAD, "$.response.bounce_rates") AS FLOAT64) AS bounce_rates,
+  account,
   "Workflows" AS bron
 FROM
   ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}
