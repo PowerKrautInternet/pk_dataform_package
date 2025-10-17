@@ -9,6 +9,7 @@ SELECT
     kanaal as kanaal_groep,
     ${ifSource("stg_hubspot_workflowstats" ,`hs_workflow_name,
     edm_name,`)}
+    ${ifSource("gs_activecampaign_ga4_mapping", 'ac.mapping_thema,')}
 
 FROM(
 SELECT
@@ -90,7 +91,7 @@ MAX(hs_workflow_name) AS hs_workflow_name,
 MAX(edm_name) AS edm_name,
 hs_email_campaignId
 FROM`,"stg_hubspot_workflowstats", "AS hs GROUP BY hs_email_campaignId) ON session_content = hs_email_campaignId")}
-
+    ${join(`FULL OUTER JOIN`, 'googleSheets', 'gs_activecampaign_ga4_mapping', 'ac ON ac.session_campaign = ga4.session_campaign')}
 
 `
 
