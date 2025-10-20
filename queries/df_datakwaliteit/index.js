@@ -125,7 +125,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n))\n"
                 rowNr += 1
             }
-            else if (type !== "NONE" && (type !== "dataProducer" || (sources[s].recency !== false && sources[s].recency !== "false"))){
+            else if (type !== "NONE" && type !== "dataProducer"){
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
