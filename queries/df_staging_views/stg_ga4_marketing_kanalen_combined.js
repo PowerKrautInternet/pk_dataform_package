@@ -117,7 +117,7 @@ SELECT
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.click_to_open_ratio AS ac_click_to_open_ratio,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.workflow_status AS ac_workflow_status,")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","ac_workflow_edm"), ifSource("stg_activecampaign_ga4_sheets","ac_bron")], "AS ac_bron,")}
-    ${ifSource("stg_activecampaign_ga4_sheets", "ac.aantal_contacts AS ac_aantal_contacts")}
+    ${ifSource("stg_activecampaign_ga4_sheets", "ac.aantal_contacts AS ac_aantal_contacts,")}
     
     ${ifNull(["ga4.event_name", 
         ifSource("stg_lef_leads_agg","lef.event_name"
