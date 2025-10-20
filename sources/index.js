@@ -226,6 +226,21 @@ function ifSource(name, query){
     return query;
 }
 
+function isSource(name){
+    if (Array.isArray(name)) {
+        for (let s in name) {
+            if (ref(name[s], "", true).startsWith("NOT FOUND")) {
+                return false;
+            }
+        }
+    } else {
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /* @brief Controleert of minstens één van de opgegeven bronnen bestaat.
 *
 * Als er geen enkele bron gevonden wordt, wordt een "NOT FOUND"-commentaar
@@ -285,4 +300,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, isSource};

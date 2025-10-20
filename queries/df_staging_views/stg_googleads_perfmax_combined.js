@@ -1,5 +1,5 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, isSource} = require("../../sources");
 let query = `
 
 SELECT 
@@ -18,9 +18,9 @@ SELECT
   campaign_stats.interactions,
   campaign_stats.clicks,
   campaign_stats.Cost,
-  campaign_conversions.segments_conversion_action_name,
-  campaign_conversions.conversions,
-  campaign_conversions.conversions_value
+  ${isSource() ? "campaign_conversions.segments_conversion_action_name" : "NULL as segments_conversion_action_name"},
+  ${isSource() ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
+  ${isSource() ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -38,6 +38,8 @@ FROM(
     SUM(campaign_stats.metrics_interactions) AS interactions,
     SUM(campaign_stats.metrics_clicks) AS clicks,
     (SUM(campaign_stats.metrics_cost_micros) / 1000000) AS Cost,
+    SUM(campaign_stats.metrics_conversions) AS conversions,
+    SUM(campaign_stats.metrics_conversions_value) AS conversions_value,
 
 FROM ${ref('ads_Campaign')} ad_campaign 
 
@@ -58,8 +60,10 @@ GROUP BY
     segments_date
 ) campaign_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
-ON 1=0
+${ifSource("stg_googleads_perfmax_conversions", `
+    FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
+    ON 1=0
+`)}
 
 `
 let refs = getRefs()
