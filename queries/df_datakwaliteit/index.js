@@ -50,7 +50,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
         let key1 = sources[s].key1 ?? "$.type"
             //for each data source
             let name = sources[s].name ?? "";
-            if (type === "dataProducer") {
+            if (type === "dataProducer" && sources[s].recency !== false && sources[s].recency !== "false") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
@@ -204,7 +204,7 @@ function dk_monitor(){
         let key1 = sources[s].key1 ?? "$.type"
 
         //for each data source
-        if (type !== "NONE") {
+        if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
             if (rowNr > 0) { query += "\nUNION ALL\n\n" } // Just to join the sources
 
             //SELECT ...
