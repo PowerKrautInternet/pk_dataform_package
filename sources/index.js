@@ -51,7 +51,7 @@ function getSource(source) {
                 let schema = sources[s].schema ?? null;
                 let schema_match = typeof sources.schema !== "undefined" ? schema === source.schema : true
                 let name = sources[s].name.replace(/_[0-9]+$/g, "");
-                if ( source.alias ?? source.name === sources[s].alias ?? name && schema_match ) {
+                if ( ( source.alias ?? source.name === sources[s].alias ?? name ) && schema_match ) {
                     return_sources.push(sources[s]);
                 }
             }
