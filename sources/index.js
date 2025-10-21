@@ -46,12 +46,16 @@ function getSource(source) {
         if(typeof source.name !== "undefined") {
             source.schema = source.schema ?? null;
             sources.name = sources[s].name.replace(/_[0-9]+$/g, "");
+            let return_sources = [];
             for(let s in sources) {
-                if ( source.alias ?? source.name === sources[s].alias ?? sources[s].alias ) {
-                    return sources[s]
+                if ( source.alias ?? source.name === sources[s].alias ?? sources[s].name ) {
+                    return_sources.push(sources[s]);
                 }
             }
-            throw new Error(`No Sources found! sources/getSource(${source.name})`);
+            if(return_sources.length === 0) {
+                throw new Error(`No Sources found! sources/getSource(${source.name})`);
+            }
+            return return_sources;
         } else {
             throw new Error("Name of sources are an primary key! They need to be filled in! sources/getSource");
         }
