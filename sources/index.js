@@ -12,6 +12,35 @@ let sources = [] //TODO hier een import voor maken ipv een require
 
 let refs = []
 
+/**
+  @brief Retrieves a matching source object from the global `sources` collection based on name and schema.
+    The lookup logic:
+    - If `source.schema` is provided, both schema and name (or alias) must match.
+    - If `source.schema` is not provided, the function attempts to match based only on name or alias.
+    - Names may ignore numeric suffixes (e.g. `table_1` → `table`).
+    - Matches are allowed for sources with undefined aliases, `"events_*"`, `"ads_*"`, or names ending with `"Producer"`.
+
+  @param {object} source
+    The source reference to look up. Must include a `name` property, and may include a `schema` property.
+
+  @returns {object}
+    The matching source object from the global `sources` collection.
+
+  @throws {Error}
+    - If `source` is not an object.
+  - If `source.name` is missing or undefined.
+    - If no matching entry is found in the `sources` collection.
+
+  @note TODO -> lets not make it globally available
+    This function depends on a globally available `sources` collection, where each entry is expected
+    to contain at least the following properties:
+    - `name` (string)
+    - `schema` (string, optional)
+    - `alias` (string, optional)
+
+ */
+
+
 function getSource(source) {
     if(typeof source == "object"){
         if(typeof source.name !== "undefined") {
@@ -34,6 +63,31 @@ function getSource(source) {
     }
 }
 
+/**
+  @brief Builds a SQL join condition between two data sources based on their account information.
+
+  @param {object} left_source
+    The left-side source object. Must contain at least a `name` property, and optionally `schema`.
+
+  @param {object} right_source
+    The right-side source object. Must contain at least a `name` property, and optionally `schema`.
+
+  @param {string} [join_tekst]
+    Optional custom SQL join condition text. If not provided, a default condition is generated in the form:
+    `AND <left_source.name> = <right_source.name>`.
+
+  @returns {string}
+    A SQL join condition if both sources exist and have valid accounts, or an empty string otherwise.
+
+  @throws {Error}
+    - If either `left_source` or `right_source` is not an object.
+    - If the `name` property of either source is missing.
+    - If one or both sources cannot be found via the `ref()` function.
+
+  @example
+      LEFT JOIN ... ON ...
+      ${join_on_account( {name: "events_*"}, {schema: "googleSheets", name: "gs_ga4_standaard_events"} )}
+ */
 function join_on_account(left_source, right_source, join_tekst){
 
     if(typeof left_source == "object" && typeof right_source == "object"){
