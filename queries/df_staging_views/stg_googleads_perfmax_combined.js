@@ -4,16 +4,16 @@ let query = `
 
 SELECT 
   'Google Ads' as bron,
-  COALESCE(campaign_stats.account, campaign_conversions.account) AS account,
-  COALESCE(campaign_stats.customer_id, campaign_conversions.customer_id) AS customer_id,
-  COALESCE(campaign_stats.campaign_id, campaign_conversions.campaign_id) AS campaign_id,
-  COALESCE(campaign_stats.campaign_name, campaign_conversions.campaign_name) AS campaign_name,
-  COALESCE(campaign_stats.campaign_advertising_channel_type, campaign_conversions.campaign_advertising_channel_type) AS campaign_advertising_channel_type,
-  COALESCE(campaign_stats.campaign_bidding_strategy_type, campaign_conversions.campaign_bidding_strategy_type) AS campaign_bidding_strategy_type,
-  COALESCE(campaign_stats.campaign_start_date, campaign_conversions.campaign_start_date) AS campaign_start_date,
-  COALESCE(campaign_stats.campaign_end_date, campaign_conversions.campaign_end_date) AS campaign_end_date,
-  COALESCE(campaign_stats.campaign_status, campaign_conversions.campaign_status) AS campaign_status,
-  COALESCE(campaign_stats.segments_date, campaign_conversions.segments_date) AS segments_date,
+  ${ifNull(["campaign_stats.account", "campaign_conversions.account"], "AS account,")}
+  ${ifNull(["campaign_stats.customer_id", "campaign_conversions.customer_id"], "AS customer_id,")}
+  ${ifNull(["campaign_stats.campaign_id", "campaign_conversions.campaign_id"], "AS campaign_id,")}
+  ${ifNull(["campaign_stats.campaign_name", "campaign_conversions.campaign_name"], "AS campaign_name,")}
+  ${ifNull(["campaign_stats.campaign_advertising_channel_type", "campaign_conversions.campaign_advertising_channel_type"], "AS campaign_advertising_channel_type,")}
+  ${ifNull(["campaign_stats.campaign_bidding_strategy_type", "campaign_conversions.campaign_bidding_strategy_type"], "AS campaign_bidding_strategy_type,")}
+  ${ifNull(["campaign_stats.campaign_start_date", "campaign_conversions.campaign_start_date"], "AS campaign_start_date,")}
+  ${ifNull(["campaign_stats.campaign_end_date", "campaign_conversions.campaign_end_date"], "AS campaign_end_date,")}
+  ${ifNull(["campaign_stats.campaign_status", "campaign_conversions.campaign_status"], "AS campaign_status,")}
+  ${ifNull(["campaign_stats.segments_date", "campaign_conversions.segments_date"], "AS segments_date,")}
   campaign_stats.impressions,
   campaign_stats.interactions,
   campaign_stats.clicks,
