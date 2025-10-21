@@ -40,9 +40,11 @@ ${ifSource("ads_CampaignConversionStats", `
 GROUP BY
     account,
     customer_id,
-    campaign_id,
+    campaign_id, 
+${ifSource("ads_CampaignConversionStats", ` 
     segments_date,
     segments_conversion_action_name
+`)}
     
     `
 let refs = pk.getRefs()
