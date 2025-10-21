@@ -99,8 +99,8 @@ function join_on_account(left_source, right_source, join_tekst){
 
     if(typeof left_source == "object" && typeof right_source == "object"){
         if(typeof left_source.name !== "undefined" && typeof right_source.name !== "undefined") {
-            let left_source_length = getSource(left_source, true).size
-            let right_source_length = getSource(right_source, true).size
+            let left_source_length = getSource(left_source, true).length
+            let right_source_length = getSource(right_source, true).length
             if( left_source_length > 0 && right_source_length > 0 ) {
                 if(
                     typeof getSource(left_source).account !== "undefined" &&
