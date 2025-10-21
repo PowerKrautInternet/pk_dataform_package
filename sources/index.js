@@ -45,7 +45,7 @@ function getSource(source) {
     if(typeof source == "object"){
         if(typeof source.name !== "undefined") {
             source.schema = source.schema ?? null;
-            sources.name = sources.name.replace(/_[0-9]+$/g, "");
+            source.name = source.name.replace(/_[0-9]+$/g, "");
             let return_sources = [];
             for(let s in sources) {
                 let schema = sources[s].schema ?? null;
