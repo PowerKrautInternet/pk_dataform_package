@@ -54,7 +54,7 @@ function getSource(source) {
                 ) {
                     return sources[s]
                 }
-                throw new Error(`No Sources found! sources/getSource(${source})`);
+                throw new Error(`No Sources found! sources/getSource(${source.name})`);
             }
         } else {
             throw new Error("Name of sources are an primary key! They need to be filled in! sources/getSource");
