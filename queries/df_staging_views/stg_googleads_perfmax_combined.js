@@ -18,7 +18,7 @@ SELECT
   campaign_stats.interactions,
   campaign_stats.clicks,
   campaign_stats.Cost,
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.segments_conversion_action_name" : "NULL as segments_conversion_action_name"},
+  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
   ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
   ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 
