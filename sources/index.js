@@ -13,35 +13,38 @@ let sources = [] //TODO hier een import voor maken ipv een require
 let refs = []
 
 /**
-  @brief Retrieves a matching source object from the global `sources` collection based on name and schema.
-    The lookup logic:
-    - If `source.schema` is provided, both schema and name (or alias) must match.
-    - If `source.schema` is not provided, the function attempts to match based only on name or alias.
-    - Names may ignore numeric suffixes (e.g. `table_1` → `table`).
-    - Matches are allowed for sources with undefined aliases, `"events_*"`, `"ads_*"`, or names ending with `"Producer"`.
+ @brief Retrieves a matching source object from the global `sources` collection based on name and schema.
+  The lookup logic:
+  - If `source.schema` is provided, both schema and name (or alias) must match.
+  - If `source.schema` is not provided, the function attempts to match based only on name or alias.
+  - Names may ignore numeric suffixes (e.g. `table_1` → `table`).
+  - Matches are allowed for sources with undefined aliases, `"events_*"`, `"ads_*"`, or names ending with `"Producer"`.
 
-  @param {object} source
-    The source reference to look up. Must include a `name` property, and may include a `schema` property.
+ @param {object} source
+ The source reference to look up. Must include a `name` property, and may include a `schema` property.
 
-  @returns {object}
-    The matching source object from the global `sources` collection.
+ @param can_give_no_sources
 
-  @throws {Error}
-    - If `source` is not an object.
-  - If `source.name` is missing or undefined.
-    - If no matching entry is found in the `sources` collection.
 
-  @note TODO -> lets not make it globally available
-    This function depends on a globally available `sources` collection, where each entry is expected
-    to contain at least the following properties:
-    - `name` (string)
-    - `schema` (string, optional)
-    - `alias` (string, optional)
+ @returns {object}
+ The matching source object from the global `sources` collection.
+
+ @throws {Error}
+ - If `source` is not an object.
+ - If `source.name` is missing or undefined.
+ - If no matching entry is found in the `sources` collection.
+
+ @note TODO -> lets not make it globally available
+  This function depends on a globally available `sources` collection, where each entry is expected
+  to contain at least the following properties:
+  - `name` (string)
+  - `schema` (string, optional)
+  - `alias` (string, optional)
 
  */
 
 
-function getSource(source) {
+function getSource(source, can_give_no_sources = false) {
     let sources = getSources();
     if(typeof source == "object"){
         if(typeof source.name !== "undefined") {
@@ -55,7 +58,7 @@ function getSource(source) {
                     return_sources.push(sources[s]);
                 }
             }
-            if(return_sources.length === 0) {
+            if(return_sources.length === 0 && !can_give_no_sources) {
                 throw new Error(`No Sources found! sources/getSource(${source.alias ?? source.name})`);
             }
             return return_sources;
@@ -105,8 +108,8 @@ function join_on_account(left_source, right_source, join_tekst){
                 !ref(right_source_p1, right_source_p2, false, false).startsWith("NOT FOUND")
             ) {
                 if(
-                    typeof getSource(left_source).account !== "undefined" &&
-                    typeof getSource(right_source).account !== "undefined"
+                    typeof getSource(left_source, true).account !== "undefined" &&
+                    typeof getSource(right_source, true).account !== "undefined"
                 ) {
                     return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
                 } else {
