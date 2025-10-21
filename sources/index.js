@@ -54,12 +54,13 @@ function getSource(source) {
                 ) {
                     return sources[s]
                 }
+                throw new Error("No Sources found! sources/getSource");
             }
         } else {
-            throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
+            throw new Error("Name of sources are an primary key! They need to be filled in! sources/getSource");
         }
     } else {
-        throw new Error("Not yet implemented in package! sources/join_on_account");
+        throw new Error("Not yet implemented in package! sources/getSource");
     }
 }
 
