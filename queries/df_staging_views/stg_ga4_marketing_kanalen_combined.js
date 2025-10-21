@@ -13,6 +13,11 @@ SELECT
     session_geo_city,
     session_source_medium,
     user_pseudo_id
+    ${ifSource("stg_otm_aggregated", ", submission_id_otm")}
+    ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
+    ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
+    , account 
+    ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
     , submission_id_otm,
     account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
