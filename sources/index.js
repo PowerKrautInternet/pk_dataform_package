@@ -12,6 +12,59 @@ let sources = [] //TODO hier een import voor maken ipv een require
 
 let refs = []
 
+function getSource(source) {
+    if(typeof source == "object"){
+        if(typeof source.name !== "undefined") {
+            let p1 = source.schema ?? source.name;
+            let p2 = !source.schema ? source.name : null;
+            for(let s in sources) {
+                if ( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
+                    ((p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*"))))
+                        ||
+                        (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")))) && sources[s].schema === p1))
+                ) {
+                    return sources[s]
+                }
+            }
+        } else {
+            throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
+        }
+    } else {
+        throw new Error("Not yet implemented in package! sources/join_on_account");
+    }
+}
+
+function join_on_account(left_source, right_source, join_tekst){
+
+    if(typeof left_source == "object" && typeof right_source == "object"){
+        if(typeof left_source.name !== "undefined" && typeof right_source.name !== "undefined") {
+            let left_source_p1 = left_source.schema ?? left_source.name;
+            let left_source_p2 = !left_source.schema ? left_source.name : null;
+            let right_source_p1 = left_source.schema ?? right_source.name;
+            let right_source_p2 = !right_source.schema ? right_source.name : null;
+            if(
+                !ref(left_source_p1, left_source_p2).startsWith("NOT FOUND") &&
+                !ref(right_source_p1, right_source_p2).startsWith("NOT FOUND")
+            ) {
+                if(
+                    getSource(left_source).account !== "undefined" &&
+                    getSource(right_source).account !== "undefined"
+                ) {
+                    return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
+                } else {
+                    return ""
+                }
+            } else {
+                throw new Error("Sources not found! sources/join_on_account");
+            }
+        } else {
+            throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
+        }
+    } else {
+        throw new Error("Not yet implemented in package! sources/join_on_account");
+    }
+}
+
 function addSource(varsource) {
     //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
     if (varsource.type !== "function") {
@@ -285,4 +338,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account};

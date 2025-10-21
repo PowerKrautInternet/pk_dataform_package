@@ -1,5 +1,5 @@
 /*config*/
-const {ref, join, getRefs, ifSource, ifNull} = require("../../sources");
+const {ref, join, getRefs, ifSource, ifNull, join_on_account} = require("../../sources");
 let query = `
     
 
@@ -81,7 +81,13 @@ SELECT
     
     FROM ${ref("df_staging_tables", "stg_ga4_events_sessies")} events_sessies
     
-    ${join("left join","df_googlesheets_tables","gs_ga4_standaard_events", "AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name) AND events_sessies.account = standaard_event.account")}
+    ${join("left join","df_googlesheets_tables","gs_ga4_standaard_events", `
+    AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name) AND 
+    events_sessies.account = standaard_event.account
+    ${join_on_account(
+            {name: "events_*"}, 
+            {schema: "googleSheets", name: "gs_ga4_standaard_events"}
+    )}`)}
     ${join("left join","df_googlesheets_tables","gs_conversie_mapping", "AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name) AND events_sessies.account = gs_mapping.account")}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
