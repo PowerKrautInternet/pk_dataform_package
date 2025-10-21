@@ -46,11 +46,12 @@ function getSource(source) {
         if(typeof source.name !== "undefined") {
             let p1 = source.schema ?? source.name;
             let p2 = !source.schema ? source.name : null;
+            p2 = (typeof p2 == 'undefined') ? "" : p2
             for(let s in sources) {
-                if ( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
-                    ((p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*"))))
-                        ||
-                        (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")))) && sources[s].schema === p1))
+                if (
+                    ((p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) )
+                    ||
+                    (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1))
                 ) {
                     return sources[s]
                 }
