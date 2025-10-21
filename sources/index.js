@@ -45,18 +45,17 @@ function getSource(source) {
     if(typeof source == "object"){
         if(typeof source.name !== "undefined") {
             source.schema = source.schema ?? null;
-            source.name = source.name.replace(/_[0-9]+$/g, "");
             let return_sources = [];
             for(let s in sources) {
                 let schema = sources[s].schema ?? null;
                 let schema_match = (typeof sources.schema !== "undefined" ? schema === source.schema : true);
                 let name = (typeof sources[s].name !== "undefined" ? sources[s].name.replace(/_[0-9]+$/g, "") : null);
-                if ( ( source.alias ?? source.name === sources[s].alias ?? name ) && schema_match ) {
+                if ( ( ( source.alias ?? source.name ) === ( sources[s].alias ?? name ) ) && schema_match ) {
                     return_sources.push(sources[s]);
                 }
             }
             if(return_sources.length === 0) {
-                throw new Error(`No Sources found! sources/getSource(${source.name})`);
+                throw new Error(`No Sources found! sources/getSource(${source.alias ?? source.name})`);
             }
             return return_sources;
         } else {
