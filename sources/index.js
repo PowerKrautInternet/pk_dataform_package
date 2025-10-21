@@ -101,8 +101,8 @@ function join_on_account(left_source, right_source, join_tekst){
             let right_source_p1 = left_source.schema ?? right_source.name;
             let right_source_p2 = !right_source.schema ? right_source.name : null;
             if(
-                !ref(left_source_p1, left_source_p2, true).startsWith("NOT FOUND") &&
-                !ref(right_source_p1, right_source_p2, true).startsWith("NOT FOUND")
+                !ref(left_source_p1, left_source_p2, false).startsWith("NOT FOUND") &&
+                !ref(right_source_p1, right_source_p2, false).startsWith("NOT FOUND")
             ) {
                 if(
                     typeof getSource(left_source).account !== "undefined" &&
