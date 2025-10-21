@@ -42,13 +42,14 @@ let refs = []
 
 
 function getSource(source) {
+    let sources = getSources();
     if(typeof source == "object"){
         if(typeof source.name !== "undefined") {
             source.schema = source.schema ?? null;
             let return_sources = [];
             for(let s in sources) {
                 let schema = sources[s].schema ?? null;
-                let schema_match = (typeof sources.schema !== "undefined" ? schema === source.schema : true);
+                let schema_match = (typeof source.schema !== "undefined" ? schema === source.schema : true);
                 let name = (typeof sources[s].name !== "undefined" ? sources[s].name.replace(/_[0-9]+$/g, "") : null);
                 if ( ( ( source.alias ?? source.name ) === ( sources[s].alias ?? name ) ) && schema_match ) {
                     return_sources.push(sources[s]);
