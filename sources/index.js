@@ -99,10 +99,9 @@ function join_on_account(left_source, right_source, join_tekst){
 
     if(typeof left_source == "object" && typeof right_source == "object"){
         if(typeof left_source.name !== "undefined" && typeof right_source.name !== "undefined") {
-            if(
-                getSource(left_source, true).size > 0 &&
-                getSource(right_source, true).size > 0
-            ) {
+            let left_source_length = getSource(left_source, true).size
+            let right_source_length = getSource(right_source, true).size
+            if( left_source_length > 0 && right_source_length > 0 ) {
                 if(
                     typeof getSource(left_source).account !== "undefined" &&
                     typeof getSource(right_source).account !== "undefined"
@@ -112,7 +111,7 @@ function join_on_account(left_source, right_source, join_tekst){
                     return ""
                 }
             } else {
-                throw new Error("Sources not found! sources/join_on_account");
+                throw new Error(`Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `);
             }
         } else {
             throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
