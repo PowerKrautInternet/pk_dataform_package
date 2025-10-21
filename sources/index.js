@@ -101,8 +101,8 @@ function join_on_account(left_source, right_source, join_tekst){
                 !ref(right_source_p1, right_source_p2).startsWith("NOT FOUND")
             ) {
                 if(
-                    getSource(left_source).account !== "undefined" &&
-                    getSource(right_source).account !== "undefined"
+                    typeof getSource(left_source).account !== "undefined" &&
+                    typeof getSource(right_source).account !== "undefined"
                 ) {
                     return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
                 } else {
