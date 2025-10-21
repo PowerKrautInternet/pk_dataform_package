@@ -99,17 +99,13 @@ function join_on_account(left_source, right_source, join_tekst){
 
     if(typeof left_source == "object" && typeof right_source == "object"){
         if(typeof left_source.name !== "undefined" && typeof right_source.name !== "undefined") {
-            let left_source_p1 = left_source.schema ?? left_source.name;
-            let left_source_p2 = !left_source.schema ? left_source.name : null;
-            let right_source_p1 = left_source.schema ?? right_source.name;
-            let right_source_p2 = !right_source.schema ? right_source.name : null;
             if(
-                !ref(left_source_p1, left_source_p2, false, false).startsWith("NOT FOUND") &&
-                !ref(right_source_p1, right_source_p2, false, false).startsWith("NOT FOUND")
+                getSource(left_source, true).size > 0 &&
+                getSource(right_source, true).size > 0
             ) {
                 if(
-                    typeof getSource(left_source, true).account !== "undefined" &&
-                    typeof getSource(right_source, true).account !== "undefined"
+                    typeof getSource(left_source).account !== "undefined" &&
+                    typeof getSource(right_source).account !== "undefined"
                 ) {
                     return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
                 } else {
