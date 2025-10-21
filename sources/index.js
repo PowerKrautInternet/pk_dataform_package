@@ -206,9 +206,7 @@ function ref(p1, p2, ifSource, dependant = true) {
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
-            if (dependant) {
                 ref.push(r)
-            }
             if(sources[s].type !== "function") {
                 refs.push({
                     "name": sources[s].name,
@@ -239,7 +237,7 @@ function ref(p1, p2, ifSource, dependant = true) {
         }
         refQuery +=" \n)"
         return refQuery
-    } else if(p2 && !ifSource) {
+    } else if(p2 && !ifSource && dependant) {
         refs.push({
             "database": dataform.projectConfig.defaultDatabase,
             "schema": p1,
@@ -247,7 +245,7 @@ function ref(p1, p2, ifSource, dependant = true) {
         })
     }
 
-    if(!ifSource) {
+    if(!ifSource && dependant) {
         //If none is found the following will try and give an estimated source with default values
         let refQuery = ""
         refQuery += "`" + dataform.projectConfig.defaultDatabase + "."
