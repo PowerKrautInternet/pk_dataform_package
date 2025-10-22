@@ -1,6 +1,6 @@
 /*config*/
 let pk = require("../../sources")
-const {ifSource} = require("../../sources");
+const {ifSource, join} = require("../../sources");
 let ref = pk.ref
 let query = `
 
@@ -23,8 +23,7 @@ ${ifSource("ads_CampaignConversionStats", `
 
 FROM ${ref('ads_Campaign')} ad_campaign 
 
-${ifSource("ads_CampaignConversionStats", ` 
-    LEFT JOIN ${ref('ads_CampaignConversionStats')} campaign_conversions
+${join("LEFT JOIN", "ads_CampaignConversionStats", ` campaign_conversions
     ON ad_campaign.customer_id = campaign_conversions.customer_id 
     AND ad_campaign.campaign_id = campaign_conversions.campaign_id
 `)}
