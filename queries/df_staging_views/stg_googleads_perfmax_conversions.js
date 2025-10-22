@@ -1,5 +1,6 @@
 /*config*/
 let pk = require("../../sources")
+const {ifSource, join} = require("../../sources");
 let ref = pk.ref
 let query = `
 
@@ -13,28 +14,36 @@ SELECT
     MAX(ad_campaign.campaign_start_date) AS campaign_start_date,
     MAX(ad_campaign.campaign_end_date) AS campaign_end_date,
     MAX(ad_campaign.campaign_status) AS campaign_status,
+${ifSource("ads_CampaignConversionStats", ` 
     campaign_conversions.segments_date AS segments_date,
     campaign_conversions.segments_conversion_action_name,
     SUM(campaign_conversions.metrics_conversions) AS conversions,
-    SUM(campaign_conversions.metrics_conversions_value) AS conversions_value
+    SUM(campaign_conversions.metrics_conversions_value) AS conversions_value,
+`)}
 
 FROM ${ref('ads_Campaign')} ad_campaign 
 
-LEFT JOIN ${ref('ads_CampaignConversionStats')} campaign_conversions
-ON ad_campaign.customer_id = campaign_conversions.customer_id 
-AND ad_campaign.campaign_id = campaign_conversions.campaign_id
+${join("LEFT JOIN", "ads_CampaignConversionStats", ` campaign_conversions
+    ON ad_campaign.customer_id = campaign_conversions.customer_id 
+    AND ad_campaign.campaign_id = campaign_conversions.campaign_id
+`)}
 
 WHERE
 ad_campaign._DATA_DATE = ad_campaign._LATEST_DATE
 AND ad_campaign.campaign_advertising_channel_type = 'PERFORMANCE_MAX'
-AND campaign_conversions.segments_date IS NOT NULL
+    
+${ifSource("ads_CampaignConversionStats", ` 
+    AND campaign_conversions.segments_date IS NOT NULL
+`)}
 
 GROUP BY
     account,
     customer_id,
-    campaign_id,
-    segments_date,
+    campaign_id 
+${ifSource("ads_CampaignConversionStats", ` 
+    , segments_date,
     segments_conversion_action_name
+`)}
     
     `
 let refs = pk.getRefs()
