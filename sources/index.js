@@ -194,6 +194,7 @@ function ref(p1, p2, ifSource, dependant = true) {
             (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1))
         ){
             let r = {}
+            r.type = sources[s].type
             r.schema = sources[s].schema
             r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
