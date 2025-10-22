@@ -229,8 +229,9 @@ function ref(p1, p2, ifSource, dependant = true) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "CAST(NULL AS STRING)") + " as alias," : ""
             refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "CAST(NULL AS STRING)") + " as account," : ""} `
+            console.warn(getTypeSource(ref[r]));
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
