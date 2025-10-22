@@ -12,6 +12,115 @@ let sources = [] //TODO hier een import voor maken ipv een require
 
 let refs = []
 
+/**
+ @brief Retrieves a matching source object from the global `sources` collection based on name and schema.
+  The lookup logic:
+  - If `source.schema` is provided, both schema and name (or alias) must match.
+  - If `source.schema` is not provided, the function attempts to match based only on name or alias.
+  - Names may ignore numeric suffixes (e.g. `table_1` → `table`).
+  - Matches are allowed for sources with undefined aliases, `"events_*"`, `"ads_*"`, or names ending with `"Producer"`.
+
+ @param {object} source
+ The source reference to look up. Must include a `name` property, and may include a `schema` property.
+
+ @param can_give_no_sources
+
+
+ @returns {object}
+ The matching source object from the global `sources` collection.
+
+ @throws {Error}
+ - If `source` is not an object.
+ - If `source.name` is missing or undefined.
+ - If no matching entry is found in the `sources` collection.
+
+ @note TODO -> lets not make it globally available
+  This function depends on a globally available `sources` collection, where each entry is expected
+  to contain at least the following properties:
+  - `name` (string)
+  - `schema` (string, optional)
+  - `alias` (string, optional)
+
+ */
+
+
+function getSource(source, can_give_no_sources = false) {
+    let sources = getSources();
+    if(typeof source == "object"){
+        if(typeof source.name !== "undefined") {
+            source.schema = source.schema ?? null;
+            let return_sources = [];
+            for(let s in sources) {
+                let schema = sources[s].schema ?? null;
+                let schema_match =  (source.schema !== null ? schema === source.schema : true);
+                let name = (typeof sources[s].name !== "undefined" ? sources[s].name.replace(/_[0-9]+$/g, "") : null);
+                if ( ( ( source.alias ?? source.name ) === ( sources[s].alias ?? name ) ) && schema_match ) {
+                    return_sources.push(sources[s]);
+                }
+            }
+            if(return_sources.length === 0 && !can_give_no_sources) {
+                throw new Error(`No Sources found! sources/getSource(${source.alias ?? source.name})`);
+            }
+            return return_sources;
+        } else {
+            throw new Error("Name of sources are an primary key! They need to be filled in! sources/getSource");
+        }
+    } else {
+        throw new Error("Not yet implemented in package! sources/getSource");
+    }
+}
+
+/**
+  @brief Builds a SQL join condition between two data sources based on their account information.
+
+  @param {object} left_source
+    The left-side source object. Must contain at least a `name` property, and optionally `schema`.
+
+  @param {object} right_source
+    The right-side source object. Must contain at least a `name` property, and optionally `schema`.
+
+  @param {string} [join_tekst]
+    Optional custom SQL join condition text. If not provided, a default condition is generated in the form:
+    `AND <left_source.name> = <right_source.name>`.
+
+  @returns {string}
+    A SQL join condition if both sources exist and have valid accounts, or an empty string otherwise.
+
+  @throws {Error}
+    - If either `left_source` or `right_source` is not an object.
+    - If the `name` property of either source is missing.
+    - If one or both sources cannot be found via the `ref()` function.
+
+  @example
+      LEFT JOIN ... ON ...
+      ${join_on_account( {name: "events_*"}, {schema: "googleSheets", name: "gs_ga4_standaard_events"} )}
+ */
+function join_on_account(left_source, right_source, join_tekst){
+
+    if(typeof left_source == "object" && typeof right_source == "object"){
+        if(typeof left_source.name !== "undefined" && typeof right_source.name !== "undefined") {
+            let left_source_length = getSource(left_source, true).length
+            let right_source_length = getSource(right_source, true).length
+            if( left_source_length > 0 && right_source_length > 0 ) {
+                if(
+                    typeof getSource(left_source).account !== "undefined" &&
+                    typeof getSource(right_source).account !== "undefined"
+                ) {
+                    return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
+                } else {
+                    return ""
+                }
+            } else {
+                throw new Error(`Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `);
+            }
+        } else {
+            throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
+        }
+    } else {
+        throw new Error("Not yet implemented in package! sources/join_on_account");
+    }
+}
+
 function addSource(varsource) {
     //Maybe this could be shorter, but im not sure a JSON likes to have an boolean assigned in this usecase
     if (varsource.type !== "function") {
@@ -71,7 +180,7 @@ function addSuffix(schema) {
     return schema
 }
 
-function ref(p1, p2, ifSource) {
+function ref(p1, p2, ifSource, dependant = true) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
@@ -95,7 +204,7 @@ function ref(p1, p2, ifSource) {
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
             if(!(sources[s].noSuffix ?? false) && !sources[s].schema.startsWith("analytics_") && sources[s].schema !== "rawdata" && sources[s].schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") { r.query += "_" + dataform.projectConfig.schemaSuffix  }
             r.query += "." + sources[s].name + "` "
-            ref.push(r)
+                ref.push(r)
             if(sources[s].type !== "function") {
                 refs.push({
                     "name": sources[s].name,
@@ -126,7 +235,7 @@ function ref(p1, p2, ifSource) {
         }
         refQuery +=" \n)"
         return refQuery
-    } else if(p2 && !ifSource) {
+    } else if(p2 && !ifSource && dependant) {
         refs.push({
             "database": dataform.projectConfig.defaultDatabase,
             "schema": p1,
@@ -134,7 +243,7 @@ function ref(p1, p2, ifSource) {
         })
     }
 
-    if(!ifSource) {
+    if(!ifSource && dependant) {
         //If none is found the following will try and give an estimated source with default values
         let refQuery = ""
         refQuery += "`" + dataform.projectConfig.defaultDatabase + "."
@@ -285,4 +394,4 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account};
