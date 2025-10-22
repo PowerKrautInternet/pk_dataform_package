@@ -4,6 +4,7 @@ let FunctionObject = require("./function_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
 const fs = require("fs");
+const path = require("path");
 
 let function_config = [
     {
@@ -11,7 +12,8 @@ let function_config = [
         schema: "rawdata",
         name: "lookupTable",
         vars: {needle: "STRING", haystack: "STRING"},
-        function: require("./lookup_function")
+        function: require("./lookup_function"),
+        type: "javascript"
     },
     {
         database: dataform.projectConfig.defaultDatabase,
@@ -46,7 +48,7 @@ let function_config = [
         schema: "rawdata",
         name: "email_cleaner",
         vars: {raw_input: "STRING"},
-        function: fs.readFileSync("./email_cleaner.sql", "utf8"),
+        function: getFunction("email_cleaner.sql"),
         function_type: "sql"
     }
 ]
@@ -74,5 +76,13 @@ function setupFunctions(sources){
 
     return query
 }
+
+function getFunction(dir) {
+    return fs.readFileSync(
+        path.join(__dirname, dir),
+        "utf8"
+    )
+}
+
 
 module.exports = {setupFunctions, function_config}

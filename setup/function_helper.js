@@ -6,8 +6,8 @@ class FunctionObject {
         this.function = config.function ?? null;
         this.vars = config.vars ?? {}
         this.return_type = config.return_type ?? "STRING"
+        this.type = config.function_type ?? "javascript"
         this.sql = this;
-        this.type = (config.function_type ?? "javascript").toLowerCase()
     }
 
     set function_type(function_type) {
@@ -17,9 +17,9 @@ class FunctionObject {
     get language() {
         switch (this.type) {
             case "javascript":
-                return ` LANGUAGE js AS R""" `
+                return ` LANGUAGE js AS R""" `;
             case "sql":
-                return "AS ("
+                return "AS (";
             default:
                 throw new Error(`Switch error! setup/language/${this.name}`);
         }
@@ -49,9 +49,10 @@ class FunctionObject {
         this.sql_object = the_function_object;
         this.sqlForFunction = `CREATE OR REPLACE FUNCTION 
         \`${the_function_object.database}.${the_function_object.schema}.${the_function_object.name}\` (${the_function_object.vars}) 
-        RETURNS ${the_function_object.return_type} ${(this.language)}
-            ${the_function_object.function}
-            ${this.return}`
+        RETURNS ${the_function_object.return_type} 
+        ${this.language}
+        ${the_function_object.function}
+        ${this.return}`
 
     }
 

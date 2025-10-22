@@ -22,5 +22,8 @@
   },
   "publishConfig": {
     "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "duckdb": "^1.4.1"
   }
 }
