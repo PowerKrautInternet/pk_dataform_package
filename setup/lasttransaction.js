@@ -6,8 +6,11 @@ function lasttransaction (refVal) {
         "type": "view",
         "schema": "df_rawdata_views"
     }
+
+    let tableName = refVal.alias ?? refVal.name;
+    
     pk.addSource({
-        "name": refVal.name+"_lasttransaction",
+        "name": tableName+"_lasttransaction",
         "config": config
     });
 
@@ -27,16 +30,16 @@ function lasttransaction (refVal) {
         DECLARE dataform_table_type DEFAULT (
             SELECT ANY_VALUE(table_type)
             FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
-            WHERE table_name = '${refVal.name}_lasttransaction'
+            WHERE table_name = '${tableName}_lasttransaction'
         );
         IF dataform_table_type IS NOT NULL THEN
-        IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction\`;
-        ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + refVal.name}_lasttransaction\`;
+        IF dataform_table_type = 'BASE TABLE' THEN DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + tableName}_lasttransaction\`;
+        ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase + ".df_rawdata_views" + pk.schemaSuffix(refVal) + "." + tableName}_lasttransaction\`;
         END IF;
         END IF;
         BEGIN
         
-        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${refVal.name}_lasttransaction\`
+        CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${tableName}_lasttransaction\`
         OPTIONS()
         AS (
         
@@ -49,13 +52,13 @@ function lasttransaction (refVal) {
                 cd.ALIAS,
                 cd.account,
                 
-            FROM ${ref(refVal.schema, refVal.name)} cd
+            FROM ${ref(refVal.schema, tableName)} cd
             JOIN( 
                 SELECT
                     SCHEMA,
                     PRIMARYFIELDHASH,
                     MAX(RECEIVEDON) AS max_receivedon
-                FROM ${ref(refVal.schema, refVal.name)}
+                FROM ${ref(refVal.schema, tableName)}
                 GROUP BY SCHEMA, PRIMARYFIELDHASH
             ) ld
               ON cd.SCHEMA = ld.SCHEMA
