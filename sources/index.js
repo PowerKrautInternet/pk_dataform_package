@@ -196,7 +196,7 @@ function ref(p1, p2, ifSource, dependant = true) {
             let r = {}
             r.type = sources[s].type
             r.schema = sources[s].schema
-            r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
+            r.alias = typeof sources[s].alias !== "undefined" || sources[s].alias == null ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
