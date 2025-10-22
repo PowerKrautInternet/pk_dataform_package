@@ -3,6 +3,7 @@ let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
+const fs = require("fs");
 
 let function_config = [
     {
@@ -39,6 +40,14 @@ let function_config = [
         name: "getTableName",
         vars: {json_row: "STRING"},
         function: require("./getTableName_function")
+    },
+    {
+        database: dataform.projectConfig.defaultDatabase,
+        schema: "rawdata",
+        name: "email_cleaner",
+        vars: {raw_input: "STRING"},
+        function: fs.readFileSync("./email_cleaner.sql", "utf8"),
+        function_type: "sql"
     }
 ]
 
