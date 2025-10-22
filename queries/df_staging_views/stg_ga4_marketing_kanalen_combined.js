@@ -14,8 +14,10 @@ SELECT
     session_source_medium,
     user_pseudo_id,
     submission_id_otm,
+    account,
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
-    account ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
+    ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
+    ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
     ),
     ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
