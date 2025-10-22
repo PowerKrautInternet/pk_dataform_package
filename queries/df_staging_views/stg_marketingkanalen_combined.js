@@ -25,7 +25,7 @@ FROM (
         ${ifNull(['CAST(google_ads.ad_group_id AS STRING)', ifSource('stg_facebookdata','facebook.adset_id'), ifSource('dv360_data','CAST(dv360.line_item_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_id')])} as ad_group_id,
         ${ifNull(['google_ads.ad_group_name', ifSource('stg_facebookdata','facebook.adset_name'), ifSource('dv360_data','dv360.line_item'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_name'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_name')])} as ad_group_name,
         ${ifNull(['google_ads.impressions', ifSource('stg_facebookdata','facebook.impressions'), ifSource('dv360_data','dv360.impressions'), ifSource('stg_bing_ad_group_performance','microsoft.impressions'), ifSource('stg_linkedin_ads_combined','linkedin.impressions'), ifSource('stg_vistar_media_ads','vistar_media.impressions')])} as ads_impressions,
-        ${ifNull(['google_ads.clicks', ifSource('stg_facebookdata','facebook.link_click'), ifSource('dv360_data','dv360.clicks'), ifSource('stg_bing_ad_group_performance','microsoft.clicks'), ifSource('stg_linkedin_ads_combined','linkedin.interactions')])} as ads_interactions,
+        ${ifNull(['google_ads.clicks', ifSource('stg_facebookdata','facebook.link_click'), ifSource('dv360_data','dv360.clicks'), ifSource('stg_bing_ad_group_performance','microsoft.clicks'), ifSource('stg_linkedin_ads_combined','linkedin.clicks')])} as ads_interactions,
         ${ifNull(['google_ads.conversions', ifSource('stg_facebookdata','facebook.lead'), ifSource('dv360_data','dv360.click_through_conversions'), ifSource('stg_bing_ad_group_performance','microsoft.all_conversions'), ifSource('stg_linkedin_ads_combined','linkedin.website_conversions')])} as ads_conversions,
         ${ifNull(['google_ads.Cost', ifSource('stg_facebookdata','facebook.spend'), ifSource('dv360_data','dv360.revenue_advertiser_currency'), ifSource('stg_bing_ad_group_performance','microsoft.spend'), ifSource('stg_linkedin_ads_combined','linkedin.cost'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgaven'), ifSource('stg_vistar_media_ads','vistar_media.client_cost')])} as ads_cost,
         ${ifNull(['google_ads.campaign_advertising_channel_type', ifSource('stg_bing_ad_group_performance','microsoft.campaign_type'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_cost_type')])} AS campaign_advertising_channel_type,
@@ -35,6 +35,7 @@ FROM (
         ${ifNull(['google_ads.ad_group_type', ifSource('stg_bing_ad_group_performance','microsoft.adgroup_type')], "AS ad_group_type,")}
         google_ads.conversions_value,
         google_ads.conversion_action_name,
+        google_ads.interactions as google_ads_interactions,
         ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')], "AS objective,")}
         ${ifSource("stg_facebookdata", "facebook.ad_id AS facebook_ad_id,")}
         ${ifSource("stg_facebookdata", "facebook.ad_name AS facebook_ad_name,")}
@@ -63,6 +64,7 @@ FROM (
         ${ifSource("stg_linkedin_ads_combined", "linkedin.reactions,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.likes,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.download_clicks,")}
+        ${ifSource("stg_linkedin_ads_combined", "linkedin.interactions AS linkedin_interactions,")}
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_categorie,')} 
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron AS uitgave_bron_org,')} 
         ${ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_merk,')} 
