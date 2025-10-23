@@ -1,28 +1,25 @@
 /*config*/
-let pk = require("../../sources")
-let ifNull = pk.ifNull
-let ifSource = pk.ifSource
-let ref = pk.ref
+const {isSource, ifNull, ifSource, ref, getRefs, join} = require("../../sources");
 let query = `
 
 SELECT 
   'Google Ads' as bron,
-  ${ifNull(["ad_group_stats.account", ${ifSource("stg_google_ads_adgroup_conversions", " ad_group_conversions.account"], " AS account,")}
-  ${ifNull(["ad_group_stats.customer_id", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.customer_id"], " AS customer_id,")}
-  ${ifNull(["ad_group_stats.campaign_id", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_id"], " AS campaign_id,")}
-  ${ifNull(["ad_group_stats.campaign_name", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_name"], " AS campaign_name,")}
-  ${ifNull(["ad_group_stats.campaign_advertising_channel_type", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_advertising_channel_type"], " AS campaign_advertising_channel_type,")}
-  ${ifNull(["ad_group_stats.campaign_bidding_strategy_type", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_bidding_strategy_type"], " AS campaign_bidding_strategy_type,")}
-  ${ifNull(["ad_group_stats.campaign_start_date", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_start_date"], " AS campaign_start_date,")}
-  ${ifNull(["ad_group_stats.campaign_end_date", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_end_date"], " AS campaign_end_date,")}
-  ${ifNull(["ad_group_stats.campaign_status", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_status"], " AS campaign_status,")}
-  ${ifNull(["ad_group_stats.ad_group_id", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_id"], " AS ad_group_id,")}
-  ${ifNull(["ad_group_stats.ad_group_name", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_name"], " AS ad_group_name,")}
-  ${ifNull(["ad_group_stats.ad_group_status", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_status"], " AS ad_group_status,")}
-  ${ifNull(["ad_group_stats.ad_group_type", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_type"], " AS ad_group_type,")}
-  ${ifNull(["ad_group_stats.ad_group_bidding_strategy_type", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_bidding_strategy_type"], " AS ad_group_bidding_strategy_type,")}
-  ${ifNull(["ad_group_stats.segments_date", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_date"], " AS segments_date,")}
-  ${ifNull(["ad_group_stats.segments_device", ${ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_device"], " AS segments_device,")}
+  ${ifNull(["ad_group_stats.account", ifSource("stg_google_ads_adgroup_conversions", " ad_group_conversions.account")], " AS account,")}
+  ${ifNull(["ad_group_stats.customer_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.customer_id")], " AS customer_id,")}
+  ${ifNull(["ad_group_stats.campaign_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_id")], " AS campaign_id,")}
+  ${ifNull(["ad_group_stats.campaign_name", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_name")], " AS campaign_name,")}
+  ${ifNull(["ad_group_stats.campaign_advertising_channel_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_advertising_channel_type")], " AS campaign_advertising_channel_type,")}
+  ${ifNull(["ad_group_stats.campaign_bidding_strategy_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_bidding_strategy_type")], " AS campaign_bidding_strategy_type,")}
+  ${ifNull(["ad_group_stats.campaign_start_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_start_date")], " AS campaign_start_date,")}
+  ${ifNull(["ad_group_stats.campaign_end_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_end_date")], " AS campaign_end_date,")}
+  ${ifNull(["ad_group_stats.campaign_status", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_status")], " AS campaign_status,")}
+  ${ifNull(["ad_group_stats.ad_group_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_id")], " AS ad_group_id,")}
+  ${ifNull(["ad_group_stats.ad_group_name", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_name")], " AS ad_group_name,")}
+  ${ifNull(["ad_group_stats.ad_group_status", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_status")], " AS ad_group_status,")}
+  ${ifNull(["ad_group_stats.ad_group_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_type")], " AS ad_group_type,")}
+  ${ifNull(["ad_group_stats.ad_group_bidding_strategy_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_bidding_strategy_type")], " AS ad_group_bidding_strategy_type,")}
+  ${ifNull(["ad_group_stats.segments_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_date")], " AS segments_date,")}
+  ${ifNull(["ad_group_stats.segments_device", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_device")], " AS segments_device,")}
   ad_group_stats.impressions,
   ad_group_stats.interactions,
   ad_group_stats.clicks,
@@ -83,5 +80,5 @@ GROUP BY
 ${join("FULL OUTER JOIN", 'df_staging_views', 'stg_google_ads_adgroup_conversions', 'ad_group_conversions ON 1=0')}
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
