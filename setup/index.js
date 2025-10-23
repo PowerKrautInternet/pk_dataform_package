@@ -4,6 +4,8 @@ let FunctionObject = require("./function_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
 
+//TODO base class voor UDF's en de parser in een andere map. Templateengine voor sqlx
+
 let function_config = [
     {
         database: dataform.projectConfig.defaultDatabase,
