@@ -404,7 +404,7 @@ function orSource(name, query) {
  */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.orginele_alias ?? source.orginele_naam ?? "";
+    let name = source.orginele_alias ?? source.orginele_naam ?? source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || name.endsWith("DataExporter\"") || name.endsWith("DataProducer\"") || source.type === "dataProducer") type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
