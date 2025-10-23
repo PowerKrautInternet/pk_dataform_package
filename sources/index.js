@@ -339,6 +339,21 @@ function ifSource(name, query){
     return query;
 }
 
+function isSource(name){
+    if (Array.isArray(name)) {
+        for (let s in name) {
+            if (ref(name[s], "", true).startsWith("NOT FOUND")) {
+                return false;
+            }
+        }
+    } else {
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /* @brief Controleert of minstens één van de opgegeven bronnen bestaat.
 *
 * Als er geen enkele bron gevonden wordt, wordt een "NOT FOUND"-commentaar
@@ -389,7 +404,7 @@ function orSource(name, query) {
  */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.orginele_alias ?? source.orginele_naam ?? "";
+    let name = source.orginele_alias ?? source.orginele_naam ?? source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
     else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || name.endsWith("DataExporter\"") || name.endsWith("DataProducer\"") || source.type === "dataProducer") type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
@@ -398,4 +413,5 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account};
+
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account, isSource};
