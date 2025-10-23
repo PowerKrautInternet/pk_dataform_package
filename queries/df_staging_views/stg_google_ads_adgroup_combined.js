@@ -50,8 +50,8 @@ FROM(
     SUM(ad_group_stats.metrics_interactions) AS interactions,
     SUM(ad_group_stats.metrics_clicks) AS clicks,
     (SUM(ad_group_stats.metrics_cost_micros) / 1000000) AS Cost,
-    SUM(campaign_stats.metrics_conversions) AS conversions,
-    SUM(campaign_stats.metrics_conversions_value) AS conversions_value,
+    SUM(ad_group_stats.metrics_conversions) AS conversions,
+    SUM(ad_group_stats.metrics_conversions_value) AS conversions_value,
 
 FROM ${ref('ads_AdGroup')} ad_group 
 
