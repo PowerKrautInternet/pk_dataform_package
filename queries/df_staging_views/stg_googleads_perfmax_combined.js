@@ -13,14 +13,14 @@ SELECT
   ${ifNull(["campaign_stats.campaign_start_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_start_date")], "AS campaign_start_date,")}
   ${ifNull(["campaign_stats.campaign_end_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_end_date")], "AS campaign_end_date,")}
   ${ifNull(["campaign_stats.campaign_status", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_status")], "AS campaign_status,")}
-  ${ifNull(["campaign_stats.segments_date", ifSource("ads_CampaignConversionStats", "campaign_conversions.segments_date")], "AS segments_date,")}
+  ${ifNull(["campaign_stats.segments_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.segments_date")], "AS segments_date,")}
   campaign_stats.impressions,
   campaign_stats.interactions,
   campaign_stats.clicks,
   campaign_stats.Cost,
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -60,10 +60,7 @@ GROUP BY
     segments_date
 ) campaign_stats
 
-${ifSource("stg_googleads_perfmax_conversions", `
-    FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
-    ON 1=0
-`)}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_googleads_perfmax_conversions", "campaign_conversions ON 1=0")}
 
 `
 let refs = getRefs()

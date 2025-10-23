@@ -3,6 +3,7 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 
+--this query is dependant on ads_AdGroupConversionStats
 SELECT 
     ad_group.account,
     ad_group.customer_id,
