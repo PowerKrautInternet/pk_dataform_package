@@ -5,6 +5,7 @@ let query = `
 
 SELECT 
   'Google Ads' as bron,
+    ${ifNull(["ad_group_stats.account", ifSource("ads_AdGroupConversionStats", "ad_group_conversions.account")], "AS account,")}
   COALESCE(ad_group_stats.account, ad_group_conversions.account) AS account,
   COALESCE(ad_group_stats.customer_id, ad_group_conversions.customer_id) AS customer_id,
   COALESCE(ad_group_stats.campaign_id, ad_group_conversions.campaign_id) AS campaign_id,
@@ -25,12 +26,9 @@ SELECT
   ad_group_stats.interactions,
   ad_group_stats.clicks,
   ad_group_stats.Cost,
-  ad_group_conversions.segments_conversion_action_name,
-  ad_group_conversions.conversions,
-  ad_group_conversions.conversions_value
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
-  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
+  ${isSource("ads_AdGroupConversionStats") ? "ad_group_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("ads_AdGroupConversionStats") ? "ad_group_conversions.conversions" : "ad_group_stats.conversions"},
+  ${isSource("ads_AdGroupConversionStats") ? "ad_group_conversions.conversions_value" : "ad_group_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -81,7 +79,7 @@ GROUP BY
     segments_device
 ) ad_group_stats
 
-${join("FULL OUTER JOIN", 'ads_CampaignConversionStats','ad_group_conversions ON 1=0')}
+${join("FULL OUTER JOIN", 'ads_AdGroupConversionStats','ad_group_conversions ON 1=0')}
 `
 let refs = pk.getRefs()
 module.exports = {query, refs}
