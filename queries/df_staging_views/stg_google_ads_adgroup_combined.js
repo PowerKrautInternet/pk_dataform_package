@@ -28,6 +28,9 @@ SELECT
   ad_group_conversions.segments_conversion_action_name,
   ad_group_conversions.conversions,
   ad_group_conversions.conversions_value
+  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
+  ${isSource("ads_CampaignConversionStats") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -78,9 +81,7 @@ GROUP BY
     segments_device
 ) ad_group_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'stg_google_ads_adgroup_conversions')} ad_group_conversions
-ON 1=0
-    
-    `
+${join("FULL OUTER JOIN", 'ads_CampaignConversionStats','ad_group_conversions ON 1=0')}
+`
 let refs = pk.getRefs()
 module.exports = {query, refs}
