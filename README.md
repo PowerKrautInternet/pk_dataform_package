@@ -1,6 +1,8 @@
 # The pk_dataform_package 
 _A data automation package in dataform, developed by PowerKraut._
 
+[![Published latest version to NPM](https://github.com/PowerKrautInternet/pk_dataform_package/actions/workflows/npm-publish-github-packages.yml/badge.svg?branch=main)](https://github.com/PowerKrautInternet/pk_dataform_package/actions/workflows/npm-publish-github-packages.yml)
+
 Current features:
 * Data monitoring
 * Freshness alerting
