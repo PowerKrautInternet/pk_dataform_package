@@ -60,10 +60,7 @@ GROUP BY
     segments_date
 ) campaign_stats
 
-${ifSource("stg_googleads_perfmax_conversions", `
-    FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
-    ON 1=0
-`)}
+${join("FULL OUTER JOIN", "stg_googleads_perfmax_conversions", `campaign_conversions ON 1=0`)}
 
 `
 let refs = getRefs()
