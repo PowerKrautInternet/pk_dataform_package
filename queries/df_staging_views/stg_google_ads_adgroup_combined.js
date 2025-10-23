@@ -25,8 +25,8 @@ SELECT
   ad_group_stats.clicks,
   ad_group_stats.Cost,
   ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
-  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions" : "campaign_stats.conversions"},
-  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions_value" : "campaign_stats.conversions_value"},
+  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions" : "ad_group_stats.conversions"},
+  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions_value" : "ad_group_stats.conversions_value"},
 
 FROM(
   SELECT 
