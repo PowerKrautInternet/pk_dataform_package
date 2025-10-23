@@ -166,3 +166,7 @@ Daarnaast:
 
 * Bij het linken van een CRM_ID aan een bron is de alias gelinkt aan de CRM_ID. Dat doe je bijvoorbeeld zo:
 `{ alias: "syntec", crm_id: "982" }`
+
+# Het upgraden van Major versies:
+## Versie 1.* naar Versie 2.*
+stg_googleads_perfmax_conversions en stg_google_ads_adgroup_conversions zijn nu verplicht voor google_ads. Geen extra bronnen nodig.
