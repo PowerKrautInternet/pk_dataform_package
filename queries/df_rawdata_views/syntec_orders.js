@@ -25,7 +25,7 @@ let query = `
 
     FROM ${ref("df_rawdata_views", "csvDataProducer_lasttransaction")}
     WHERE
-        json_value(PAYLOAD, '$.type') = "csvSyntecOrders"
+        json_value(PAYLOAD, '$.type') = "csvSyntecOrdersPublisher"
       AND json_value(PAYLOAD, '$.dtcmedia_crm_id') IN ( ${ pk.crm_id("syntec") } )
     
 `
