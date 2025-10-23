@@ -19,7 +19,7 @@ class FunctionObject {
             case "javascript":
                 return ` LANGUAGE js AS R""" `;
             case "sql":
-                return "AS (";
+                return " AS ( ";
             default:
                 throw new Error(`Switch error! setup/language/${this.name}`);
         }
@@ -31,7 +31,7 @@ class FunctionObject {
                 return ` return ${this.sql_object.name}(${this.sql_object.params});
                         """`
             case "sql":
-                return `);`
+                return ` ); `
             default:
                 throw new Error(`Switch error! setup/return/${this.name}`);
         }
