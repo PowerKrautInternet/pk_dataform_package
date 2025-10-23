@@ -194,9 +194,11 @@ function ref(p1, p2, ifSource, dependant = true) {
             (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1))
         ){
             let r = {}
+            r.orginele_alias = sources[s].alias;
+            r.orginele_naam = sources[s].name;
             r.type = sources[s].type
             r.schema = sources[s].schema
-            r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
+            r.alias = typeof sources[s].alias !== "undefined" && sources[s].alias !== null ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
@@ -402,9 +404,9 @@ function orSource(name, query) {
  */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.alias ?? source.name ?? "";
+    let name = source.orginele_alias ?? source.orginele_naam ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
-    else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || name.endsWith("DataExporter\"") || source.type === "dataProducer") type = "dataProducer"
+    else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || name.endsWith("DataExporter\"") || name.endsWith("DataProducer\"") || source.type === "dataProducer") type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_") || name === "DV360") type = "DV360"
     else if (name === "searchdata_url_impression") type = "google_search_console"
