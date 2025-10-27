@@ -106,12 +106,15 @@ function join_on_account(left_source, right_source, join_tekst){
                     typeof getSource(left_source).account !== "undefined" &&
                     typeof getSource(right_source).account !== "undefined"
                 ) {
-                    return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
+                    return join_tekst ?? `AND ${left_source.name}.account = ${right_source.name}.account`
                 } else {
                     return ""
                 }
             } else {
-                throw new Error(`Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `);
+                //TODO: we need to improve this error handling. This should not be an error, but a warning.
+                //throw new Error(
+                return `Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `;
+                // );
             }
         } else {
             throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
