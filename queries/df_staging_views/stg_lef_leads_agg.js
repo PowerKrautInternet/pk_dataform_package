@@ -150,7 +150,7 @@ CROSS JOIN
       COUNT(DISTINCT IF(deadlineGehaald = 'true', LEFleadID, NULL)),
       COUNT(DISTINCT LEFleadID)
     ) AS deals_pct
-  FROM `pk-datalake-zeeuw-en-zeeuw.df_staging_views.stg_lef_leads`
+  FROM ${ref("df_rawdata_views", "lef_leads")}
   GROUP BY week
 )
 
@@ -169,7 +169,7 @@ LEFT JOIN
     vestiging,
     EXTRACT(WEEK FROM aangemaaktDatum) AS week,
     COUNT(DISTINCT LEFleadID) AS leads_count,
-  FROM `pk-datalake-zeeuw-en-zeeuw.df_staging_views.stg_lef_leads`
+  FROM ${ref("df_rawdata_views", "lef_leads")}
   GROUP BY medewerker, vestiging, week
 )
 
