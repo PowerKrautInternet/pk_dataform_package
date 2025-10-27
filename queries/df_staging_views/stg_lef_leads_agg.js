@@ -182,7 +182,7 @@ SELECT
 FROM weekly_metrics) mean_stddev_leads
 ON mean_stddev_leads.medewerker = lef.medewerker
 AND mean_stddev_leads.vestiging = lef.vestiging
-AND mean_stddev_leads.week = EXTRACT(WEEK FROM tot.aangemaaktDatum)
+AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.aangemaaktDatum)
 
 WHERE lead_rank = 1
 `
