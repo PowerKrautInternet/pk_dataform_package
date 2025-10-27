@@ -113,7 +113,7 @@ function join_on_account(left_source, right_source, join_tekst){
             } else {
                 //TODO: we need to improve this error handling. This should not be an error, but a warning.
                 //throw new Error(
-                return `Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `;
+                return `--Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `;
                 // );
             }
         } else {
