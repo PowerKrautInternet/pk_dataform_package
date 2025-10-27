@@ -8,8 +8,8 @@ SELECT
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
 ${ifNull(['merk_session', 'gewenstMerk', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
-tot.medewerker AS medewerker,
-tot.vestiging AS vestiging,
+lef.medewerker AS medewerker,
+lef.vestiging AS vestiging,
 ${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))} 
                                                                      
 FROM(
@@ -180,8 +180,8 @@ SELECT
   AVG(leads_count) OVER (PARTITION BY medewerker, vestiging) AS mean_leads,
   STDDEV(leads_count) OVER (PARTITION BY medewerker, vestiging) AS std_leads,
 FROM weekly_metrics) mean_stddev_leads
-ON mean_stddev_leads.medewerker = tot.medewerker
-AND mean_stddev_leads.vestiging = tot.vestiging
+ON mean_stddev_leads.medewerker = lef.medewerker
+AND mean_stddev_leads.vestiging = lef.vestiging
 AND mean_stddev_leads.week = EXTRACT(WEEK FROM tot.aangemaaktDatum)
 
 WHERE lead_rank = 1
