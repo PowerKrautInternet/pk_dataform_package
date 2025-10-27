@@ -28,7 +28,6 @@ FROM ${ref('ads_Campaign')} ad_campaign
 LEFT JOIN${ref("ads_CampaignConversionStats")} campaign_conversions
     ON ad_campaign.customer_id = campaign_conversions.customer_id 
     AND ad_campaign.campaign_id = campaign_conversions.campaign_id
-`)}
 
 WHERE
 ad_campaign._DATA_DATE = ad_campaign._LATEST_DATE
