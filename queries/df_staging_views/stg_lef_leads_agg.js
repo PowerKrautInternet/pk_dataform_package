@@ -4,10 +4,12 @@ let query = `
 
 SELECT 
 "LEF" AS bron,
-* EXCEPT(sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session, gewenstMerk ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
+* EXCEPT(week, medewerker, vestiging, sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session, gewenstMerk ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
 ${ifNull(['merk_session', 'gewenstMerk', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
+tot.medewerker AS medewerker,
+tot.vestiging AS vestiging,
 ${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))} 
                                                                      
 FROM(
@@ -130,6 +132,57 @@ ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = ka
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID")}
 ) lef
 ${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging")}
+
+${join("LEFT JOIN", "googleSheets", "gs_lef_medewerker_functie_mapping", "AS functiemapping ON functiemapping.medewerker = lef.medewerker")}
+
+CROSS JOIN 
+(
+  WITH weekly_metrics AS (
+  SELECT
+    EXTRACT(WEEK FROM aangemaaktDatum) AS week,
+    AVG(
+      CAST(SPLIT(doorlooptijdTotEersteContactpoging, ':')[OFFSET(0)] AS FLOAT64) * 24
+      + CAST(SPLIT(doorlooptijdTotEersteContactpoging, ':')[OFFSET(1)] AS FLOAT64)
+      + CAST(SPLIT(doorlooptijdTotEersteContactpoging, ':')[OFFSET(2)] AS FLOAT64) / 60
+      + CAST(SPLIT(doorlooptijdTotEersteContactpoging, ':')[OFFSET(3)] AS FLOAT64) / 3600
+    ) AS avg_doorlooptijd_hours,
+    SAFE_DIVIDE(
+      COUNT(DISTINCT IF(deadlineGehaald = 'true', LEFleadID, NULL)),
+      COUNT(DISTINCT LEFleadID)
+    ) AS deals_pct
+  FROM `pk-datalake-zeeuw-en-zeeuw.df_staging_views.stg_lef_leads`
+  GROUP BY week
+)
+
+SELECT
+  AVG(avg_doorlooptijd_hours) AS mean_doorlooptijd_hours,
+  STDDEV(avg_doorlooptijd_hours) AS std_doorlooptijd_hours,
+  AVG(deals_pct) AS mean_deals,
+  STDDEV(deals_pct) AS std_deals
+FROM weekly_metrics) mean_stddev
+
+LEFT JOIN 
+(
+  WITH weekly_metrics AS (
+  SELECT
+    medewerker,
+    vestiging,
+    EXTRACT(WEEK FROM aangemaaktDatum) AS week,
+    COUNT(DISTINCT LEFleadID) AS leads_count,
+  FROM `pk-datalake-zeeuw-en-zeeuw.df_staging_views.stg_lef_leads`
+  GROUP BY medewerker, vestiging, week
+)
+
+SELECT
+  medewerker,
+  vestiging,
+  week,
+  AVG(leads_count) OVER (PARTITION BY medewerker, vestiging) AS mean_leads,
+  STDDEV(leads_count) OVER (PARTITION BY medewerker, vestiging) AS std_leads,
+FROM weekly_metrics) mean_stddev_leads
+ON mean_stddev_leads.medewerker = tot.medewerker
+AND mean_stddev_leads.vestiging = tot.vestiging
+AND mean_stddev_leads.week = EXTRACT(WEEK FROM tot.aangemaaktDatum)
 
 WHERE lead_rank = 1
 `
