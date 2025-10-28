@@ -136,7 +136,7 @@ ${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mappin
 ${join("LEFT JOIN", "googleSheets", "gs_lef_medewerker_functie_mapping", "AS functiemapping ON functiemapping.medewerker = lef.medewerker")}
 
 
-${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS mean_stddev")
+${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS mean_stddev")}
 
 ${join("LEFT JOIN", "df_staging_views", "stg_lef_leads_avg", `AS mean_stddev_leads
 ON mean_stddev_leads.medewerker = lef.medewerker
