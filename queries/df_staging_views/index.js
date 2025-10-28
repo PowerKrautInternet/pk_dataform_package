@@ -1,4 +1,30 @@
 let pk = require('../../sources');
+function stg_lef_leadopvolging_avg () {
+    let table = {
+        "name": "stg_lef_leadopvolging_avg",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_lef_leadopvolging_avg').refs
+        },
+        "query": require('./stg_lef_leadopvolging_avg').query
+    }
+    pk.addSource(table);
+    return table;
+}
+function stg_lef_leads_avg () {
+    let table = {
+        "name": "stg_lef_leads_avg",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_lef_leads_avg').refs
+        },
+        "query": require('./stg_lef_leads_avg').query
+    }
+    pk.addSource(table);
+    return table;
+}
 function stg_vistar_media_ads () {
     let table = {
         "name": "stg_vistar_media_ads",
@@ -449,6 +475,8 @@ module.exports = {
     stg_bing_ad_group_performance,
     stg_linkedin_ads_combined,
     stg_activecampaign_workflow_edm,
+    stg_lef_leads_avg,
+    stg_lef_leadopvolging_avg,
     stg_lef_leads_agg,
     stg_googleads_combined,
     stg_googleads_perfmax_combined,

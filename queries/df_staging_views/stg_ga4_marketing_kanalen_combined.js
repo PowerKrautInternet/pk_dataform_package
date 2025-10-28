@@ -167,6 +167,19 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
+    ${ifSource("stg_lef_leads_agg","lef.mean_doorlooptijd_hours AS mean_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leads_agg","lef.std_doorlooptijd_hours AS std_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leads_agg","lef.mean_deals AS mean_deals,")}
+    ${ifSource("stg_lef_leads_agg","lef.std_deals AS std_deals,")}
+    ${ifSource("stg_lef_leads_agg","lef.mean_leads AS mean_leads,")}
+    ${ifSource("stg_lef_leads_agg","lef.std_leads AS std_leads,")}
+    ${ifSource("stg_lef_leads_agg","lef.eersteContactpoging AS lef_eerstecontactpoging,")}
+    ${ifSource("stg_lef_leads_agg","lef.laatsteStatus_startGesprek AS lef_laatstestatus_startgesprek,")}
+    ${ifSource("stg_lef_leads_agg","lef.deadlineGehaald AS lef_deadlinegehaald,")}
+    ${ifSource("stg_lef_leads_agg","lef.eersteDeadline AS lef_eerstedeadline,")}
+    ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,")}
+    ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotEersteContactpoging AS doorlooptijd_tot_eerstecontactpoging,")}
+    ${ifSource("stg_lef_leads_agg","lef.ingezienDatum AS lef_ingeziendatum,")}
     ${ifSource("stg_sam_offertes","offerte_SALESTRAJECT_TRAJECTID, offerte_SALESTRAJECT_AFGERONDDATUM, offerte_SALESTRAJECT_CREATIEDATUM, offerte_OFFERTESTATUS_OMSCHRIJVING, offerte_OFFERTE_TOTAALBEDRAG, offerte_HERKOMST_OMSCHRIJVING, offerte_OFFERTE_OFFERTEID, getekende_offertes, offerte_SALESTRAJECT_TRAJECTSTATUSID, offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, offerte_MERK_OMSCHRIJVING, offerte_AFLEVERINGMODEL_OMSCHRIJVING, offerte_DEALER_NAAM, offerte_VERKOPER_NAAM,")}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
