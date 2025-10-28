@@ -180,7 +180,23 @@ function addSuffix(schema) {
     return schema
 }
 
-function ref(p1, p2, ifSource, dependant = true) {
+function ref(p1, p2 = null, ifSource = false, dependant = true) {
+    /**
+     * @brief New ref implementation. this is based on only p1.
+     */
+    if(typeof p1 === "object"){
+        let database = p1.database
+        let schema = p1.schema
+        let name = p1.name ?? throw Error("No name found in ref function")
+        let type = p1.type
+        let dependencie = p1.dependencie ?? type === "function"
+        dependencie ? refs.push({
+                "name": name,
+                "schema": schema,
+                "database": database
+            }) : null
+        return `\`${database}.${schema}.${name}\``
+    }
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
