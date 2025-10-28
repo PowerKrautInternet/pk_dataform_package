@@ -187,7 +187,7 @@ function ref(p1, p2 = null, ifSource = false, dependant = true) {
     if(typeof p1 === "object"){
         let database = p1.database
         let schema = p1.schema
-        let name = p1.name ?? throw Error("No name found in ref function")
+        let name = p1.name ?? throw new Error("No name found in ref function")
         let type = p1.type
         let dependencie = p1.dependencie ?? type === "function"
         dependencie ? refs.push({
