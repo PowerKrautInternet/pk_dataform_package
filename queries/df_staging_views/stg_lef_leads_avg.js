@@ -17,10 +17,7 @@ SELECT
   week,
   AVG(leads_count) OVER (PARTITION BY medewerker, vestiging) AS mean_leads,
   STDDEV(leads_count) OVER (PARTITION BY medewerker, vestiging) AS std_leads,
-FROM weekly_metrics) mean_stddev_leads
-ON mean_stddev_leads.medewerker = lef.medewerker
-AND mean_stddev_leads.vestiging = lef.vestiging
-AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.aangemaaktDatum
+FROM weekly_metrics
 `
 let refs = getRefs()
 module.exports = {query, refs}
