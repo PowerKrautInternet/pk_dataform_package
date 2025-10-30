@@ -29,7 +29,7 @@ SELECT
     orders.order_status as syntec_order_status,
     orders.date_delivery as syntec_date_delivery,
     orders.customergroup as syntec_customergroup,
-    ${ifSource("gs_kostensyntecmapping", `mapping.uitgavebron AS kanaal,
+    ${ifSource("gs_kostensyntecmapping", `mapping.uitgavebron AS uitgavebron,
     mapping.uitgavecategorie AS uitgave_categorie,`)}
 
 FROM (SELECT 'Syntec leads' as bron, * FROM ${ref("df_rawdata_views", "syntec_leads")}) leads
