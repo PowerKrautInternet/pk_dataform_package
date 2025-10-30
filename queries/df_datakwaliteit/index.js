@@ -170,7 +170,6 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                         }
                         key1_query += names[i]
                     }
-                    key1_query = sources[s].alias ?? key1_query;
                     key1_query = "'" + key1_query + "'"
                     query += key1_query;
                 } else if (type === "google_search_console"){
