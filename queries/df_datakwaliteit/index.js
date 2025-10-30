@@ -131,7 +131,8 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += `--This data is of type ${type}
+                query += `
+--This data is of type ${type}
 SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
                 query += sources[s].freshnessDays ?? 1;
                 query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}`;
