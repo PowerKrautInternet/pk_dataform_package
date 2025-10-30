@@ -43,5 +43,5 @@ WHERE IFNULL(CAST(leads.aangelegd AS DATE), orders.date_delivery) >= DATE_SUB(CU
 
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
