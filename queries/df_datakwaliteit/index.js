@@ -55,7 +55,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
+                query += `
+--This data is of type ${type}
+SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
                           FROM (\n
                             SELECT \n
                                 IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,
