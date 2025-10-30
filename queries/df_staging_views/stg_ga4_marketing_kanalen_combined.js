@@ -98,7 +98,7 @@ SELECT
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks as gsc_clicks,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.sum_position as gsc_sum_position,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.average_position as gsc_average_position,")}
-    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account, model"), ifSource("gs_kostensyntecmapping", `, uitgavebron, uitgave_categorie`), ifSource("stg_syntec_leads_orders_combined", `)`))}
+    ${ifSource("stg_syntec_leads_orders_combined", "syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account, model"), ifSource("gs_kostensyntecmapping", `, uitgavebron, uitgave_categorie`), ifSource("stg_syntec_leads_orders_combined", `)`)}
     ${ifSource("stg_syntec_leads_orders_combined", "syntec.model AS syntec_model,")}
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","mapping_thema"), ifSource(["stg_activecampaign_ga4_sheets", "gs_activecampaign_ga4_mapping"], "flow_thema")], "AS ac_flow_thema,")} 
     ${ifNull([ifSource("stg_activecampaign_ga4_sheets", "ac.ac_name"), ifSource("gs_activecampaign_ga4_mapping","ga4.ac_name")], "AS ac_name,")} 
