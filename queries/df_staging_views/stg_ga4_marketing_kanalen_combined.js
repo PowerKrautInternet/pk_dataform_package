@@ -187,7 +187,7 @@ SELECT
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie"), ifSource("gs_kostensyntecmapping", "syntec.uitgave_categorie")], "AS uitgave_categorie,")}
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal"), ifSource("gs_kostensyntecmapping", "syntec.kanaal")], "AS uitgave_bron,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal"), ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")], "AS uitgave_bron,")}
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
     ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(created_at_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm)")}
 
