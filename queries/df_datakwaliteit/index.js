@@ -250,7 +250,6 @@ function dk_monitor(){
                     }
                     key1_query += names[i]
                 }
-                key1_query = sources[s].alias ?? key1_query;
                 key1_query = "'" + key1_query + "'"
                 query += key1_query;
             } else if (type === "google_search_console"){
