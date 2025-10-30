@@ -164,8 +164,11 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 } else if (type === "DV360"){
                     let key1_query = "'"
                     let names = name.split("-_")[1].split("_")
-                    for (let i = 0; i < 3; i++){
-                        key1_query += names[i] + "-"
+                    for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
+                        if(i > 0){
+                            key1_query += "-"
+                        }
+                        key1_query += names[i]
                     }
                     query += key1_query + "'";
                 } else if (type === "google_search_console"){
