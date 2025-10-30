@@ -162,15 +162,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 if(type === "googleAds"){
                     query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
-                    let key1_query = "'"
-                    let names = name.split("-_")[1].split("_")
-                    for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
-                        if(i > 0){
-                            key1_query += "-"
-                        }
-                        key1_query += names[i]
-                    }
-                    query += key1_query + "'";
+                    query += getKey1(type, name);
                 } else if (type === "google_search_console"){
                     query += "site_url"
                 }
@@ -241,19 +233,7 @@ function dk_monitor(){
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
-                let key1_query = ""
-                let names = name.split("_")
-                let begin_name = false
-                for(let i = 0; names[i] !== "dv360"; i++) {
-                    if (begin_name || i > 5){
-                        key1_query += " "
-                    } else {
-                        begin_name = (names[i] === '-')
-                    }
-                    key1_query += names[i]
-                }
-                key1_query = "'" + key1_query + "'"
-                query += key1_query;
+                query += getKey1(type, name);
             } else if (type === "google_search_console"){
                 query += "site_url"
             }
@@ -325,6 +305,21 @@ function whereCrmId(source){
         query += "') "
     }
     return query
+}
+
+function getKey1(type, name){
+    switch(type){
+        case "DV360":
+            let key1_query = "'"
+            let names = name.split("-_")[1].split("_")
+            for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
+                if(i > 0){
+                    key1_query += "-"
+                }
+                key1_query += names[i]
+            }
+            return key1_query + "'";
+    }
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
