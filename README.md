@@ -185,4 +185,4 @@ Daarnaast:
 
 # Het upgraden van Major versies:
 ## Versie 1.* naar Versie 2.*
-stg_googleads_perfmax_conversions en stg_google_ads_adgroup_conversions zijn nu verplicht voor google_ads. Geen extra bronnen nodig.
+Als het goed is kan je deze zonder veranderingen upgraden.
