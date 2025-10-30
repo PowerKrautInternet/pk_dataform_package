@@ -7,7 +7,7 @@ let query = `
         soort_conversie,
            kanaal,
            merk,
-           CAST(target as FLOAT64)                       as month_target,
+           target                    as month_target,
            date                                          as record_datum,
            CAST(target / ARRAY_LENGTH(dates) as FLOAT64) as day_target
 
@@ -16,7 +16,7 @@ let query = `
                  kanaal,
                  merk,
                  PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
-                 TARGET,
+                 cast(regexp_replace(target, r',', '.') as float64) as target, --Voor 'nederlandse' getallen in gsheet gebruikt hij soms de , ipv de . en dat kan bigquery nie hebben
                  GENERATE_DATE_ARRAY(
                          PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)),
                          LAST_DAY(PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)), MONTH)
