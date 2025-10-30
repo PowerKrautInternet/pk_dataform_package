@@ -164,9 +164,12 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 } else if (type === "DV360"){
                     let key1_query = ""
                     let names = name.split("_")
-                    for(let i = 4; names[i] !== "dv360"; i++){
-                        if (i > 4){
+                    let begin_name = false
+                    for(let i = 0; names[i] !== "dv360"; i++) {
+                        if (begin_name || i > 5){
                             key1_query += " "
+                        } else {
+                            begin_name = (names[i] = '-')
                         }
                         key1_query += names[i]
                     }
@@ -244,9 +247,12 @@ function dk_monitor(){
             } else if (type === "DV360"){
                 let key1_query = ""
                 let names = name.split("_")
-                for(let i = 4; names[i] !== "dv360"; i++){
-                    if (i > 4){
+                let begin_name = false
+                for(let i = 0; names[i] !== "dv360"; i++) {
+                    if (begin_name || i > 5){
                         key1_query += " "
+                    } else {
+                        begin_name = (names[i] = '-')
                     }
                     key1_query += names[i]
                 }
