@@ -2,9 +2,10 @@
 const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources");
 let query = `
 SELECT
+*
 ${ifSource(
   "gs_campagnegroepen",
-  "EXCEPT(campagnegroep),", ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], ", uitgave_categorie")]))}FROM(
+  " EXCEPT(campagnegroep),", ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], ", uitgave_categorie")]))}FROM(
 SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne, account), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, ga4_ads.account AS account")}
 
 FROM(
