@@ -162,19 +162,12 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 if(type === "googleAds"){
                     query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
-                    let key1_query = ""
-                    let names = name.split("_")
-                    let begin_name = false
-                    for(let i = 0; names[i] !== "dv360"; i++) {
-                        if (begin_name || i > 5){
-                            key1_query += " "
-                        } else {
-                            begin_name = (names[i] = '-')
-                        }
-                        key1_query += names[i]
+                    let key1_query = "'"
+                    let names = name.split("-_")[1].split("_")
+                    for (let i = 0; i < 3; i++){
+                        key1_query += names[i] + "-"
                     }
-                    key1_query = "'" + key1_query + "'"
-                    query += key1_query;
+                    query += key1_query + "'";
                 } else if (type === "google_search_console"){
                     query += "site_url"
                 }
@@ -252,7 +245,7 @@ function dk_monitor(){
                     if (begin_name || i > 5){
                         key1_query += " "
                     } else {
-                        begin_name = (names[i] = '-')
+                        begin_name = (names[i] === '-')
                     }
                     key1_query += names[i]
                 }
