@@ -171,12 +171,12 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
-    ${ifSource("stg_lef_leads_agg","lef.mean_doorlooptijd_hours AS mean_doorlooptijd_hours,")}
-    ${ifSource("stg_lef_leads_agg","lef.std_doorlooptijd_hours AS std_doorlooptijd_hours,")}
-    ${ifSource("stg_lef_leads_agg","lef.mean_deals AS mean_deals,")}
-    ${ifSource("stg_lef_leads_agg","lef.std_deals AS std_deals,")}
-    ${ifSource("stg_lef_leads_agg","lef.mean_leads AS mean_leads,")}
-    ${ifSource("stg_lef_leads_agg","lef.std_leads AS std_leads,")}
+    ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours AS mean_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leadopvolging_avg","lef.std_doorlooptijd_hours AS std_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leadopvolging_avg","lef.mean_deals AS mean_deals,")}
+    ${ifSource("stg_lef_leadopvolging_avg","lef.std_deals AS std_deals,")}
+    ${ifSource("stg_lef_leads_avg","lef.mean_leads AS mean_leads,")}
+    ${ifSource("stg_lef_leads_avg","lef.std_leads AS std_leads,")}
     ${ifSource("stg_lef_leads_agg","lef.eersteContactpoging AS lef_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.laatsteStatus_startGesprek AS lef_laatstestatus_startgesprek,")}
     ${ifSource("stg_lef_leads_agg","lef.deadlineGehaald AS lef_deadlinegehaald,")}
