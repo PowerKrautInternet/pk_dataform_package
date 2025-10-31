@@ -77,7 +77,6 @@ jobs:
       - name: Commit updated version (if needed)
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            git pull
             git commit -am "chore: bump version based on release label"
             git push origin HEAD:refs/heads/${{ steps.pr.outputs.head_ref }}
           else
