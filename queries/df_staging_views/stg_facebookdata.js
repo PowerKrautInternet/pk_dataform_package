@@ -24,6 +24,7 @@ SELECT
   MAX(CAST(spend AS FLOAT64)) AS spend,
   MAX(date_stop) AS date_stop,
   MAX(objective) AS objective,
+  MAX(reach) AS reach,
   MAX(
   IF(JSON_VALUE(actions_nieuw,'$.action_type') = "page_engagement", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), 0)
     ) AS page_engagement,
