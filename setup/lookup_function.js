@@ -40,7 +40,7 @@ function lookupTable(needle, haystack){
     let matches = [...string.matchAll(regexp)];
     if(matches.length < 1){
         return null  //return null if empty
-    } else if(matches[0][0].length > 3){
+    } else if(matches[0][0].length > 2){
         return matches[0][0].charAt(0).toUpperCase() + matches[0][0].slice(1)   
     } else {
         return matches[0][0].toUpperCase()
