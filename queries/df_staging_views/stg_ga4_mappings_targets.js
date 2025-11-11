@@ -91,7 +91,7 @@ SELECT
     ${join("left join","df_googlesheets_tables","gs_conversie_mapping", `AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name) ${join_on_account(
     {schema: "googleSheets", name: "gs_conversie_mapping"},
     {name: "events_*"},
-    " AND events_sessies.account = standaard_event.account"
+    " AND events_sessies.account = gs_mapping.account"
     )}`)}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
