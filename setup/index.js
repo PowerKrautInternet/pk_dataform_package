@@ -1,7 +1,7 @@
 let lasttransaction = require("./lasttransaction");
 let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
-let FunctionObject = require("./source_helper");
+let SourceHelper = require("./source_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
 
