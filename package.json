@@ -22,5 +22,8 @@
   },
   "publishConfig": {
     "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "@dataform/core": "3.*"
   }
 }

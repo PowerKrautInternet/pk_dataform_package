@@ -394,7 +394,7 @@ function orSource(name, query) {
  * Deze functie inspecteert het `alias` of `name` attribuut van een bronobject en
  * classificeert de bron in een van de bekende types of "NONE" als geen match wordt gevonden.
  *
- * @param {Object} source - Een object dat informatie bevat over een gegevensbron.
+ * @param {Object} source - Een object dat informatie b evat over een gegevensbron.
  * @param {string} [source.alias] - Een optionele alias voor de bron.
  * @param {string} [source.name] - De naam van de bron.
  * Wanneer Alias null is, wordt de name gepakt.

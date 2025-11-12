@@ -48,7 +48,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let key1 = sources[s].key1 ?? "$.type"
-            //for each data source
+        let key2 = sources[s].key2 ?? "$.nothing"
+
+        //for each data source
             let name = sources[s].name ?? "";
             if (type === "dataProducer" && sources[s].recency !== false && sources[s].recency !== "false") {
                 if (rowNr > 0) {
@@ -73,7 +75,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                    query += `JSON_VALUE(PAYLOAD, '${key1}') AS KEY1 `
+                    query += `concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}')) AS KEY1 `
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
@@ -225,7 +227,7 @@ function dk_monitor(){
             query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
-                    query += `JSON_VALUE(PAYLOAD, '${key1}')`
+                query += `concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}'))`
             } else if (type === "GA4") {
                 query += "'"
                 query += sources[s].account ?? sources[s].schema
