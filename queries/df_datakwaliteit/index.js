@@ -55,7 +55,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
+                query += `
+--This data is of type ${type}
+SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
                           FROM (\n
                             SELECT \n
                                 IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,
@@ -129,7 +131,9 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
+                query += `
+--This data is of type ${type}
+SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
                 query += sources[s].freshnessDays ?? 1;
                 query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}`;
 
@@ -158,17 +162,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if(type === "googleAds"){
                     query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
-                    let key1_query = ""
-                    let names = name.split("_")
-                    for(let i = 4; names[i] !== "dv360"; i++){
-                        if (i > 4){
-                            key1_query += " "
-                        }
-                        key1_query += names[i]
-                    }
-                    key1_query = sources[s].alias ?? key1_query;
-                    key1_query = "'" + key1_query + "'"
-                    query += key1_query;
+                    query += getKey1(type, name);
                 } else if (type === "google_search_console"){
                     query += "site_url"
                 }
@@ -239,17 +233,7 @@ function dk_monitor(){
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
-                let key1_query = ""
-                let names = name.split("_")
-                for(let i = 4; names[i] !== "dv360"; i++){
-                    if (i > 4){
-                        key1_query += " "
-                    }
-                    key1_query += names[i]
-                }
-                key1_query = sources[s].alias ?? key1_query;
-                key1_query = "'" + key1_query + "'"
-                query += key1_query;
+                query += getKey1(type, name);
             } else if (type === "google_search_console"){
                 query += "site_url"
             }
@@ -321,6 +305,21 @@ function whereCrmId(source){
         query += "') "
     }
     return query
+}
+
+function getKey1(type, name){
+    switch(type){
+        case "DV360":
+            let key1_query = "'"
+            let names = name.split("-_")[1].split("_")
+            for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
+                if(i > 0){
+                    key1_query += "-"
+                }
+                key1_query += names[i]
+            }
+            return key1_query + "'";
+    }
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
