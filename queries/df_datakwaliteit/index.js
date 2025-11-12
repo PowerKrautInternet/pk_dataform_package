@@ -198,6 +198,7 @@ function dk_monitor(){
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
         let key1 = sources[s].key1 ?? "$.type"
+        let key2 = sources[s].key2 ?? "$.nothing"
 
         //for each data source
         if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
