@@ -146,35 +146,43 @@ function getSources() {
 }
 
 //used in the declarations.js
-function setSources(varSource){
-    sources = [];
-    for(let s in varSource){
-        let v = varSource[s];
-        v["database"] = typeof varSource[s].database !== "undefined" ? varSource[s].database : dataform.projectConfig.defaultDatabase;
+function setSources(varSource) {
+  sources = [];
 
-        // Zorgt ervoor dat elke publisher in de array:
-        // - een geldig 'name'-veld bevat (anders wordt deze uitgefilterd)
-        // - altijd een 'recency'-veld heeft; standaard op true indien niet opgegeven
-        // - altijd een 'freshnessDays'-veld heeft; als deze niet gevuld wordt door de publisher dan wordt deze o.b.v. de producer gevuld en anders standaard op 1 gezet.
-        v.publishers = (v.publishers ?? [])
-            .filter(publisher => !!publisher.name)
-            .flatMap(publisher => {
-                // Zorg dat publisher.name altijd een array is
-                const names = Array.isArray(publisher.name) ? publisher.name : [publisher.name];
+  for (const s in varSource) {
+    const v = varSource[s];
 
-                return names.map(name => ({
-                    name,
-                    recency: publisher.recency ?? true,
-                    freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1
-                }));
-            });
+    // Zet standaard database als die niet expliciet is opgegeven
+    v.database = v.database ?? dataform.projectConfig.defaultDatabase;
 
+    /**
+     * Verwerkt de 'publishers'-array:
+     * - Filtert publishers zonder geldige naam
+     * - Zorgt dat 'name' altijd een array is
+     * - Stelt standaardwaarden in voor 'recency' en 'freshnessDays'
+     */
+    v.publishers = (v.publishers ?? [])
+      .filter(publisher => !!publisher.name)
+      .flatMap(publisher => {
+        const names = Array.isArray(publisher.name)
+          ? publisher.name
+          : [publisher.name];
 
-        v["noSuffix"] = true;
-        v["declaredSource"] = true;
-        sources.push(v);
-    }
+        return names.map(name => ({
+          name,
+          recency: publisher.recency ?? true,
+          freshnessDays: publisher.freshnessDays ?? v.freshnessDays ?? 1,
+        }));
+      });
+
+    // Interne flags
+    v.noSuffix = true;
+    v.declaredSource = true;
+
+    sources.push(v);
+  }
 }
+
 
 function addSuffix(schema) {
     if (!schema.startsWith("ads_") && !schema.startsWith("analytics_") && schema !== "rawdata" && schema !== "googleSheets" && dataform.projectConfig.schemaSuffix !== "" && typeof dataform.projectConfig.schemaSuffix !== "undefined") {
