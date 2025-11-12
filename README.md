@@ -66,7 +66,8 @@ const sources = [
     ],
     recency: false, // Je kan ook voor de hele bron de recency uitschakelen
     type: "dataProducer", //wanneer de naam afwijkt maar het wel werkt met een payload.
-    no_gs_table: true   //Wanneer je een google sheet aanmaakt zal hij automatisch proberen een buffertable te maken. Voor performance kan je dit uitschakelen
+    no_gs_table: true,   //Wanneer je een google sheet aanmaakt zal hij automatisch proberen een buffertable te maken. Voor performance kan je dit uitschakelen
+    freshnessDays: 5    //Wanneer je wilt aangeven dat de limiet van acceptable achterlopen 5 dagen is. (5 dagen is okay, 6 dagen is alarm slaan)
   },
   {
     schema: "...",
@@ -185,4 +186,4 @@ Daarnaast:
 
 # Het upgraden van Major versies:
 ## Versie 1.* naar Versie 2.*
-stg_googleads_perfmax_conversions en stg_google_ads_adgroup_conversions zijn nu verplicht voor google_ads. Geen extra bronnen nodig.
+Als het goed is kan je deze zonder veranderingen upgraden.

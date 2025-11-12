@@ -16,7 +16,7 @@ SELECT
 FROM (
     SELECT
         ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_vistar_media_ads','vistar_media.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
-        ${ifNull(['google_ads.account', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account'), ifSource('stg_vistar_media_ads','vistar_media.account')])} as account,
+        ${ifNull(['google_ads.account', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account'), ifSource('stg_vistar_media_ads','vistar_media.account'), ifSource('stg_handmatige_uitgaves_pivot','handmatig.account')])} as account,
         ${ifNull(['CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_id'), ifSource('dv360_data','CAST(dv360.advertiser_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.account_id'), ifSource('stg_linkedin_ads_combined','linkedin.accountId'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name')])} as account_id,
         ${ifNull(['CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_name'), ifSource('dv360_data','dv360.advertiser'), ifSource('stg_bing_ad_group_performance','microsoft.account_name'), ifSource('stg_linkedin_ads_combined','linkedin.account_name'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name')])} as account_name,
         ${ifNull(['CAST(google_ads.campaign_id AS STRING)', ifSource('stg_facebookdata','facebook.campaign_id'), ifSource('dv360_data','CAST(dv360.insertion_order_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.campaign_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_id'), ifSource('stg_vistar_media_ads','vistar_media.insertion_order')])} as campaign_id,
@@ -39,6 +39,10 @@ FROM (
         ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')], "AS objective,")}
         ${ifSource("stg_facebookdata", "facebook.ad_id AS facebook_ad_id,")}
         ${ifSource("stg_facebookdata", "facebook.ad_name AS facebook_ad_name,")}
+        ${ifSource("stg_facebookdata", "facebook.reach AS facebook_reach,")}    
+        ${ifSource("dv360_data", "dv360.view_through_conversions AS view_through_conversions,")}
+        ${ifSource("dv360_data", "dv360.click_through_conversions AS click_through_conversions,")}
+        ${ifSource("dv360_data", "dv360.active_view_viewable_impressions AS dv360_active_view_viewable_impressions,")}
         ${ifSource("dv360_data", "dv360.creative AS dv360_creative,")}
         ${ifSource("dv360_data", "dv360.creative_size AS dv360_creative_size,")}
         ${ifSource("dv360_data", "dv360.creative_type AS dv360_creative_type,")}
