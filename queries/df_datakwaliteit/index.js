@@ -335,9 +335,7 @@ function getKeys(source) {
         case "dataProducer":
             let key1 = source.key1 ?? "$.type"
             let key2 = source.key2 ?? null
-            if(key2) key1_query += 'concat('
-            key1_query += `JSON_VALUE(PAYLOAD, '${key1}')`
-            if(key2) key1_query += `, " - ", IFNULL(JSON_VALUE(PAYLOAD, '${key2}'), "null"))`
+            key1_query = `IFNULL(concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}')), JSON_VALUE(PAYLOAD, '${key1}'))`
             break;
     }
     return key1_query
