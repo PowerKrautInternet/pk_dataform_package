@@ -337,7 +337,7 @@ function getKeys(source) {
             let key2 = source.key2 ?? null
             if(key2) key1_query += 'concat('
             key1_query += `JSON_VALUE(PAYLOAD, '${key1}')`
-            if(key2) key1_query += `, " - ", JSON_VALUE(PAYLOAD, "${key2}"))`
+            if(key2) key1_query += `, " - ", IFNULL(JSON_VALUE(PAYLOAD, "${key2}"), "null"))`
             break;
     }
     return key1_query
