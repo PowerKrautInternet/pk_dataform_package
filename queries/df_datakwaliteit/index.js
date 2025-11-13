@@ -75,7 +75,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                    query += `concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}')) AS KEY1 `
+                query += getKeys(sources[s])
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
@@ -228,7 +228,7 @@ function dk_monitor(){
             query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
-                query += `concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}'))`
+                query += getKeys(sources[s])
             } else if (type === "GA4") {
                 query += "'"
                 query += sources[s].account ?? sources[s].schema
@@ -311,9 +311,10 @@ function whereCrmId(source){
 }
 
 function getKey1(type, name){
+    let key1_query = ""
     switch(type){
         case "DV360":
-            let key1_query = "'"
+            key1_query = "'"
             let names = name.split("-_")[1].split("_")
             for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
                 if(i > 0){
@@ -323,6 +324,20 @@ function getKey1(type, name){
             }
             return key1_query + "'";
     }
+}
+
+function getKeys(source) {
+    let key1_query = ""
+    switch(getTypeSource(source)){
+        case "dataProducer":
+            let key1 = source.key1 ?? "$.type"
+            let key2 = source.key2 ?? null
+            if(key2) key1_query += 'concat('
+            key1_query += `JSON_VALUE(PAYLOAD, '${key1}')`
+            if(key2) key1_query += `, " - ", JSON_VALUE(PAYLOAD, "${key2}"))`
+            break;
+    }
+    return key1_query
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
