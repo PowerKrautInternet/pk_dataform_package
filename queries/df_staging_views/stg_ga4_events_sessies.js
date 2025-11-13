@@ -35,6 +35,7 @@ FROM(
     WHEN REGEXP_CONTAINS(session_source,'dailymotion|disneyplus|netflix|youtube|vimeo|twitch|vimeo|youtube')
     OR REGEXP_CONTAINS(session_medium,'^(.*video.*)$') THEN 'Organic Video'
     WHEN REGEXP_CONTAINS(session_source,'baidu|bing|duckduckgo|ecosia|google|yahoo|yandex') OR session_medium = 'organic' THEN 'Organic Search'
+    WHEN REGEXP_CONTAINS(session_source,'chatgpt|edgeservices|gemini|copilot|perplexity|claude|deepseek|grok') THEN 'Organic Search AI'
     WHEN REGEXP_CONTAINS(session_source,'email|e-mail|e_mail|e mail|care-mail')
     OR REGEXP_CONTAINS(session_medium,'email|e-mail|e_mail|e mail|caremail') THEN 'Email'
     WHEN session_medium = 'affiliate' THEN 'Affiliates'
