@@ -47,8 +47,6 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.type"
-        let key2 = sources[s].key2 ?? "$.nothing"
 
         //for each data source
             let name = sources[s].name ?? "";
@@ -200,8 +198,6 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.type"
-        let key2 = sources[s].key2 ?? "$.nothing"
 
         //for each data source
         if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
