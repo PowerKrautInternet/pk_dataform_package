@@ -75,7 +75,10 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                query += getKeys(sources[s])
+                query += `
+                --dynamic KEY1
+                ${getKeys(sources[s])} as key1 
+                `
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
