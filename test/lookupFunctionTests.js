@@ -69,7 +69,7 @@ function test_an_function(name, function_result, result, description) {
 test_an_function('test 4', lookupTable("Now i want to maybe buy an Škoda or maybe an Citroën", haystack), 'Skoda', '2 merken met speciale characters')
 test_an_function('test 5', lookupTable("Now i want an beautiful vw professional truck", haystack), 'Vw professional', 'VW professional ipv VW')
 test_an_function('test 6', lookupTable("Now i want an beautiful vw truck", haystack), 'VW', 'VW full word uppercase')
-test_an_function('NULL value test', lookupTable(null, haystack), null, "Null stays null")
+test_an_function('Test 7; NULL value test', lookupTable(null, haystack), null, "Null stays null")
 
 
 console.log("✓ implementation tests passed");

@@ -1,8 +1,9 @@
 let lasttransaction = require("./lasttransaction");
 let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
-let pk = require("../sources");
-const {ifSource, addSource} = require("../sources");
+const {addSource} = require("../sources");
+
+//TODO base class voor UDF's en de parser in een andere map. Templateengine voor sqlx
 
 //TODO base class voor UDF's en de parser in een andere map. Templateengine voor sqlx
 
@@ -12,7 +13,8 @@ let function_config = [
         schema: "rawdata",
         name: "lookupTable",
         vars: {needle: "STRING", haystack: "STRING"},
-        function: require("./lookup_function")
+        function: require("./lookup_function"),
+        type: "javascript"
     },
     {
         database: dataform.projectConfig.defaultDatabase,
@@ -41,12 +43,20 @@ let function_config = [
         name: "getTableName",
         vars: {json_row: "STRING"},
         function: require("./getTableName_function")
+    },
+    {
+        database: dataform.projectConfig.defaultDatabase,
+        schema: "rawdata",
+        name: "email_cleaner",
+        vars: {raw_input: "STRING"},
+        function: require("./email_cleaner"),
+        function_type: "sql"
     }
 ]
 
 let function_array = function_config.map(config => new FunctionObject(config));
 
-function setupFunctions(sources){
+function setupFunctions(sources) {
     let query = []
     let declared = {}
     for(let s in sources){
@@ -61,12 +71,13 @@ function setupFunctions(sources){
     }
 
     //Add functions to the dataform operation query
-    for(let f of function_array){
+    for (let f of function_array) {
         query.push(f.sql);   //add to query
         addSource(f.source); //make the function available for internal use
     }
 
     return query
 }
+
 
 module.exports = {setupFunctions, function_config}
