@@ -1,4 +1,5 @@
---CREATE OR REPLACE FUNCTION `pk-datalake-van-mossel-groep.rawdata.clean_email`(raw_input STRING) RETURNS STRING AS (
+module.exports = `
+--CREATE OR REPLACE FUNCTION \`pk-datalake-van-mossel-groep.rawdata.clean_email\`(raw_input STRING) RETURNS STRING AS (
 (
     -- === BYPASS: skip de hele functie als er een spatie is zonder e-mailadres tussen <> ===
     CASE
@@ -59,3 +60,4 @@
     END
   )
 --);
+`;

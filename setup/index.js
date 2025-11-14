@@ -48,18 +48,18 @@ let function_config = [
         schema: "rawdata",
         name: "email_cleaner",
         vars: {raw_input: "STRING"},
-        function: getFunction("email_cleaner.sql"),
+        function: require("./email_cleaner"),
         function_type: "sql"
     }
 ]
 
 let function_array = function_config.map(config => new FunctionObject(config));
 
-function setupFunctions(sources){
+function setupFunctions(sources) {
     let query = []
     let declared = {}
-    for(let s in sources){
-        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] !== true){
+    for (let s in sources) {
+        if (typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] !== true) {
             query.push(lasttransaction(sources[s]));
             declared[sources[s].name] = true;
         } else if (typeof sources[s].schema != "undefined" && typeof sources[s].name != "undefined" && sources[s].schema === "googleSheets" && declared[sources[s].alias ?? sources[s].name] !== true) {
@@ -69,19 +69,12 @@ function setupFunctions(sources){
     }
 
     //Add functions to the dataform operation query
-    for(let f of function_array){
+    for (let f of function_array) {
         query.push(f.sql);   //add to query
         addSource(f.source); //make the function available for internal use
     }
 
     return query
-}
-
-function getFunction(dir) {
-    return readFileSync(
-        path.join(__dirname, dir),
-        "utf8"
-    )
 }
 
 
