@@ -47,15 +47,17 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.type"
-            //for each data source
+
+        //for each data source
             let name = sources[s].name ?? "";
-            if (type === "dataProducer") {
+            if (type === "dataProducer" && sources[s].recency !== false && sources[s].recency !== "false") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
 
-                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
+                query += `
+--This data is of type ${type}
+SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\n
                           FROM (\n
                             SELECT \n
                                 IF(MAX_RECEIVEDON >= CURRENT_DATE() - ${getFreshnessDays(sources[s])}, NULL, ${getEnabledRecencyPublishers(sources[s])}) AS RECENCY_CHECK,
@@ -71,7 +73,10 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                    query += `JSON_VALUE(PAYLOAD, '${key1}') AS KEY1 `
+                query += `
+                --dynamic KEY1
+                ${getKeys(sources[s])} as key1 
+                `
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
@@ -125,11 +130,13 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 query += "\n))\n"
                 rowNr += 1
             }
-            else if (type !== "NONE"){
+            else if (type !== "NONE" && type !== "dataProducer"){
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
-                query += `SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
+                query += `
+--This data is of type ${type}
+SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency \nFROM (\nSELECT \nIF(MAX_RECEIVEDON >= CURRENT_DATE()-`
                 query += sources[s].freshnessDays ?? 1;
                 query += `, NULL, ${getEnabledRecencyPublishers(sources[s])}`;
 
@@ -158,17 +165,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
                 if(type === "googleAds"){
                     query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
-                    let key1_query = ""
-                    let names = name.split("_")
-                    for(let i = 4; names[i] !== "dv360"; i++){
-                        if (i > 4){
-                            key1_query += " "
-                        }
-                        key1_query += names[i]
-                    }
-                    key1_query = sources[s].alias ?? key1_query;
-                    key1_query = "'" + key1_query + "'"
-                    query += key1_query;
+                    query += getKey1(type, name);
                 } else if (type === "google_search_console"){
                     query += "site_url"
                 }
@@ -201,10 +198,9 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.type"
 
         //for each data source
-        if (type !== "NONE") {
+        if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
             if (rowNr > 0) { query += "\nUNION ALL\n\n" } // Just to join the sources
 
             //SELECT ...
@@ -231,7 +227,7 @@ function dk_monitor(){
             query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
-                    query += `JSON_VALUE(PAYLOAD, '${key1}')`
+                query += getKeys(sources[s])
             } else if (type === "GA4") {
                 query += "'"
                 query += sources[s].account ?? sources[s].schema
@@ -239,17 +235,7 @@ function dk_monitor(){
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
-                let key1_query = ""
-                let names = name.split("_")
-                for(let i = 4; names[i] !== "dv360"; i++){
-                    if (i > 4){
-                        key1_query += " "
-                    }
-                    key1_query += names[i]
-                }
-                key1_query = sources[s].alias ?? key1_query;
-                key1_query = "'" + key1_query + "'"
-                query += key1_query;
+                query += getKey1(type, name);
             } else if (type === "google_search_console"){
                 query += "site_url"
             }
@@ -321,6 +307,41 @@ function whereCrmId(source){
         query += "') "
     }
     return query
+}
+
+function getKey1(type, name){
+    let key1_query = ""
+    switch(type){
+        case "DV360":
+            key1_query = "'"
+            let names = name.split("-_")[1].split("_")
+            for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
+                if(i > 0){
+                    key1_query += "-"
+                }
+                key1_query += names[i]
+            }
+            return key1_query + "'";
+    }
+}
+
+function getKeys(source) {
+    let key1_query = ""
+    switch(getTypeSource(source)){
+        case "dataProducer":
+            let key1 = source.key1 ?? "$.type"
+            let key2 = source.key2 ?? "$.no_key_found"
+            let key3 = source.key3 ?? "$.no_key_found"
+            key1_query = `
+            COALESCE(
+                concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}'), " - ", JSON_VALUE(PAYLOAD, '${key3}')),
+                concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}')),
+                JSON_VALUE(PAYLOAD, '${key1}')
+            )
+            `
+            break;
+    }
+    return key1_query
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}

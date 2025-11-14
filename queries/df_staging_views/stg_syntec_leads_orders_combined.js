@@ -1,6 +1,5 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
+const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources");
 let query = `
     
 
@@ -29,16 +28,20 @@ SELECT
     orders.order_id as syntec_order_id,
     orders.order_status as syntec_order_status,
     orders.date_delivery as syntec_date_delivery,
-    orders.customergroup as syntec_customergroup
+    orders.customergroup as syntec_customergroup,
+    ${ifSource("gs_kostensyntecmapping", `mapping.uitgavebron AS uitgavebron,
+    mapping.uitgavecategorie AS uitgave_categorie,`)}
 
 FROM (SELECT 'Syntec leads' as bron, * FROM ${ref("df_rawdata_views", "syntec_leads")}) leads
 
 FULL OUTER JOIN (SELECT 'Syntec orders' as bron, * FROM ${ref("df_rawdata_views", "syntec_orders")}) orders
 ON 1=0
 
+${join("LEFT JOIN", "df_googlesheets_tables", "gs_kostensyntecmapping", "AS mapping ON mapping.syntec_kanaal = leads.kanaal AND mapping.syntec_ordersoort = leads.ordersoort")}
+
 WHERE IFNULL(CAST(leads.aangelegd AS DATE), orders.date_delivery) >= DATE_SUB(CURRENT_DATE(), INTERVAL 2 YEAR)
 
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}

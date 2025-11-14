@@ -4,10 +4,12 @@ let query = `
 
 SELECT 
 "LEF" AS bron,
-* EXCEPT(sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session, gewenstMerk ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
+* EXCEPT( ${ifSource("stg_lef_leads_avg", "week,")} medewerker, vestiging, sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session, gewenstMerk ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
 ${ifNull(['merk_session', 'gewenstMerk', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
+lef.medewerker AS medewerker,
+lef.vestiging AS vestiging,
 ${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))} 
                                                                      
 FROM(
@@ -129,7 +131,17 @@ ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = ka
 
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID")}
 ) lef
-${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging")}
+${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
+
+${join("LEFT JOIN", "googleSheets", "gs_lef_medewerker_functie_mapping", "AS functiemapping ON functiemapping.medewerker = lef.medewerker")}
+
+
+${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS mean_stddev")}
+
+${join("LEFT JOIN", "df_staging_views", "stg_lef_leads_avg", `AS mean_stddev_leads
+ON mean_stddev_leads.medewerker = lef.medewerker
+AND mean_stddev_leads.vestiging = lef.vestiging
+AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.aangemaaktDatum)`)}
 
 WHERE lead_rank = 1
 `

@@ -1,26 +1,26 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, isSource} = require("../../sources");
 let query = `
 
 SELECT 
   'Google Ads' as bron,
-  COALESCE(campaign_stats.account, campaign_conversions.account) AS account,
-  COALESCE(campaign_stats.customer_id, campaign_conversions.customer_id) AS customer_id,
-  COALESCE(campaign_stats.campaign_id, campaign_conversions.campaign_id) AS campaign_id,
-  COALESCE(campaign_stats.campaign_name, campaign_conversions.campaign_name) AS campaign_name,
-  COALESCE(campaign_stats.campaign_advertising_channel_type, campaign_conversions.campaign_advertising_channel_type) AS campaign_advertising_channel_type,
-  COALESCE(campaign_stats.campaign_bidding_strategy_type, campaign_conversions.campaign_bidding_strategy_type) AS campaign_bidding_strategy_type,
-  COALESCE(campaign_stats.campaign_start_date, campaign_conversions.campaign_start_date) AS campaign_start_date,
-  COALESCE(campaign_stats.campaign_end_date, campaign_conversions.campaign_end_date) AS campaign_end_date,
-  COALESCE(campaign_stats.campaign_status, campaign_conversions.campaign_status) AS campaign_status,
-  COALESCE(campaign_stats.segments_date, campaign_conversions.segments_date) AS segments_date,
+  ${ifNull(["campaign_stats.account", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.account")], "AS account,")}
+  ${ifNull(["campaign_stats.customer_id", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.customer_id")], "AS customer_id,")}
+  ${ifNull(["campaign_stats.campaign_id", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_id")], "AS campaign_id,")}
+  ${ifNull(["campaign_stats.campaign_name", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_name")], "AS campaign_name,")}
+  ${ifNull(["campaign_stats.campaign_advertising_channel_type", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_advertising_channel_type")], "AS campaign_advertising_channel_type,")}
+  ${ifNull(["campaign_stats.campaign_bidding_strategy_type", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_bidding_strategy_type")], "AS campaign_bidding_strategy_type,")}
+  ${ifNull(["campaign_stats.campaign_start_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_start_date")], "AS campaign_start_date,")}
+  ${ifNull(["campaign_stats.campaign_end_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_end_date")], "AS campaign_end_date,")}
+  ${ifNull(["campaign_stats.campaign_status", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.campaign_status")], "AS campaign_status,")}
+  ${ifNull(["campaign_stats.segments_date", ifSource("stg_googleads_perfmax_conversions", "campaign_conversions.segments_date")], "AS segments_date,")}
   campaign_stats.impressions,
   campaign_stats.interactions,
   campaign_stats.clicks,
   campaign_stats.Cost,
-  campaign_conversions.segments_conversion_action_name,
-  campaign_conversions.conversions,
-  campaign_conversions.conversions_value
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -38,6 +38,8 @@ FROM(
     SUM(campaign_stats.metrics_interactions) AS interactions,
     SUM(campaign_stats.metrics_clicks) AS clicks,
     (SUM(campaign_stats.metrics_cost_micros) / 1000000) AS Cost,
+    SUM(campaign_stats.metrics_conversions) AS conversions,
+    SUM(campaign_stats.metrics_conversions_value) AS conversions_value,
 
 FROM ${ref('ads_Campaign')} ad_campaign 
 
@@ -58,8 +60,7 @@ GROUP BY
     segments_date
 ) campaign_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_conversions')} campaign_conversions
-ON 1=0
+${join("FULL OUTER JOIN", "df_staging_views", "stg_googleads_perfmax_conversions", "campaign_conversions ON 1=0")}
 
 `
 let refs = getRefs()
