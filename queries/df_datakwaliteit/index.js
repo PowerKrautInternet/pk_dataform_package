@@ -47,8 +47,8 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
     let rowNr = 0;
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
-        let key1 = sources[s].key1 ?? "$.type"
-            //for each data source
+
+        //for each data source
             let name = sources[s].name ?? "";
             if (type === "dataProducer" && sources[s].recency !== false && sources[s].recency !== "false") {
                 if (rowNr > 0) {
@@ -73,7 +73,10 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
-                    query += `JSON_VALUE(PAYLOAD, '${key1}') AS KEY1 `
+                query += `
+                --dynamic KEY1
+                ${getKeys(sources[s])} as key1 
+                `
 
                 //FROM ... database . schema . name
                 query += "\n\n\tFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` "
@@ -195,7 +198,6 @@ function dk_monitor(){
     for (let s in sources) {
         let type = getTypeSource(sources[s]);
         let name = sources[s].name;
-        let key1 = sources[s].key1 ?? "$.type"
 
         //for each data source
         if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
@@ -225,7 +227,7 @@ function dk_monitor(){
             query += " AS BRON, \n"
             //KEY1 ...
             if(type === "dataProducer") {
-                    query += `JSON_VALUE(PAYLOAD, '${key1}')`
+                query += getKeys(sources[s])
             } else if (type === "GA4") {
                 query += "'"
                 query += sources[s].account ?? sources[s].schema
@@ -308,9 +310,10 @@ function whereCrmId(source){
 }
 
 function getKey1(type, name){
+    let key1_query = ""
     switch(type){
         case "DV360":
-            let key1_query = "'"
+            key1_query = "'"
             let names = name.split("-_")[1].split("_")
             for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
                 if(i > 0){
@@ -320,6 +323,25 @@ function getKey1(type, name){
             }
             return key1_query + "'";
     }
+}
+
+function getKeys(source) {
+    let key1_query = ""
+    switch(getTypeSource(source)){
+        case "dataProducer":
+            let key1 = source.key1 ?? "$.type"
+            let key2 = source.key2 ?? "$.no_key_found"
+            let key3 = source.key3 ?? "$.no_key_found"
+            key1_query = `
+            COALESCE(
+                concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}'), " - ", JSON_VALUE(PAYLOAD, '${key3}')),
+                concat(JSON_VALUE(PAYLOAD, '${key1}'), " - ", JSON_VALUE(PAYLOAD, '${key2}')),
+                JSON_VALUE(PAYLOAD, '${key1}')
+            )
+            `
+            break;
+    }
+    return key1_query
 }
 
 module.exports = {dk_maxReceivedon , dk_monitor, dk_healthRapport, dk_errormessages}
