@@ -1,6 +1,6 @@
 {
   "name": "@PowerKrautInternet/pk_dataform_package",
-  "version": "2.10.0",
+  "version": "2.10.1",
   "description": "Automating Marketing Automation",
   "keywords": [
     "PowerKraut"
@@ -22,8 +22,5 @@
   },
   "publishConfig": {
     "@PowerKrautInternet:registry": "https://npm.pkg.github.com"
-  },
-  "dependencies": {
-    "@dataform/core": "3.*"
   }
 }
