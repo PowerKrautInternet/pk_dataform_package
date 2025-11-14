@@ -1,10 +1,7 @@
 let lasttransaction = require("./lasttransaction");
 let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
-let pk = require("../sources");
-const {ifSource, addSource} = require("../sources");
-const {readFileSync} = require("fs").promises;
-const path = require("path");
+const {addSource} = require("../sources");
 
 let function_config = [
     {
