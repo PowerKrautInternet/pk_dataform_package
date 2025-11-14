@@ -3,8 +3,8 @@ module.exports = `
 (
     -- === BYPASS: skip de hele functie als er een spatie is zonder e-mailadres tussen <> ===
     CASE
-      WHEN REGEXP_CONTAINS(raw_input, r'\s')
-           AND NOT REGEXP_CONTAINS(raw_input, r'<[^>]+@[^\s>]+\.[A-Za-z]{2,}>')
+      WHEN REGEXP_CONTAINS(raw_input, r'\\s')
+           AND NOT REGEXP_CONTAINS(raw_input, r'<[^>]+@[^\\s>]+\\.[A-Za-z]{2,}>')
         THEN raw_input
       ELSE (
         WITH base AS (
@@ -17,7 +17,7 @@ module.exports = `
         emails AS (
           SELECT
             TRANSLATE(
-              REGEXP_REPLACE(REGEXP_REPLACE(email_input, r'[#!$^&*\(\)\[\]\{\}\:\;\"\'\<\,\>\?\/]', ""), r'([.\-%+_@]){2,}', r'\1'),
+              REGEXP_REPLACE(REGEXP_REPLACE(email_input, r'[#!$^&*\\(\\)\\[\\]\\{\\}\\:\\;\\"\\'\\<\\,\\>\\?\\/]', ""), r'([.\\-%+_@]){2,}', r'\\1'),
               'ÁÀÂÄáàâäÉÈÊËéèêëÍÌÎÏíìîïÓÒÔÖóòôöÚÙÛÜúùûüÑñÇç',
               'AAAAaaaaEEEEeeeeIIIIiiiiOOOOooooUUUUuuuuNnCc'
             ) AS email
