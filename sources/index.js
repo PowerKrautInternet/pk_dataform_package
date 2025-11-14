@@ -185,7 +185,7 @@ function ref(p1, p2 = null, ifSource = false, dependant = true) {
      * @brief New ref implementation. this is based on only p1.
      */
     if(typeof p1 === "object"){
-        let database = p1.database
+        let database = p1.database ?? dataform.projectConfig.defaultDatabase
         let schema = p1.schema
         let name = p1.name ?? null
         if(name == null) throw new Error("No name found in ref function")
