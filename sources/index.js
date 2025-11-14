@@ -106,12 +106,15 @@ function join_on_account(left_source, right_source, join_tekst){
                     typeof getSource(left_source).account !== "undefined" &&
                     typeof getSource(right_source).account !== "undefined"
                 ) {
-                    return join_tekst ?? `AND ${left_source.name} = ${right_source.name}`
+                    return join_tekst ?? `AND ${left_source.name}.account = ${right_source.name}.account`
                 } else {
                     return ""
                 }
             } else {
-                throw new Error(`Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `);
+                //TODO: we need to improve this error handling. This should not be an error, but a warning.
+                //throw new Error(
+                return `--Sources not found! sources/join_on_account; ${left_source_length} : ${right_source_length} `;
+                // );
             }
         } else {
             throw new Error("Name of sources are an primary key! They need to be filled in! sources/join_on_account");
@@ -214,8 +217,11 @@ function ref(p1, p2 = null, ifSource = false, dependant = true) {
             )
         ){
             let r = {}
+            r.orginele_alias = sources[s].alias;
+            r.orginele_naam = sources[s].name;
+            r.type = sources[s].type
             r.schema = sources[s].schema
-            r.alias = sources[s].alias ? '"' + sources[s].alias + '"' : null;
+            r.alias = typeof sources[s].alias !== "undefined" && sources[s].alias !== null ? '"' + sources[s].alias + '"' : null;
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
@@ -249,8 +255,9 @@ function ref(p1, p2 = null, ifSource = false, dependant = true) {
                 refQuery += "("
             }
             refQuery += '\nSELECT *, '
-            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "NULL") + " as alias," : ""
+            refQuery += getTypeSource(ref[r]) !== "NONE" ? (ref[r].alias ?? "CAST(NULL AS STRING)") + " as alias," : ""
             refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "CAST(NULL AS STRING)") + " as account," : ""} `
+            refQuery += `\n-- test - ${getTypeSource(ref[r])}\n`
             refQuery += " FROM \n" + ref[r].query;
         }
         refQuery +=" \n)"
@@ -344,15 +351,32 @@ function ifSource(name, query){
     if (Array.isArray(name)) {
         for (let s in name) {
             if (ref(name[s], "", true).startsWith("NOT FOUND")) {
+                query = query.replace("/*", "--").replace("*/", "")
                 return "/* NOT FOUND // " + query + "*/";
             }
         }
     } else {
         if (ref(name, "", true).startsWith("NOT FOUND")) {
+            query = query.replace("/*", "--").replace("*/", "")
             return "/* NOT FOUND // " + query + "*/";
         }
     }
     return query;
+}
+
+function isSource(name){
+    if (Array.isArray(name)) {
+        for (let s in name) {
+            if (ref(name[s], "", true).startsWith("NOT FOUND")) {
+                return false;
+            }
+        }
+    } else {
+        if (ref(name, "", true).startsWith("NOT FOUND")) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /* @brief Controleert of minstens één van de opgegeven bronnen bestaat.
@@ -390,7 +414,7 @@ function orSource(name, query) {
  * Deze functie inspecteert het `alias` of `name` attribuut van een bronobject en
  * classificeert de bron in een van de bekende types of "NONE" als geen match wordt gevonden.
  *
- * @param {Object} source - Een object dat informatie bevat over een gegevensbron.
+ * @param {Object} source - Een object dat informatie b evat over een gegevensbron.
  * @param {string} [source.alias] - Een optionele alias voor de bron.
  * @param {string} [source.name] - De naam van de bron.
  * Wanneer Alias null is, wordt de name gepakt.
@@ -405,9 +429,9 @@ function orSource(name, query) {
  */
 function getTypeSource(source){
     let type = "NONE";
-    let name = source.alias ?? source.name ?? "";
+    let name = source.orginele_alias ?? source.orginele_naam ?? source.alias ?? source.name ?? "";
     if (name.startsWith("ads_AdGroup") || name.startsWith("ads_AssetGroup") || name.startsWith("ads_Campaign")) type = "googleAds"
-    else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || source.type === "dataProducer") type = "dataProducer"
+    else if (name.endsWith("DataProducer") || name.endsWith("DataExporter") || name.endsWith("DataExporter\"") || name.endsWith("DataProducer\"") || source.type === "dataProducer") type = "dataProducer"
     else if (name === "events_*" || name === "events") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_") || name === "DV360") type = "DV360"
     else if (name === "searchdata_url_impression") type = "google_search_console"
@@ -415,4 +439,5 @@ function getTypeSource(source){
     return type
 }
 //TODO support/queryhelpers
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account};
+
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account, isSource};

@@ -1,6 +1,8 @@
 # The pk_dataform_package 
 _A data automation package in dataform, developed by PowerKraut._
 
+[![Published latest version to NPM](https://github.com/PowerKrautInternet/pk_dataform_package/actions/workflows/npm-publish-github-packages.yml/badge.svg?branch=main)](https://github.com/PowerKrautInternet/pk_dataform_package/actions/workflows/npm-publish-github-packages.yml)
+
 Current features:
 * Data monitoring
 * Freshness alerting
@@ -63,7 +65,9 @@ const sources = [
       { name: "anderePublisher", recency: true }
     ],
     recency: false, // Je kan ook voor de hele bron de recency uitschakelen
-    type: "dataProducer" //wanneer de naam afwijkt maar het wel werkt met een payload.  
+    type: "dataProducer", //wanneer de naam afwijkt maar het wel werkt met een payload.
+    no_gs_table: true,   //Wanneer je een google sheet aanmaakt zal hij automatisch proberen een buffertable te maken. Voor performance kan je dit uitschakelen
+    freshnessDays: 5    //Wanneer je wilt aangeven dat de limiet van acceptable achterlopen 5 dagen is. (5 dagen is okay, 6 dagen is alarm slaan)
   },
   {
     schema: "...",
@@ -71,15 +75,28 @@ const sources = [
     ...
   }
 ]
-let src = require("pk_dataform_package/sources")
+let src = require("@PowerKrautInternet/pk_dataform_package/sources")
 let declared = {}
 for (let s in sources) {
-  declare(sources[s]);
-  if(require("pk_dataform_package/sources").getTypeSource(sources[s]) === "dataProducer" && declared[sources[s].name] != true){declare({schema: "df_rawdata_views", name: sources[s].name+"_lasttransaction"}); declared[sources[s].name] = true}
-  if(typeof sources[s].name != "undefined" && sources[s].schema == "googleSheets" && declared[sources[s].alias ?? sources[s].name] != true){declare({schema: "df_googlesheets_tables", name: sources[s].alias ?? sources[s].name}); declared[sources[s].alias ?? sources[s].name] = true}
+    declare(sources[s]);
+    if (require("@PowerKrautInternet/pk_dataform_package/sources").getTypeSource(sources[s]) === "dataProducer" && declared[sources[s].name] != true) {
+        declare({
+            schema: "df_rawdata_views",
+            name: (sources[s].alias ?? sources[s].name) + "_lasttransaction"
+        });
+        declared[sources[s].name] = true
+    }
+    if (typeof sources[s].name != "undefined" && sources[s].schema == "googleSheets" && declared[sources[s].alias ?? sources[s].name] != true) {
+        declare({
+            schema: "df_googlesheets_tables",
+            name: sources[s].alias ?? sources[s].name
+        });
+        declared[sources[s].alias ?? sources[s].name] = true
+    }
 };
 src.setSources(sources);
-operate("setup_operations", require("pk_dataform_package/setup").setupFunctions(sources))
+operate("setup_operations", require("@PowerKrautInternet/pk_dataform_package/setup").setupFunctions(sources))
+
 ```
 !! Let op: als deze stap word toegevoegd zullen ook automatisch alle "_lasttransation" schema's toegevoegd worden! Dit kan dus voor dubbele schema's zorgen.
 
@@ -166,3 +183,7 @@ Daarnaast:
 
 * Bij het linken van een CRM_ID aan een bron is de alias gelinkt aan de CRM_ID. Dat doe je bijvoorbeeld zo:
 `{ alias: "syntec", crm_id: "982" }`
+
+# Het upgraden van Major versies:
+## Versie 1.* naar Versie 2.*
+Als het goed is kan je deze zonder veranderingen upgraden.

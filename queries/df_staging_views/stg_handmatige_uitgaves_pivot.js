@@ -2,18 +2,21 @@
 let pk = require("../../sources")
 let ref = pk.ref
 let query = `
-SELECT uitgave_bron,
+SELECT account, 
+uitgave_bron,
 uitgave_merk,
 uitgave_categorie,
 jaar_maand AS record_datum,
 uitgaven AS uitgaven,
 FROM(
-SELECT uitgave_bron,
+SELECT account,
+                 uitgave_bron,
                  uitgave_merk,
                  uitgave_categorie,
                  PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
                  uitgaven,
-          FROM (SELECT uitgave_bron,
+          FROM (SELECT account,
+                       uitgave_bron,
                        uitgave_merk,
                        uitgave_categorie,
                        jaar,

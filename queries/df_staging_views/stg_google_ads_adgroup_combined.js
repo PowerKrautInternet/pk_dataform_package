@@ -1,33 +1,32 @@
 /*config*/
-let pk = require("../../sources")
-let ref = pk.ref
+const {isSource, ifNull, ifSource, ref, getRefs, join} = require("../../sources");
 let query = `
 
 SELECT 
   'Google Ads' as bron,
-  COALESCE(ad_group_stats.account, ad_group_conversions.account) AS account,
-  COALESCE(ad_group_stats.customer_id, ad_group_conversions.customer_id) AS customer_id,
-  COALESCE(ad_group_stats.campaign_id, ad_group_conversions.campaign_id) AS campaign_id,
-  COALESCE(ad_group_stats.campaign_name, ad_group_conversions.campaign_name) AS campaign_name,
-  COALESCE(ad_group_stats.campaign_advertising_channel_type, ad_group_conversions.campaign_advertising_channel_type) AS campaign_advertising_channel_type,
-  COALESCE(ad_group_stats.campaign_bidding_strategy_type, ad_group_conversions.campaign_bidding_strategy_type) AS campaign_bidding_strategy_type,
-  COALESCE(ad_group_stats.campaign_start_date, ad_group_conversions.campaign_start_date) AS campaign_start_date,
-  COALESCE(ad_group_stats.campaign_end_date, ad_group_conversions.campaign_end_date) AS campaign_end_date,
-  COALESCE(ad_group_stats.campaign_status, ad_group_conversions.campaign_status) AS campaign_status,
-  COALESCE(ad_group_stats.ad_group_id, ad_group_conversions.ad_group_id) AS ad_group_id,
-  COALESCE(ad_group_stats.ad_group_name, ad_group_conversions.ad_group_name) AS ad_group_name,
-  COALESCE(ad_group_stats.ad_group_status, ad_group_conversions.ad_group_status) AS ad_group_status,
-  COALESCE(ad_group_stats.ad_group_type, ad_group_conversions.ad_group_type) AS ad_group_type,
-  COALESCE(ad_group_stats.ad_group_bidding_strategy_type, ad_group_conversions.ad_group_bidding_strategy_type) AS ad_group_bidding_strategy_type,
-  COALESCE(ad_group_stats.segments_date, ad_group_conversions.segments_date) AS segments_date,
-  COALESCE(ad_group_stats.segments_device, ad_group_conversions.segments_device) AS segments_device,
+  ${ifNull(["ad_group_stats.account", ifSource("stg_google_ads_adgroup_conversions", " ad_group_conversions.account")], " AS account,")}
+  ${ifNull(["ad_group_stats.customer_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.customer_id")], " AS customer_id,")}
+  ${ifNull(["ad_group_stats.campaign_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_id")], " AS campaign_id,")}
+  ${ifNull(["ad_group_stats.campaign_name", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_name")], " AS campaign_name,")}
+  ${ifNull(["ad_group_stats.campaign_advertising_channel_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_advertising_channel_type")], " AS campaign_advertising_channel_type,")}
+  ${ifNull(["ad_group_stats.campaign_bidding_strategy_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_bidding_strategy_type")], " AS campaign_bidding_strategy_type,")}
+  ${ifNull(["ad_group_stats.campaign_start_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_start_date")], " AS campaign_start_date,")}
+  ${ifNull(["ad_group_stats.campaign_end_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_end_date")], " AS campaign_end_date,")}
+  ${ifNull(["ad_group_stats.campaign_status", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.campaign_status")], " AS campaign_status,")}
+  ${ifNull(["ad_group_stats.ad_group_id", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_id")], " AS ad_group_id,")}
+  ${ifNull(["ad_group_stats.ad_group_name", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_name")], " AS ad_group_name,")}
+  ${ifNull(["ad_group_stats.ad_group_status", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_status")], " AS ad_group_status,")}
+  ${ifNull(["ad_group_stats.ad_group_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_type")], " AS ad_group_type,")}
+  ${ifNull(["ad_group_stats.ad_group_bidding_strategy_type", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.ad_group_bidding_strategy_type")], " AS ad_group_bidding_strategy_type,")}
+  ${ifNull(["ad_group_stats.segments_date", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_date")], " AS segments_date,")}
+  ${ifNull(["ad_group_stats.segments_device", ifSource("stg_google_ads_adgroup_conversions", "  ad_group_conversions.segments_device")], " AS segments_device,")}
   ad_group_stats.impressions,
   ad_group_stats.interactions,
   ad_group_stats.clicks,
   ad_group_stats.Cost,
-  ad_group_conversions.segments_conversion_action_name,
-  ad_group_conversions.conversions,
-  ad_group_conversions.conversions_value
+  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions" : "ad_group_stats.conversions"},
+  ${isSource("stg_google_ads_adgroup_conversions") ? "ad_group_conversions.conversions_value" : "ad_group_stats.conversions_value"},
 
 FROM(
   SELECT 
@@ -51,6 +50,8 @@ FROM(
     SUM(ad_group_stats.metrics_interactions) AS interactions,
     SUM(ad_group_stats.metrics_clicks) AS clicks,
     (SUM(ad_group_stats.metrics_cost_micros) / 1000000) AS Cost,
+    SUM(ad_group_stats.metrics_conversions) AS conversions,
+    SUM(ad_group_stats.metrics_conversions_value) AS conversions_value,
 
 FROM ${ref('ads_AdGroup')} ad_group 
 
@@ -78,9 +79,8 @@ GROUP BY
     segments_device
 ) ad_group_stats
 
-FULL OUTER JOIN ${ref('df_staging_views', 'stg_google_ads_adgroup_conversions')} ad_group_conversions
-ON 1=0
+${join("FULL OUTER JOIN", 'df_staging_views', 'stg_google_ads_adgroup_conversions', 'ad_group_conversions ON 1=0')}
     
     `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
