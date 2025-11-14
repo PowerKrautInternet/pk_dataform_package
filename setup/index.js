@@ -3,6 +3,8 @@ let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
 const {addSource} = require("../sources");
 
+//TODO base class voor UDF's en de parser in een andere map. Templateengine voor sqlx
+
 let function_config = [
     {
         database: dataform.projectConfig.defaultDatabase,
@@ -55,11 +57,12 @@ let function_array = function_config.map(config => new FunctionObject(config));
 function setupFunctions(sources) {
     let query = []
     let declared = {}
-    for (let s in sources) {
-        if (typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] !== true) {
+    for(let s in sources){
+        let no_gs_table = sources[s].no_gs_table ?? false;
+        if(typeof sources[s].name != "undefined" && sources[s].name.endsWith("DataProducer") && declared[sources[s].name] !== true){
             query.push(lasttransaction(sources[s]));
             declared[sources[s].name] = true;
-        } else if (typeof sources[s].schema != "undefined" && typeof sources[s].name != "undefined" && sources[s].schema === "googleSheets" && declared[sources[s].alias ?? sources[s].name] !== true) {
+        } else if (!no_gs_table &&  typeof sources[s].schema != "undefined" && typeof sources[s].name != "undefined" && sources[s].schema === "googleSheets" && declared[sources[s].alias ?? sources[s].name] !== true) {
             query.push(googleSheetTable(sources[s]));
             declared[sources[s].alias ?? sources[s].name] = true;
         }
