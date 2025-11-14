@@ -3,7 +3,7 @@ let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
-const {readFileSync} = require("fs");
+const {readFileSync} = require("fs").promises;
 const path = require("path");
 
 let function_config = [
