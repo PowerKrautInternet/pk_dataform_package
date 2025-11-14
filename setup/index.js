@@ -3,7 +3,7 @@ let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
 let pk = require("../sources");
 const {ifSource, addSource} = require("../sources");
-const fs = require("fs");
+const {readFileSync} = require("fs");
 const path = require("path");
 
 let function_config = [
@@ -78,7 +78,7 @@ function setupFunctions(sources){
 }
 
 function getFunction(dir) {
-    return fs.readFileSync(
+    return readFileSync(
         path.join(__dirname, dir),
         "utf8"
     )
