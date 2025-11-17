@@ -183,24 +183,8 @@ function addSuffix(schema) {
     return schema
 }
 
-function ref(p1, p2 = null, ifSource = true, dependant = true) {
-    /**
-     * @brief New ref implementation. this is based on only p1.
-     */
-    if(typeof p1 === "object"){
-        let database = p1.database ?? dataform.projectConfig.defaultDatabase
-        let schema = p1.schema
-        let name = p1.name ?? null
-        if(name == null) throw new Error("No name found in ref function")
-        let type = p1.type
-        let dependencie = p1.dependencie ?? type === "function"
-        dependencie ? refs.push({
-                "name": name,
-                "schema": schema,
-                "database": database
-            }) : null
-        return `\`${database}.${schema}.${name}\``
-    }
+
+function ref(p1, p2, ifSource, dependant = true) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
