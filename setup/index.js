@@ -42,14 +42,14 @@ let function_config = [
         vars: {json_row: "STRING"},
         function: require("./getTableName_function")
     },
-    {
-        database: dataform.projectConfig.defaultDatabase,
-        schema: "rawdata",
-        name: "email_cleaner",
-        vars: {raw_input: "STRING"},
-        function: require("./email_cleaner"),
-        function_type: "sql"
-    }
+    // {
+    //     database: dataform.projectConfig.defaultDatabase,
+    //     schema: "rawdata",
+    //     name: "email_cleaner",
+    //     vars: {raw_input: "STRING"},
+    //     function: require("./email_cleaner"),
+    //     function_type: "sql"
+    // }
 ]
 
 let function_array = function_config.map(config => new FunctionObject(config));
