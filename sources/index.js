@@ -183,7 +183,7 @@ function addSuffix(schema) {
     return schema
 }
 
-function ref(p1, p2 = null, ifSource = false, dependant = true) {
+function ref(p1, p2 = null, ifSource = true, dependant = true) {
     /**
      * @brief New ref implementation. this is based on only p1.
      */
