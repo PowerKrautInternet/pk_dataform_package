@@ -45,8 +45,8 @@ END IF;
 SELECT
 *
 FROM
-${ref({"schema": "googleSheets", "name": name, "dependencie": false})}
-    );
+${ref("googleSheets", name, true)}
+);
         
       END;
     END;`
