@@ -183,7 +183,24 @@ function addSuffix(schema) {
     return schema
 }
 
-function ref(p1, p2, ifSource, dependant = true) {
+function ref(p1, p2 = null, ifSource = false, dependant = true) {
+    /**
+     * @brief New ref implementation. this is based on only p1.
+     */
+    if(typeof p1 === "object"){
+        let database = p1.database ?? dataform.projectConfig.defaultDatabase
+        let schema = p1.schema
+        let name = p1.name ?? null
+        if(name == null) throw new Error("No name found in ref function")
+        let type = p1.type
+        let dependencie = p1.dependencie ?? type === "function"
+        dependencie ? refs.push({
+                "name": name,
+                "schema": schema,
+                "database": database
+            }) : null
+        return `\`${database}.${schema}.${name}\``
+    }
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
@@ -192,9 +209,12 @@ function ref(p1, p2, ifSource, dependant = true) {
     for(let s in sources) {
         if( //if the ref has only one parameter it has to be the name, when there are 2 parameter the second wil be the name. (name is interchangable with alias)
             typeof sources[s].name != 'undefined' &&
-            ((p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) )
-            ||
-            (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1))
+            (
+                (p2 === "" && (sources[s].alias === p1 || (sources[s].name.replace(/_[0-9]+$/g, "") === p1 && ( typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" ) ) ) )
+                ||
+                (p2 !== "" && (sources[s].alias === p2 || (sources[s].name.replace(/_[0-9]+$/g, "") === p2 && (typeof sources[s].alias == 'undefined' || sources[s].name.startsWith('ads_') || sources[s].name === "events_*" || sources[s].name.endsWith("Producer")) ) ) && sources[s].schema === p1)
+                || (getTypeSource(sources[s]) === "google_sheet" && p2 === (sources[s].alias ?? sources[s].name))
+            )
         ){
             let r = {}
             r.orginele_alias = sources[s].alias;
@@ -415,6 +435,7 @@ function getTypeSource(source){
     else if (name === "events_*" || name === "events") type = "GA4"
     else if (name.startsWith("Dagelijkse_BQ_export_-_") || name.startsWith("Dagelijkse_BQ_Export_-_") || name === "DV360") type = "DV360"
     else if (name === "searchdata_url_impression") type = "google_search_console"
+    else if (source.schema === "googleSheets") type = "google_sheet"
     return type
 }
 //TODO support/queryhelpers
