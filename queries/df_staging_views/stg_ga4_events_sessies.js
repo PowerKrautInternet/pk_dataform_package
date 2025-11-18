@@ -155,6 +155,7 @@ FROM(
     LEFT JOIN ${ref("df_rawdata_views","ga4_items")} items
     ON events.unique_event_id = items.unique_event_id 
     AND events.account = sessie_assignment.account
+    
     )))
 
 `
