@@ -20,6 +20,7 @@ SELECT
     ad_group_type,
     ad_group_bidding_strategy_type,
     IFNULL(adgroup_stats.segments_conversion_action_name, perf_max_stats.segments_conversion_action_name) as conversion_action_name,
+    IFNULL(adgroup_stats.segments_conversion_action_category, perf_max_stats.segments_conversion_action_category) as conversion_action_category,
     IFNULL(adgroup_stats.impressions, perf_max_stats.impressions) as impressions,
     IFNULL(adgroup_stats.interactions, perf_max_stats.interactions) as interactions,
     IFNULL(adgroup_stats.clicks, perf_max_stats.clicks) as clicks,
