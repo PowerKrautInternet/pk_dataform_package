@@ -647,6 +647,7 @@ function taxatiemoduleonline() {
 module.exports = {
     activecampaign_edm,
     ga4_events,
+    ga4_items,
     syntec_orders,
     syntec_leads,
     dv360_data,
