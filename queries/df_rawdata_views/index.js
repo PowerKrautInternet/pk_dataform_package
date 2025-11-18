@@ -15,6 +15,20 @@ function ga4_events(){
     return table;
 }
 
+function ga4_items(){
+    let table = {
+        "name": "ga4_items",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./ga4_items').refs
+        },
+        "query": require('./ga4_items').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function syntec_leads () {
     let table = {
         "name": "syntec_leads",
