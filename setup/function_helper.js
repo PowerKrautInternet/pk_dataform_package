@@ -36,7 +36,7 @@ class FunctionObject {
                 throw new Error(`Switch error! setup/return/${this.name}`);
         }
     }
-
+    
     get sql() {
         if(this.function && this.name){
             return this.sqlForFunction
@@ -62,16 +62,16 @@ class FunctionObject {
             .map(([param, type]) => `${param} ${type}`)
             .join(", ");
     }
-
+    
     set vars(parameterVars) {
         this.varsForFunction = parameterVars
     }
-
+    
     // Helper method to format the actual parameters in the return statement
     get params() {
         return Object.keys(this.varsForFunction).join(", ");
     }
-
+    
     get source(){
         return {
             config: {
