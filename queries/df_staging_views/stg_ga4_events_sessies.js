@@ -139,7 +139,7 @@ FROM(
     IFNULL(events.event_buy_item_id, sessie_assignment.event_buy_item_id) AS event_buy_item_id,
     IFNULL(events.event_trade_in_bouwjaar, sessie_assignment.event_trade_in_bouwjaar) AS event_trade_in_bouwjaar,
     IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
-    items.* EXCEPT(unique_event_id),
+    items.* EXCEPT(unique_event_id, account),
     ${ifSource("stg_ga4_dealerevents", `IFNULL(events.dealer_sessie, sessie_assignment.dealer_sessie) AS dealer_sessie,
     IFNULL(events.dealer_event, sessie_assignment.dealer_event) AS dealer_event,
     events.email AS email`)}
