@@ -61,7 +61,7 @@ FROM(
     FROM(
         SELECT
     events.account,
-    unique_event_id,
+    events.unique_event_id,
     PARSE_DATE('%Y%m%d',event_date) as event_date,
     event_timestamp,
     events.event_name,
