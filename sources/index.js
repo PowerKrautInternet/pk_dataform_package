@@ -184,7 +184,7 @@ function addSuffix(schema) {
 }
 
 
-function ref(p1, p2, ifSource, dependant = true) {
+function ref(p1, p2, ifSource = false, dependant = true) {
 
     p2 = (typeof p2 == 'undefined') ? "" : p2
     let sources = getSources();
