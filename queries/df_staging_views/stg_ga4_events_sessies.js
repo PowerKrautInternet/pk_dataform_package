@@ -70,7 +70,7 @@ FROM(
     event_ga_session_id,
     events.privacy_analytics_storage,
     events.privacy_ads_storage,
-    IF(events.user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND events.event_name = 'session_start', unique_event_id, NULL) as privacy_session_id,
+    IF(events.user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND events.event_name = 'session_start', events.unique_event_id, NULL) as privacy_session_id,
     event_bundle_sequence_id,
     event_page_referrer,
     event_page_location,
