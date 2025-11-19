@@ -130,7 +130,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
                 query += "\n))\n"
                 rowNr += 1
             }
-            else if (type !== "NONE" && type !== "dataProducer"){
+            else if (type !== "NONE" && type !== "dataProducer" && type !== "google_sheet"){
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
@@ -200,7 +200,7 @@ function dk_monitor(){
         let name = sources[s].name;
 
         //for each data source
-        if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false") {
+        if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false" && type !== "google_sheet") {
             if (rowNr > 0) { query += "\nUNION ALL\n\n" } // Just to join the sources
 
             //SELECT ...
