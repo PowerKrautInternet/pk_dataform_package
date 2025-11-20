@@ -55,7 +55,7 @@ FROM(
         IFNULL(NULLIF(session_source, '(not set)'), first_user_source) AS session_source,
     IFNULL(NULLIF(session_medium, '(not set)'), first_user_medium) AS session_medium,
     IFNULL(NULLIF(session_campaign, '(not set)'), first_user_campaign_name) AS session_campaign,
-    CONCAT(IFNULL(event_buy_brand, ""), IFNULL(${ifSource("ga4_items", "item_brand")}, ""), IFNULL(event_name, ""), IFNULL(event_page_title, ""), IFNULL(event_page_location, ""), IFNULL(event_page_referrer, "")) as event_merk_concat,
+    CONCAT(IFNULL(event_buy_brand, ""),${ifSource("ga4_items", "IFNULL(item_brand, ''),")} IFNULL(event_name, ""), IFNULL(event_page_title, ""), IFNULL(event_page_location, ""), IFNULL(event_page_referrer, "")) as event_merk_concat,
     CONCAT(IFNULL(event_buy_brand, ""), IFNULL(session_google_ads_ad_group_name, ""), IFNULL(session_campaign, ""), IFNULL(session_landingpage_title, ""), IFNULL(session_landingpage_location, ""), IFNULL(session_term, ""), IFNULL(session_content, "")) as session_merk_concat,
 
     FROM(
