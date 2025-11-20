@@ -20,6 +20,7 @@ SELECT
     MAX(ad_campaign.campaign_status) AS campaign_status,
     campaign_conversions.segments_date AS segments_date,
     campaign_conversions.segments_conversion_action_name,
+    MAX(campaign_conversions.segments_conversion_action_category) AS segments_conversion_action_category,
     SUM(campaign_conversions.metrics_conversions) AS conversions,
     SUM(campaign_conversions.metrics_conversions_value) AS conversions_value,
 
