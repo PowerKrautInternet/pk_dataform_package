@@ -139,7 +139,7 @@ FROM(
     IFNULL(events.event_buy_item_id, sessie_assignment.event_buy_item_id) AS event_buy_item_id,
     IFNULL(events.event_trade_in_bouwjaar, sessie_assignment.event_trade_in_bouwjaar) AS event_trade_in_bouwjaar,
     IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
-    items.* EXCEPT(unique_event_id, account),
+    ${ifSource("ga4_items", "items.* EXCEPT(unique_event_id, account),")}
     ${ifSource("stg_ga4_dealerevents", `IFNULL(events.dealer_sessie, sessie_assignment.dealer_sessie) AS dealer_sessie,
     IFNULL(events.dealer_event, sessie_assignment.dealer_event) AS dealer_event,
     events.email AS email`)}
@@ -152,9 +152,7 @@ FROM(
     AND events.event_ga_session_id = sessie_assignment.ga_session_id
     AND events.account = sessie_assignment.account
 
-    LEFT JOIN ${ref("df_rawdata_views","ga4_items")} items
-    ON events.unique_event_id = items.unique_event_id 
-    AND events.account = items.account
+    ${join("LEFT JOIN", "df_rawdata_views", "ga4_items", "AS items ON events.unique_event_id = items.unique_event_id AND events.account = items.account")}
     
     )))
 
