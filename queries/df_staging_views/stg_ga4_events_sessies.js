@@ -55,13 +55,13 @@ FROM(
         IFNULL(NULLIF(session_source, '(not set)'), first_user_source) AS session_source,
     IFNULL(NULLIF(session_medium, '(not set)'), first_user_medium) AS session_medium,
     IFNULL(NULLIF(session_campaign, '(not set)'), first_user_campaign_name) AS session_campaign,
-    CONCAT(IFNULL(event_buy_brand, ""), IFNULL(event_name, ""), IFNULL(event_page_title, ""), IFNULL(event_page_location, ""), IFNULL(event_page_referrer, "")) as event_merk_concat,
+    CONCAT(IFNULL(event_buy_brand, ""), IFNULL(item_brand, ""), IFNULL(event_name, ""), IFNULL(event_page_title, ""), IFNULL(event_page_location, ""), IFNULL(event_page_referrer, "")) as event_merk_concat,
     CONCAT(IFNULL(event_buy_brand, ""), IFNULL(session_google_ads_ad_group_name, ""), IFNULL(session_campaign, ""), IFNULL(session_landingpage_title, ""), IFNULL(session_landingpage_location, ""), IFNULL(session_term, ""), IFNULL(session_content, "")) as session_merk_concat,
 
     FROM(
         SELECT
     events.account,
-    unique_event_id,
+    events.unique_event_id,
     PARSE_DATE('%Y%m%d',event_date) as event_date,
     event_timestamp,
     events.event_name,
@@ -70,7 +70,7 @@ FROM(
     event_ga_session_id,
     events.privacy_analytics_storage,
     events.privacy_ads_storage,
-    IF(events.user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND events.event_name = 'session_start', unique_event_id, NULL) as privacy_session_id,
+    IF(events.user_pseudo_id IS NULL AND CAST(event_ga_session_id AS STRING) IS NULL AND events.event_name = 'session_start', events.unique_event_id, NULL) as privacy_session_id,
     event_bundle_sequence_id,
     event_page_referrer,
     event_page_location,
@@ -139,6 +139,7 @@ FROM(
     IFNULL(events.event_buy_item_id, sessie_assignment.event_buy_item_id) AS event_buy_item_id,
     IFNULL(events.event_trade_in_bouwjaar, sessie_assignment.event_trade_in_bouwjaar) AS event_trade_in_bouwjaar,
     IFNULL(events.event_trade_in_brandstof, sessie_assignment.event_trade_in_brandstof) AS event_trade_in_brandstof,
+    items.* EXCEPT(unique_event_id, account),
     ${ifSource("stg_ga4_dealerevents", `IFNULL(events.dealer_sessie, sessie_assignment.dealer_sessie) AS dealer_sessie,
     IFNULL(events.dealer_event, sessie_assignment.dealer_event) AS dealer_event,
     events.email AS email`)}
@@ -146,10 +147,16 @@ FROM(
 
     FROM ${ref("df_rawdata_views","ga4_events")} events
 
-LEFT JOIN ${ref("df_staging_views","stg_ga4_sessie_assignment")} sessie_assignment
-ON events.user_pseudo_id = sessie_assignment.user_pseudo_id 
-AND events.event_ga_session_id = sessie_assignment.ga_session_id
-AND events.account = sessie_assignment.account)))
+    LEFT JOIN ${ref("df_staging_views","stg_ga4_sessie_assignment")} sessie_assignment
+    ON events.user_pseudo_id = sessie_assignment.user_pseudo_id 
+    AND events.event_ga_session_id = sessie_assignment.ga_session_id
+    AND events.account = sessie_assignment.account
+
+    LEFT JOIN ${ref("df_rawdata_views","ga4_items")} items
+    ON events.unique_event_id = items.unique_event_id 
+    AND events.account = items.account
+    
+    )))
 
 `
 let refs = getRefs()

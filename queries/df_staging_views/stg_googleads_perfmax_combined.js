@@ -19,6 +19,7 @@ SELECT
   campaign_stats.clicks,
   campaign_stats.Cost,
   ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.segments_conversion_action_name" : "STRING(NULL) as segments_conversion_action_name"},
+  ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.segments_conversion_action_category" : "STRING(NULL) as segments_conversion_action_category"},
   ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions" : "campaign_stats.conversions"},
   ${isSource("stg_googleads_perfmax_conversions") ? "campaign_conversions.conversions_value" : "campaign_stats.conversions_value"},
 

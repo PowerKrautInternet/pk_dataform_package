@@ -22,6 +22,7 @@ SELECT
     ad_group_conversions.segments_date AS segments_date,
     ad_group_conversions.segments_device,
     ad_group_conversions.segments_conversion_action_name,
+    MAX(ad_group_conversions.segments_conversion_action_category) AS segments_conversion_action_category,
     SUM(ad_group_conversions.metrics_conversions) AS conversions,
     SUM(ad_group_conversions.metrics_conversions_value) AS conversions_value
 

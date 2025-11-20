@@ -35,6 +35,7 @@ FROM (
         ${ifNull(['google_ads.ad_group_type', ifSource('stg_bing_ad_group_performance','microsoft.adgroup_type')], "AS ad_group_type,")}
         google_ads.conversions_value,
         google_ads.conversion_action_name,
+        google_ads.conversion_action_category,
         google_ads.interactions as google_ads_interactions,
         ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')], "AS objective,")}
         ${ifSource("stg_facebookdata", "facebook.ad_id AS facebook_ad_id,")}
