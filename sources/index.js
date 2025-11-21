@@ -103,8 +103,8 @@ function join_on_account(left_source, right_source, join_tekst){
             let right_source_length = getSource(right_source, true).length
             if( left_source_length > 0 && right_source_length > 0 ) {
                 if(
-                    typeof getSource(left_source).account !== "undefined" &&
-                    typeof getSource(right_source).account !== "undefined"
+                    typeof getSource(left_source)[0]?.account !== "undefined" &&
+                    typeof getSource(right_source)[0]?.account !== "undefined"
                 ) {
                     return join_tekst ?? `AND ${left_source.name}.account = ${right_source.name}.account`
                 } else {
