@@ -83,10 +83,10 @@ SELECT
     
     ${join("left join","df_googlesheets_tables","gs_ga4_standaard_events", `
     AS standaard_event ON TRIM(events_sessies.event_name) = TRIM(standaard_event.event_name)
-    AND IF(standaard_event.account IS NULL, 1, standaard_event.account) = IF(standaard_event.account IS NULL, 1, events_sessies.account)`)}
+    AND IF(standaard_event.account IS NULL, "1", standaard_event.account) = IF(standaard_event.account IS NULL, "1", events_sessies.account)`)}
     
     ${join("left join","df_googlesheets_tables","gs_conversie_mapping", `AS gs_mapping ON TRIM(events_sessies.event_name) = TRIM(gs_mapping.event_name)
-        AND IF(gs_mapping.account IS NULL, 1, gs_mapping.account) = IF(gs_mapping.account IS NULL, 1, events_sessies.account)`)}
+        AND IF(gs_mapping.account IS NULL, "1", gs_mapping.account) = IF(gs_mapping.account IS NULL, "1", events_sessies.account)`)}
     ${join("full Outer Join","df_staging_views", "stg_pivot_targets", "AS targets ON 1=0")}
   )
 ) ga4 
