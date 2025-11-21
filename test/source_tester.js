@@ -13,6 +13,8 @@ const sources = [
     {schema: "analytics_1", name: "events_*"},
     {schema: "analytics_2", name: "events_*"},
     {schema: "googleSheets", name: "gs_conversie_targets"},
+    {schema: "googleSheets", name: "gs_conversie_mapping"},
+    {schema: "googleSheets", name: "gs_conversie_mapping_other", alias: "gs_conversie_mapping"},
 ]
 
 const source_helper = require("../helper_functions/source_helper")
@@ -37,3 +39,13 @@ if (source.ref({name: "events_"}) !== verwacht_resultaat) {
     console.log("Test 2: succesfull")
 }
 
+//test 3: meerdere resultaten in ref with alias
+let verwacht_resultaat2 =
+`(SELECT * FROM \`${test_db}.googleSheets.gs_conversie_mapping\` 
+UNION ALL 
+SELECT * FROM \`${test_db}.googleSheets.gs_conversie_mapping_other\`)`;
+if (source.ref({name: "events_"}) !== verwacht_resultaat2) {
+    throw new Error("Test 3: failed")
+} else {
+    console.log("Test 3: succesfull")
+}
