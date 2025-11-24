@@ -9,7 +9,7 @@ const pkg = {
         if (typeof this.handler !== "function") {
             throw new Error("No handler set");
         }
-        return this.handler({type: "table", schema: "test_tables"}).query("SELECT * FROM `test`");
+        return this.handler({name: "some_table", type: "table", schema: "test_tables"}).query("SELECT * FROM `test`");
     }
 };
 
