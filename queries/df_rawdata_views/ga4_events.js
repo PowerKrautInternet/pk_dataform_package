@@ -45,7 +45,7 @@ SELECT
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_titel') as event_formfields_titel,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'formfields_vestiging') as event_formfields_vestiging,
     (SELECT value.int_value from unnest(event_params) where key = 'submission_id') as submission_id_otm,
-    (SELECT value.double_value FROM unnest(event_params) WHERE key = 'value') as conversion_value_ga4,   
+    COALESCE((SELECT value.int_value FROM unnest(event_params) WHERE key = 'value'), (SELECT value.double_value FROM unnest(event_params) WHERE key = 'value')) as conversion_value_ga4,   
     privacy_info.analytics_storage as privacy_analytics_storage,
     privacy_info.ads_storage as privacy_ads_storage,
     privacy_info.uses_transient_token as privacy_uses_transient_token,
