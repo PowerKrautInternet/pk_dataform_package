@@ -38,8 +38,16 @@ module.exports = `
             REGEXP_REPLACE(LOWER(first), r'^[._%+-]+|[._%+-]+$', '') AS first,
             REGEXP_REPLACE(LOWER(middle), r'^[.-]+|[.-]+$', '') AS middle,
             CASE
+              WHEN REGEXP_CONTAINS(LOWER(last), 'support') THEN 'support'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'org') THEN 'org'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'net') THEN 'net'
               WHEN REGEXP_CONTAINS(LOWER(last), 'com') THEN 'com'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'biz') THEN 'biz'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'pl') THEN 'pl'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'be') THEN 'be'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'nu') THEN 'nu'
               WHEN REGEXP_CONTAINS(LOWER(last), 'nl') THEN 'nl'
+              WHEN REGEXP_CONTAINS(LOWER(last), 'io') THEN 'io'
               WHEN REGEXP_CONTAINS(LOWER(last), 'c') AND REGEXP_CONTAINS(LOWER(last), 'o') AND REGEXP_CONTAINS(LOWER(last), 'm') THEN 'com'
               WHEN REGEXP_CONTAINS(LOWER(last), 'n') AND REGEXP_CONTAINS(LOWER(last), 'l') THEN 'nl'
               WHEN REGEXP_CONTAINS(LOWER(last), 'c') OR REGEXP_CONTAINS(LOWER(last), 'o') OR REGEXP_CONTAINS(LOWER(last), 'm') THEN 'com'
