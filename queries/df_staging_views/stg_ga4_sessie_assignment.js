@@ -38,7 +38,7 @@ SELECT
     --privacy_ads_storage,
     
     collected_traffic_source_gclid,
-    IF(collected_traffic_source_gclid <> "", cross_channel_campaign_last_click_source, 
+    IF(collected_traffic_source_gclid <> "", IFNULL(cross_channel_campaign_last_click_source, collected_traffic_source_manual_source), 
     IFNULL(collected_traffic_source_manual_source, cross_channel_campaign_last_click_source)) AS session_source,
     collected_traffic_source_manual_source,
     cross_channel_campaign_last_click_source,
@@ -46,7 +46,7 @@ SELECT
     manual_campaign_last_click_source,
     first_user_source,
 
-    IF(collected_traffic_source_gclid <> "", cross_channel_campaign_last_click_medium, 
+    IF(collected_traffic_source_gclid <> "", IFNULL(cross_channel_campaign_last_click_medium, collected_traffic_source_manual_medium), 
     IFNULL(collected_traffic_source_manual_medium, cross_channel_campaign_last_click_medium)) AS session_medium,
     collected_traffic_source_manual_medium,
     cross_channel_campaign_last_click_medium,
@@ -54,7 +54,7 @@ SELECT
     manual_campaign_last_click_medium,
     first_user_medium,
 
-    IF(collected_traffic_source_gclid <> "", cross_channel_campaign_last_click_campaign_name, 
+    IF(collected_traffic_source_gclid <> "", IFNULL(cross_channel_campaign_last_click_campaign_name, collected_traffic_source_manual_campaign_name), 
     IFNULL(collected_traffic_source_manual_campaign_name, cross_channel_campaign_last_click_campaign_name)) AS session_campaign,
     collected_traffic_source_manual_campaign_name,
     cross_channel_campaign_last_click_campaign_name,

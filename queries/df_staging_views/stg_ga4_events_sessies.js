@@ -79,15 +79,15 @@ FROM(
     event_engagement_time_msec,
     event_session_engaged,
     IFNULL(session_source,
-        IF(events.collected_traffic_source_gclid <> "", events.cross_channel_campaign_last_click_source,
+        IF(events.collected_traffic_source_gclid <> "", IFNULL(events.cross_channel_campaign_last_click_source, events.collected_traffic_source_manual_source),
             IFNULL(events.collected_traffic_source_manual_source, events.cross_channel_campaign_last_click_source))
     ) AS session_source,
     IFNULL(session_medium,
-        IF(events.collected_traffic_source_gclid <> "", events.cross_channel_campaign_last_click_medium,
+        IF(events.collected_traffic_source_gclid <> "", IFNULL(events.cross_channel_campaign_last_click_medium, events.collected_traffic_source_manual_medium),
             IFNULL(events.collected_traffic_source_manual_medium, events.cross_channel_campaign_last_click_medium))
     ) AS session_medium,
     IFNULL(session_campaign,
-        IF(events.collected_traffic_source_gclid <> "", events.cross_channel_campaign_last_click_campaign_name,
+        IF(events.collected_traffic_source_gclid <> "", IFNULL(events.cross_channel_campaign_last_click_campaign_name, events.collected_traffic_source_manual_campaign_name),
             IFNULL(events.collected_traffic_source_manual_campaign_name, events.cross_channel_campaign_last_click_campaign_name))
     ) AS session_campaign,
     IFNULL(session_default_channel_group, events.cross_channel_campaign_last_click_default_channel_group) AS session_default_channel_group,
