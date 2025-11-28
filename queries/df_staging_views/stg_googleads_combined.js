@@ -39,7 +39,7 @@ ON 1=0
 
 ${join("LEFT JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
 
-${join("LEFT JOIN", "ads_Customer", "AS customer ON IFNULL(adgroup_stats.account_id, perf_max_stats.account_id) = customer.customer_id")}
+${join("LEFT JOIN", "ads_Customer", "AS customer ON IFNULL(adgroup_stats.customer_id, perf_max_stats.customer_id) = customer.customer_id")}
     
 `
 let refs = getRefs()
