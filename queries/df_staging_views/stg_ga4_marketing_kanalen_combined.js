@@ -23,9 +23,10 @@ SELECT
     ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
     ),
-    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account")}
+    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account, advertiser_name")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
+    ${ifSource("stg_marketingkanalen_combined", "advertiser_name AS account_name,")}
     ${ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie AS handmatige_uitgave_categorie,")}
     ${ifNull([
         "ga4.bron",

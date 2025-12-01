@@ -30,6 +30,7 @@ SELECT
     ${ifSource("googleads_campaignlabel","label.merk AS merk,")}
     ${ifSource("googleads_campaignlabel","label.model AS model,")}
     ${ifSource("googleads_campaignlabel","label.campagnegroep AS campagnegroep,")}
+    ${ifSource("ads_Customer","customer.customer_descriptive_name AS advertiser_name,")}
 
 FROM ${ref('df_staging_views', 'stg_google_ads_adgroup_combined')} adgroup_stats
 
@@ -37,6 +38,8 @@ FULL OUTER JOIN ${ref('df_staging_views', 'stg_googleads_perfmax_combined')} per
 ON 1=0
 
 ${join("LEFT JOIN", "df_rawdata_views", "googleads_campaignlabel", "AS label ON IFNULL(adgroup_stats.campaign_id, perf_max_stats.campaign_id) = label.campaign_id")}
+
+${join("LEFT JOIN (SELECT * FROM", "ads_Customer", "WHERE _DATA_DATE = _LATEST_DATE) AS customer ON IFNULL(adgroup_stats.customer_id, perf_max_stats.customer_id) = customer.customer_id")}
     
 `
 let refs = getRefs()
