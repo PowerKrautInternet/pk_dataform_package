@@ -20,9 +20,7 @@ FROM(
     ${ifSource("gs_modellen", `${ref("lookupTable")}(
         event_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables","gs_modellen", true)}))
-    ) as model_event,
-    ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables","gs_modellen", true)}))) as model_session,`)} 
+    ) as model_event,`)} 
     session_default_channel_group,
     CASE
     WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
