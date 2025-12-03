@@ -18,7 +18,7 @@ FROM(
     ${ref("lookupTable")}(session_merk_concat,
         TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))) as merk_session,`)}
     ${ifSource("gs_modellen", `${ref("lookupTable")}(
-        event_merk_concat,
+        event_merk_concat, 
         TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables","gs_modellen", true)}))
     ) as model_event,`)} 
     session_default_channel_group,
