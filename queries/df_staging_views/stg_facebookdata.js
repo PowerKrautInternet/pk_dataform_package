@@ -44,7 +44,10 @@ SELECT
     (JSON_VALUE(actions_nieuw,'$.action_type') = "post_reaction", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS post_reaction,
   MAX(
   IF
-    (JSON_VALUE(actions_nieuw,'$.action_type') = "link_click", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS link_click
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "link_click", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS link_click,
+  MAX(
+  IF
+    (JSON_VALUE(actions_nieuw,'$.action_type') = "onsite_conversion.lead_grouped", CAST(JSON_VALUE(actions_nieuw,'$.value') AS INT64), NULL)) AS lead_form
 FROM
     ${ref("df_rawdata_views", "facebookdata")}
 
