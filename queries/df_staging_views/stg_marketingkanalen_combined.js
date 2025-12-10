@@ -40,7 +40,8 @@ FROM (
         ${ifNull([ifSource('stg_facebookdata','facebook.objective'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_objective_type')], "AS objective,")}
         ${ifSource("stg_facebookdata", "facebook.ad_id AS facebook_ad_id,")}
         ${ifSource("stg_facebookdata", "facebook.ad_name AS facebook_ad_name,")}
-        ${ifSource("stg_facebookdata", "facebook.reach AS facebook_reach,")}    
+        ${ifSource("stg_facebookdata", "facebook.reach AS facebook_reach,")}
+        ${ifSource("stg_facebookdata", "facebook.lead_form AS facebook_lead_form,")} 
         ${ifSource("dv360_data", "dv360.view_through_conversions AS view_through_conversions,")}
         ${ifSource("dv360_data", "dv360.click_through_conversions AS click_through_conversions,")}
         ${ifSource("dv360_data", "dv360.active_view_viewable_impressions AS dv360_active_view_viewable_impressions,")}
