@@ -60,7 +60,7 @@ SELECT
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
         ifSource("gs_kostensyntecmapping", "lef.kanaal"),
         ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")
-    ])} as uitgavebron,
+    ])} as uitgavebron, 
     ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
