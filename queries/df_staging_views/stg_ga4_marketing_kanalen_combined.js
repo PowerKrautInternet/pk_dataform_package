@@ -51,11 +51,16 @@ SELECT
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
         ifSource("stg_lef_leads_agg", "lef.kanaal"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
-        ifSource("gs_kostensyntecmapping", "syntec.uitgavebron"),
+        ifSource("stg_syntec_leads_orders_combined", "syntec.uitgavebron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.kanaal"),
         ifSource("stg_hubspot_workflowstats","hs.kanaal"),
         ifSource("stg_otm_aggregated","kanaal_otm"),
     ])} as kanaal,
+    ${ifNull([
+        ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
+        ifSource("gs_kostensyntecmapping", "lef.kanaal"),
+        ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")
+    ])} as uitgavebron,
     ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
