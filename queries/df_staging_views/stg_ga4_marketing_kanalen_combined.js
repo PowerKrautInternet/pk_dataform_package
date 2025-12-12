@@ -57,11 +57,6 @@ SELECT
         ifSource("stg_otm_aggregated","kanaal_otm"),
     ])} as kanaal,
     ${ifNull([
-        ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
-        ifSource("stg_lef_leads_agg", "lef.kanaal"),
-        ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")
-    ])} as uitgavebron, 
-    ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
         ifSource("stg_lef_leads_agg", "lef.session_campaign"),
