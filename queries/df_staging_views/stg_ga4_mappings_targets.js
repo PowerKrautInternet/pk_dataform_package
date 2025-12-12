@@ -45,22 +45,17 @@ SELECT
         ifSource("stg_pivot_targets", "target_account"),
     ])} as account,
     CASE
-        WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
-        WHEN regexp_contains(session_source,'dv360') 
-        OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
-        WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'META'
-        WHEN regexp_contains(session_source,'linkedin')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
-        WHEN regexp_contains(session_source,'google|adwords')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Google Ads'
-        WHEN regexp_contains(session_source,'bing')
-        AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
-        WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
+        WHEN REGEXP_CONTAINS(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'dv360') OR REGEXP_CONTAINS(LOWER(session_medium),'cpm') THEN 'DV360'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'(facebook|fb|instagram|ig|meta)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|facebookadvertising|instant_experience)') THEN 'META'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'linkedin') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'LinkedIn'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'(google|adwords)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Google Ads'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Microsoft Ads'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'gaspedaal') THEN 'Gaspedaal'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'activecampaign') THEN 'ActiveCampaign'
         ELSE NULL
     END AS sessie_conversie_bron
-
-  FROM(
+FROM(
     SELECT 
       events_sessies.* EXCEPT(session_source, session_medium, session_campaign),
       IFNULL(CAST(event_ga_session_id AS STRING), privacy_session_id) as ga_session_id,
