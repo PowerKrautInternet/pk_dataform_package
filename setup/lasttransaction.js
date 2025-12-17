@@ -12,11 +12,14 @@ function lasttransaction(refVal) {
 
   return `
   BEGIN
-    -- Ensure schema exists (ignore benign errors)
+    -- 1. ALL DECLARATIONS MUST BE AT THE TOP
+    DECLARE dataform_table_type STRING;
+    DECLARE has_publisher BOOL;
+    DECLARE publisher_select STRING;
+
+    -- 2. Ensure schema exists
     BEGIN
-      CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(
-        config
-      )}\`
+      CREATE SCHEMA IF NOT EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}\`
       OPTIONS(location="${dataform.projectConfig.defaultLocation ?? "europe-west4"}");
     EXCEPTION WHEN ERROR THEN
       IF NOT CONTAINS_SUBSTR(@@error.message, "already exists: dataset")
@@ -27,27 +30,20 @@ function lasttransaction(refVal) {
       END IF;
     END;
 
-    -- Drop existing object if it exists with a different type
-    DECLARE dataform_table_type DEFAULT (
+    -- 3. Logic to populate variables
+    SET dataform_table_type = (
       SELECT ANY_VALUE(table_type)
-      FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(
-        config
-      )}.INFORMATION_SCHEMA.TABLES\`
+      FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
       WHERE table_name = '${tableName}_lasttransaction'
     );
 
     IF dataform_table_type = 'BASE TABLE' THEN
-      DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(
-        config
-      )}.${tableName}_lasttransaction\`;
+      DROP TABLE IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${tableName}_lasttransaction\`;
     ELSEIF dataform_table_type = 'MATERIALIZED VIEW' THEN
-      DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(
-        config
-      )}.${tableName}_lasttransaction\`;
+      DROP MATERIALIZED VIEW IF EXISTS \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${tableName}_lasttransaction\`;
     END IF;
 
-    -- Decide whether we can select PUBLISHER, otherwise output NULL AS PUBLISHER
-    DECLARE has_publisher BOOL DEFAULT (
+    SET has_publisher = (
       SELECT EXISTS (
         SELECT 1
         FROM \`${dataform.projectConfig.defaultDatabase}.${refVal.schema}.INFORMATION_SCHEMA.COLUMNS\`
@@ -56,16 +52,11 @@ function lasttransaction(refVal) {
       )
     );
 
-    DECLARE publisher_select STRING DEFAULT IF(
-      has_publisher,
-      'ANY_VALUE(cd.PUBLISHER) AS PUBLISHER',
-      'NULL AS PUBLISHER'
-    );
+    SET publisher_select = IF(has_publisher, 'ANY_VALUE(cd.PUBLISHER) AS PUBLISHER', 'NULL AS PUBLISHER');
 
-    -- Build and create view
+    -- 4. Build and create view
     EXECUTE IMMEDIATE FORMAT("""
-      CREATE OR REPLACE VIEW \`%s.df_rawdata_views%s.%s_lasttransaction\`
-      OPTIONS()
+      CREATE OR REPLACE VIEW \`%%s.df_rawdata_views%%s.%%s_lasttransaction\`
       AS
       SELECT
         MAX(cd.PAYLOAD) AS PAYLOAD,
@@ -75,14 +66,14 @@ function lasttransaction(refVal) {
         cd.PRIMARYFIELDHASH,
         cd.ALIAS,
         cd.account,
-        %s
-      FROM ${ref(refVal.schema, tableName)} cd
+        %%s
+      FROM \`${ref(refVal.schema, tableName)}\` cd
       JOIN (
         SELECT
           SCHEMA,
           PRIMARYFIELDHASH,
           MAX(RECEIVEDON) AS max_receivedon
-        FROM ${ref(refVal.schema, tableName)}
+        FROM \`${ref(refVal.schema, tableName)}\`
         GROUP BY SCHEMA, PRIMARYFIELDHASH
       ) ld
         ON cd.SCHEMA = ld.SCHEMA
