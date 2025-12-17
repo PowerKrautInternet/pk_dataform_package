@@ -54,9 +54,9 @@ function lasttransaction(refVal) {
 
     SET publisher_select = IF(has_publisher, 'ANY_VALUE(cd.PUBLISHER) AS PUBLISHER', 'NULL AS PUBLISHER');
 
-    -- 4. Build and create view
+    -- Build and create view
     EXECUTE IMMEDIATE FORMAT("""
-      CREATE OR REPLACE VIEW \`%%s.df_rawdata_views%%s.%%s_lasttransaction\`
+      CREATE OR REPLACE VIEW \`%s.df_rawdata_views%s.%s_lasttransaction\`
       AS
       SELECT
         MAX(cd.PAYLOAD) AS PAYLOAD,
@@ -66,14 +66,14 @@ function lasttransaction(refVal) {
         cd.PRIMARYFIELDHASH,
         cd.ALIAS,
         cd.account,
-        %%s
-      FROM \`${ref(refVal.schema, tableName)}\` cd
+        %s
+      FROM ${ref(refVal.schema, tableName)} cd
       JOIN (
         SELECT
           SCHEMA,
           PRIMARYFIELDHASH,
           MAX(RECEIVEDON) AS max_receivedon
-        FROM \`${ref(refVal.schema, tableName)}\`
+        FROM ${ref(refVal.schema, tableName)}
         GROUP BY SCHEMA, PRIMARYFIELDHASH
       ) ld
         ON cd.SCHEMA = ld.SCHEMA
