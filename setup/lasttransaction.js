@@ -64,7 +64,7 @@ function lasttransaction(refVal) {
 
     -- Build and create view
     EXECUTE IMMEDIATE FORMAT("""
-      CREATE OR REPLACE VIEW `%s.df_rawdata_views%s.%s_lasttransaction`
+      CREATE OR REPLACE VIEW \`%s.df_rawdata_views%s.%s_lasttransaction\`
       OPTIONS()
       AS
       SELECT
