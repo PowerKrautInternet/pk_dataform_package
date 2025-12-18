@@ -458,6 +458,20 @@ function stg_otm_aggregated() {
     return table;
 }
 
+function stg_ga4_benchmarking() {
+    let table = {
+        "name": "stg_ga4_benchmarking",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_benchmarking').refs
+        },
+        "query": require('./stg_ga4_benchmarking').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
@@ -491,5 +505,6 @@ module.exports = {
     stg_sam_offertes,
     stg_sam_orders,
     stg_otm_aggregated,
-    stg_vistar_media_ads
+    stg_vistar_media_ads,
+    stg_ga4_benchmarking
 }
