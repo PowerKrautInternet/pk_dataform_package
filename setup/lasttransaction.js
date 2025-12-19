@@ -56,7 +56,7 @@ function lasttransaction(refVal) {
 
     -- Build and create view
     EXECUTE IMMEDIATE FORMAT("""
-      CREATE OR REPLACE VIEW \`%s.df_rawdata_views%s.%s_lasttransaction\`
+      CREATE OR REPLACE VIEW \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.${tableName}_lasttransaction\`
       AS
       SELECT
         MAX(cd.PAYLOAD) AS PAYLOAD,
@@ -82,9 +82,6 @@ function lasttransaction(refVal) {
       WHERE cd.ACTION != 'delete'
       GROUP BY cd.SCHEMA, cd.PRIMARYFIELDHASH, cd.account, cd.alias
     """,
-      "${dataform.projectConfig.defaultDatabase}",
-      "${pk.schemaSuffix(config)}",
-      "${tableName}",
       publisher_select
     );
 
