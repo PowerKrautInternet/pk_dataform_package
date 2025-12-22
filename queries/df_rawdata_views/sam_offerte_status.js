@@ -4,20 +4,13 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 SELECT
-        JSON_VALUE(PAYLOAD, '$.OFFERTESTATUSID') as OFFERTESTATUS_OFFERTESTATUSID,
-        JSON_VALUE(PAYLOAD, '$.OMSCHRIJVING') as OFFERTESTATUS_OMSCHRIJVING,
-        JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') as OFFERTESTATUS_DTCMEDIA_CRM_ID
-FROM (
-  SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
-    FROM
-       ${ref("samDataProducer_lasttransaction")} as first
-       WHERE SCHEMA IN (SELECT schema FROM ${ref("sam_table_hashes")} WHERE tableName = 'OFFERTESTATUS')
-       AND RECEIVEDON = (
-          SELECT MAX(RECEIVEDON)
-          FROM ${ref("samDataProducer_lasttransaction")} as second
-          WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
-      GROUP BY PRIMARYFIELDHASH
-)
+  JSON_VALUE(PAYLOAD, '$.offertestatusid') AS OFFERTESTATUS_OFFERTESTATUSID,
+  JSON_VALUE(PAYLOAD, '$.response.actief') AS OFFERTESTATUS_ACTIEF,
+  JSON_VALUE(PAYLOAD, '$.response.omschrijving') AS OFFERTESTATUS_OMSCHRIJVING,
+  JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS OFFERTESTATUS_DTCMEDIA_CRM_ID
+FROM
+      ${ref("odbcDataProducer_lasttransaction")}
+      WHERE PUBLISHER = "SAMOfferteStatusPublisher"
 
 `
 let refs = pk.getRefs()

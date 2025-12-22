@@ -4,24 +4,21 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 SELECT
-        JSON_VALUE(PAYLOAD, '$.RELATIEOPTINID') as RELATIEOPTIN_RELATIEOPTINID,
-        JSON_VALUE(PAYLOAD, '$.RELATIEID') as RELATIEOPTIN_RELATIEID,
-        JSON_VALUE(PAYLOAD, '$.OPTINSOORT') as RELATIEOPTIN_OPTINSOORT,
-        JSON_VALUE(PAYLOAD, '$.DATUMTIJD') as RELATIEOPTIN_DATUMTIJD,
-        JSON_VALUE(PAYLOAD, '$.BRON') as RELATIEOPTIN_BRON,
-        CAST(JSON_VALUE(PAYLOAD, '$.OPTIN') AS INT64) as RELATIEOPTIN_OPTIN,
-        JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') as RELATIEOPTIN_DTCMEDIA_CRM_ID
-FROM (
-  SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
-    FROM
-       ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as first
-       WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "sam_table_hashes")} WHERE tableName = 'RELATIEOPTIN')
-       AND RECEIVEDON = (
-          SELECT MAX(RECEIVEDON)
-          FROM ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as second
-          WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
-      GROUP BY PRIMARYFIELDHASH
-)
+  JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS RELATIEOPTIN_DTCMEDIA_CRM_ID,
+  JSON_VALUE(PAYLOAD, '$.type') AS RELATIEOPTIN_TYPE,
+  JSON_VALUE(PAYLOAD, '$.relatieoptinid') AS RELATIEOPTIN_ID,
+  JSON_VALUE(PAYLOAD, '$.response.bron') AS RELATIEOPTIN_BRON,
+  JSON_VALUE(PAYLOAD, '$.response.datumtijd') AS RELATIEOPTIN_DATUMTIJD,
+  JSON_VALUE(PAYLOAD, '$.response.gebruikerid') AS RELATIEOPTIN_GEBRUIKERID,
+  JSON_VALUE(PAYLOAD, '$.response.optin') AS RELATIEOPTIN_STATUS,
+  JSON_VALUE(PAYLOAD, '$.response.optinsoort') AS RELATIEOPTIN_SOORT,
+  JSON_VALUE(PAYLOAD, '$.response.relatieid') AS RELATIEOPTIN_RELATIEID,
+  JSON_VALUE(PAYLOAD, '$.response.vorigebron') AS RELATIEOPTIN_VORIGEBRON,
+  JSON_VALUE(PAYLOAD, '$.response.vorigedatumtijd') AS RELATIEOPTIN_VORIGEDATUMTIJD,
+  JSON_VALUE(PAYLOAD, '$.response.vorigegebruikerid') AS RELATIEOPTIN_VORIGEGEBRUIKERID,
+  JSON_VALUE(PAYLOAD, '$.response.vorigeoptin') AS RELATIEOPTIN_VORIGEOPTIN
+FROM ${ref("odbcDataProducer_lasttransaction")}
+      WHERE PUBLISHER = "SAMRelatieOptinPublisher"
 
 `
 let refs = pk.getRefs()

@@ -4,22 +4,16 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 SELECT
-        JSON_VALUE(PAYLOAD, '$.TRAJECTEXTERNGUID') as TRAJECTEXTERNGUID,
-        JSON_VALUE(PAYLOAD, '$.TRAJECTID') as TRAJECTEXTERN_TRAJECTID,
-        JSON_VALUE(PAYLOAD, '$.SOORTLEADSBRONID') as TRAJECTEXTERN_SOORTLEADSBRONID,
-        JSON_VALUE(PAYLOAD, '$.EXTERNGUID') as TRAJECTEXTERN_EXTERNGUID,
-        JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') as TRAJECTEXTERN_DTCMEDIA_CRM_ID
-FROM (
-  SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
-    FROM
-       ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as first
-       WHERE SCHEMA IN (SELECT schema FROM ${ref("df_rawdata_views", "sam_table_hashes")}  WHERE tableName = 'TRAJECTEXTERNGU')
-       AND RECEIVEDON = (
-          SELECT MAX(RECEIVEDON)
-          FROM ${ref("df_rawdata_views", "samDataProducer_lasttransaction")} as second
-          WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
-      GROUP BY PRIMARYFIELDHASH
-)
+  JSON_VALUE(PAYLOAD, '$.trajectexternguid') AS TRAJECTEXTERNGUID,
+  JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS TRAJECTEXTERN_DTCMEDIA_CRM_ID,
+  JSON_VALUE(PAYLOAD, '$.type') AS TRAJECT_EXTERN_TYPE,
+  JSON_VALUE(PAYLOAD, '$.response.externguid') AS TRAJECTEXTERN_EXTERNGUID,
+  JSON_VALUE(PAYLOAD, '$.response.soortleadsbronid') AS TRAJECTEXTERN_SOORTLEADSBRONID,
+  JSON_VALUE(PAYLOAD, '$.response.trajectid') AS TRAJECTEXTERN_TRAJECTID
+
+FROM 
+${ref("odbcDataProducer_lasttransaction")}
+WHERE PUBLISHER = "SAMTrajectExternGUIDPublisher"
 
 `
 let refs = pk.getRefs()
