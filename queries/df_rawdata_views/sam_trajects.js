@@ -63,7 +63,7 @@ SELECT
   JSON_VALUE(PAYLOAD, '$.response.toegekenddatum') AS TRAJECT_TOEGEKENDDATUM,
   JSON_VALUE(PAYLOAD, '$.response.trajectafsluitredenid') AS TRAJECT_TRAJECTAFSLUITREDENID,
   JSON_VALUE(PAYLOAD, '$.response.trajectkans') AS TRAJECT_TRAJECTKANS,
-  JSON_VALUE(PAYLOAD, '$.response.trajectstatusid') AS TRAJECT_TRAJECTSTATUSID,
+  JSON_VALUE(PAYLOAD, '$.response.trajectstatusid') AS TRAJECTSTATUSID,
   JSON_VALUE(PAYLOAD, '$.response.verkoperid') AS TRAJECT_VERKOPERID,
   JSON_VALUE(PAYLOAD, '$.response.verzekeringaanvraag') AS TRAJECT_VERZEKERINGAANVRAAG,
 
