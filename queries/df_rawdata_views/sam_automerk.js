@@ -4,22 +4,18 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 SELECT
-        JSON_VALUE(PAYLOAD, '$.AUTOMERKID') as AUTOMERK_AUTOMERKID,
-        JSON_VALUE(PAYLOAD, '$.OMSCHRIJVING') as AUTOMERK_OMSCHRIJVING,
-        JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') as AUTOMERK_DTCMEDIA_CRM_ID
-FROM (
-    SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
-          FROM
-             ${ref("samDataProducer_lasttransaction")} as first
-             WHERE SCHEMA IN (SELECT schema FROM ${ref("sam_table_hashes")} WHERE tableName = 'AUTOMERK')
-             AND RECEIVEDON = (
-                SELECT MAX(RECEIVEDON)
-                FROM ${ref("samDataProducer_lasttransaction")} as second
-                WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
-            GROUP BY PRIMARYFIELDHASH
-  )
-  
-  WHERE JSON_VALUE(PAYLOAD, '$.OMSCHRIJVING') <> ""
+  JSON_VALUE(PAYLOAD, '$.automerkid') AS AUTOMERK_AUTOMERKID,
+  JSON_VALUE(PAYLOAD, '$.response.actief') AS AUTOMERK_ACTIEF,
+  JSON_VALUE(PAYLOAD, '$.response.autodatasourceid') AS AUTOMERK_AUTODATASOURCEID,
+  JSON_VALUE(PAYLOAD, '$.response.dataversion') AS AUTOMERK_DATAVERSION,
+  JSON_VALUE(PAYLOAD, '$.response.imageversion') AS AUTOMERK_IMAGEVERSION,
+  JSON_VALUE(PAYLOAD, '$.response.imgmake') AS AUTOMERK_IMGMAKE,
+  JSON_VALUE(PAYLOAD, '$.response.jatowltp') AS AUTOMERK_JATOWLTP,
+  JSON_VALUE(PAYLOAD, '$.response.omschrijving') AS AUTOMERK_OMSCHRIJVING,
+  JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS AUTOMERK_DTCMEDIA_CRM_ID
+FROM ${ref("odbcDataProducer_lasttransaction")}
+WHERE PUBLISHER = "SAMAutoMerkPublisher"
+AND JSON_VALUE(PAYLOAD, '$.omschrijving') <> ""
 
 `
 let refs = pk.getRefs()

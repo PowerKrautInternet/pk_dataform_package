@@ -23,31 +23,24 @@ MAX(ADRES_ACTIEF) as ADRES_ACTIEF
 
 FROM (
       SELECT
-          JSON_VALUE(PAYLOAD, '$.ADRESID') as ADRES_ADRESID,
-          JSON_VALUE(PAYLOAD, '$.RELATIEID') as ADRES_RELATIEID,
-          JSON_VALUE(PAYLOAD, '$.SOORTADRESID') as ADRES_SOORTADRESID,
-          
-          JSON_VALUE(PAYLOAD, '$.STRAAT') as ADRES_STRAAT,
-          JSON_VALUE(PAYLOAD, '$.HUISNUMMER') as ADRES_HUISNUMMER,
-          JSON_VALUE(PAYLOAD, '$.HUISNRTOEVOEGING') as ADRES_HUISNRTOEVOEGING,
-          JSON_VALUE(PAYLOAD, '$.POSTCODE') as ADRES_POSTCODE,
-          JSON_VALUE(PAYLOAD, '$.PLAATS') as ADRES_PLAATS,
-          JSON_VALUE(PAYLOAD, '$.LAND') as ADRES_LAND,
-          
-          JSON_VALUE(PAYLOAD, '$.ISSTANDAARD') as ADRES_ISSTANDAARD,
-          JSON_VALUE(PAYLOAD, '$.ACTIEF') as ADRES_ACTIEF,
-          JSON_VALUE(PAYLOAD, '$.DTCMEDIA_CRM_ID') as ADRES_DTCMEDIA_CRM_ID
-      FROM (
-       SELECT MAX(SCHEMA), PRIMARYFIELDHASH, MAX(PAYLOAD) as PAYLOAD, MAX(ACTION) as ACTION, MAX(RECEIVEDON) as RECEIVEDON
-          FROM
-            ${ref("samDataProducer_lasttransaction")} as first
-           WHERE SCHEMA IN (SELECT schema FROM ${ref("sam_table_hashes")} WHERE tableName = 'ADRES')
-           AND RECEIVEDON = (
-              SELECT MAX(RECEIVEDON)
-              FROM ${ref("samDataProducer_lasttransaction")} as second
-              WHERE first.PRIMARYFIELDHASH = second.PRIMARYFIELDHASH and first.SCHEMA = second.SCHEMA)
-          GROUP BY PRIMARYFIELDHASH
-      )
+          JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS ADRES_DTCMEDIA_CRM_ID,
+          JSON_VALUE(PAYLOAD, '$.type') AS type,
+          JSON_VALUE(PAYLOAD, '$.adresid') AS ADRES_ADRESID,
+          JSON_VALUE(PAYLOAD, '$.response.actief') AS ADRES_ACTIEF,
+          JSON_VALUE(PAYLOAD, '$.response.huisnrtoevoeging') AS ADRES_HUISNRTOEVOEGING,
+          JSON_VALUE(PAYLOAD, '$.response.huisnummer') AS ADRES_HUISNUMMER,
+          JSON_VALUE(PAYLOAD, '$.response.isstandaard') AS ADRES_ISSTANDAARD,
+          JSON_VALUE(PAYLOAD, '$.response.isstandaardwrite') AS ADRES_ISSTANDAARDWRITE,
+          JSON_VALUE(PAYLOAD, '$.response.land') AS ADRES_LAND,
+          JSON_VALUE(PAYLOAD, '$.response.plaats') AS ADRES_PLAATS,
+          JSON_VALUE(PAYLOAD, '$.response.postcode') AS ADRES_POSTCODE,
+          JSON_VALUE(PAYLOAD, '$.response.relatieid') AS ADRES_RELATIEID,
+          JSON_VALUE(PAYLOAD, '$.response.soortadresid') AS ADRES_SOORTADRESID,
+          JSON_VALUE(PAYLOAD, '$.response.straat') AS ADRES_STRAAT,
+          JSON_VALUE(PAYLOAD, '$.response.zoekplaats') AS ADRES_ZOEKPLAATS
+
+      FROM ${ref("odbcDataProducer_lasttransaction")}
+      WHERE PUBLISHER = "SAMAdresPublisher"
 )
 
 WHERE ADRES_ISSTANDAARD = "T" AND ADRES_ACTIEF = 'T'
