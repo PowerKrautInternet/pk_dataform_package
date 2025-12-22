@@ -106,7 +106,7 @@ ON aflevering.TRAJECTID = aflever_traject.TRAJECT_TRAJECTID
 LEFT JOIN ${ref("sam_sales_trajecten")} sales_traject
 ON aflever_traject.TRAJECT_PREVTRAJECTID = sales_traject.TRAJECT_TRAJECTID
 
-LEFT JOIN ${ref("sam_soort_klantcategorie")} soort_klantcategorie
+LEFT JOIN ${ref("sam_soortklantcategorie")} soort_klantcategorie
 ON aflevering.SOORTKLANTCATEGORIEID = soort_klantcategorie.SOORTKLANTCATEGORIEID
 
 LEFT JOIN 
