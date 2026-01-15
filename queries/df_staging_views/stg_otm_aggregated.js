@@ -60,7 +60,7 @@ SELECT
     kanaal AS kanaal_otm,`)}
 FROM (
   SELECT
-    otm.account AS account,
+    account AS account,
     submission_id AS submission_id,
     buyCarBrand AS buy_car_brand,
     buyCarModel AS buy_car_model,
