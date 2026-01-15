@@ -7,6 +7,7 @@ let query = `
 WITH
   sequences AS(
   SELECT
+    account,
     JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
     JSON_VALUE(PAYLOAD, '$.submission_id') AS submission_id,
     JSON_VALUE(PAYLOAD, '$.submission.id') AS submission_id_in_submission,
@@ -77,6 +78,7 @@ WITH
   FROM
   ${ref("TaxatieModuleOnlineDataProducer_lasttransaction")})
 SELECT
+  account,
   pk_crm_id,
   submission_id,
   submission_id_in_submission,
@@ -150,6 +152,7 @@ SELECT
   JSON_VALUE(statuses_new, '$.updated_at') AS status_updated_at
 FROM (
   SELECT
+    account,
     pk_crm_id,
     submission_id,
     submission_id_in_submission,
