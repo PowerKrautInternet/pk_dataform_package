@@ -44,7 +44,8 @@ SELECT
         ifSource("stg_lef_leads_agg", "lef.account"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.account"),
         ifSource("stg_syntec_leads_orders_combined", "syntec.account"),
-        ifSource("stg_activecampaign_ga4_sheets", "ac.account")
+        ifSource("stg_activecampaign_ga4_sheets", "ac.account"),
+        ifSource("stg_otm_aggregated", "otm.account")
     ])} as account,
     ${ifNull([
         "ga4.kanaal",
@@ -193,7 +194,7 @@ SELECT
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie"), ifSource("gs_kostensyntecmapping", "syntec.uitgave_categorie")], "AS uitgave_categorie,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal"), ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")], "AS uitgave_bron,")}
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
-    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(created_at_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm)")}
+    ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(created_at_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm, account)")}
 
 FROM (SELECT 'GA4' as bron, * FROM ${ref("df_staging_views", "stg_ga4_mappings_targets")}) ga4
     
