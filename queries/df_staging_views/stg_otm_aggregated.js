@@ -3,6 +3,7 @@ let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
+  account,
   "OTM" as bron,
   submission_id AS submission_id_otm,
   buy_car_brand AS buy_car_brand_otm,
@@ -59,6 +60,7 @@ SELECT
     kanaal AS kanaal_otm,`)}
 FROM (
   SELECT
+    otm.account AS account,
     submission_id AS submission_id,
     buyCarBrand AS buy_car_brand,
     buyCarModel AS buy_car_model,
