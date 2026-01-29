@@ -1,3 +1,4 @@
+let {addSource} = require('../../sources')
 function googleSheetsExternalTable({
   tableName,
   sheetUrl,
@@ -25,7 +26,15 @@ function googleSheetsExternalTable({
 
   // Important: give the operation a unique action name to avoid collisions
   const actionName = `ext_${tableName}`;
-
+  
+  addSource({
+  name: tableName,
+  config: {
+    schema: schema,
+    type: "table"
+  }
+  });
+  
   return operate(actionName, {
     schema: resolvedSchema,
     database: resolvedProject,
