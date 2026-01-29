@@ -1,4 +1,4 @@
-let {addSource} = require('../../sources')
+let {addSource} = require('../sources')
 function googleSheetsExternalTable({
   tableName,
   sheetUrl,
