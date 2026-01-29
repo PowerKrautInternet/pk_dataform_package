@@ -30,7 +30,7 @@ function googleSheetsExternalTable({
   addSource({
   name: tableName,
   config: {
-    schema: schema,
+    schema: resolvedSchema,
     type: "table"
   }
   });
