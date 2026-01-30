@@ -20,7 +20,7 @@ Deze structuur is opgezet om consistent, herbruikbaar en modulair om te gaan met
 ---
 
 # 🔧 In gebruik nemen
-
+ 
 Query’s worden ingeladen via de package en vervolgens gepubliceerd via standaard Dataform-methodes. Ook bronnen worden centraal gedeclareerd en beschikbaar gesteld aan de rest van de pipeline. Herbruikbare functies, zoals lookups of mappings, zijn beschikbaar via de `functions` map.
 
 ## .npmrc
