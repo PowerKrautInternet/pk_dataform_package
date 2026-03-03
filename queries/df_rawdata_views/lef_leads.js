@@ -33,6 +33,7 @@ SELECT
     JSON_VALUE(PAYLOAD, '$.response.overige.doorlooptijdTotEersteContactpoging') AS doorlooptijdTotEersteContactpoging,
     JSON_VALUE(PAYLOAD, '$.response.overige.doorlooptijdEersteContactpogingBinnenOpvolgtijdenMinuten') AS doorlooptijdEersteContactpogingBinnenOpvolgtijdenMinuten,
     JSON_VALUE(PAYLOAD, '$.response.overige.deadlineGehaald') AS deadlineGehaald,
+    JSON_VALUE(PAYLOAD, '$.response.overige.deadlineGehaaldImporteur') AS deadlineGehaaldImporteur,
     PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M',JSON_VALUE(PAYLOAD, '$.response.overige.afgerondDatum')) AS afgerondDatum,
     JSON_VALUE(PAYLOAD, '$.response.overige.aantalActiesOpLead') AS aantalActiesOpLead,
     JSON_VALUE(PAYLOAD, '$.response.overige.aantalNietBereikt') AS aantalNietBereikt,
