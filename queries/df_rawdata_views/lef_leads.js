@@ -23,6 +23,7 @@ SELECT
     JSON_VALUE(PAYLOAD, '$.response.overige.leadOmschrijving') AS leadOmschrijving,
     JSON_VALUE(PAYLOAD, '$.response.overige.VestigingID') AS VestigingID,
     PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M', JSON_VALUE(PAYLOAD, '$.response.overige.aangemaaktDatum')) AS aangemaaktDatum,
+    PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M',JSON_VALUE(PAYLOAD, '$.response.overige.eersteDeadlineImporteur')) AS eersteDeadlineImporteur,
     PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M',JSON_VALUE(PAYLOAD, '$.response.overige.eersteDeadline')) AS eersteDeadline,
     PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M',JSON_VALUE(PAYLOAD, '$.response.overige.ingezienDatum')) AS ingezienDatum,
     PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S+%H:%M',JSON_VALUE(PAYLOAD, '$.response.overige.eersteContactpoging')) AS eersteContactpoging,
