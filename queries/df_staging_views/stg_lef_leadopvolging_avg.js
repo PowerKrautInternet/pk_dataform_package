@@ -13,7 +13,11 @@ WITH weekly_metrics AS (
     SAFE_DIVIDE(
       COUNT(DISTINCT IF(deadlineGehaald = 'true', LEFleadID, NULL)),
       COUNT(DISTINCT LEFleadID)
-    ) AS deals_pct
+    ) AS deals_pct,
+        SAFE_DIVIDE(
+      COUNT(DISTINCT IF(deadlineGehaaldImporteur = 'true', LEFleadID, NULL)),
+      COUNT(DISTINCT LEFleadID)
+    ) AS deals_pct_importeur
   FROM ${ref("df_rawdata_views", "lef_leads")}
   GROUP BY week
 )
@@ -22,7 +26,9 @@ SELECT
   AVG(avg_doorlooptijd_hours) AS mean_doorlooptijd_hours,
   STDDEV(avg_doorlooptijd_hours) AS std_doorlooptijd_hours,
   AVG(deals_pct) AS mean_deals,
-  STDDEV(deals_pct) AS std_deals
+  STDDEV(deals_pct) AS std_deals,
+  AVG(deals_pct_importeur) AS mean_deals_importeur,
+  STDDEV(deals_pct_importeur) AS std_deals_importeur,
 FROM weekly_metrics
 `
 let refs = getRefs()
