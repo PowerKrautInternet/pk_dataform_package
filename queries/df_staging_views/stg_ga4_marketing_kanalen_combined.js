@@ -183,7 +183,9 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.eersteContactpoging AS lef_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.laatsteStatus_startGesprek AS lef_laatstestatus_startgesprek,")}
     ${ifSource("stg_lef_leads_agg","lef.deadlineGehaald AS lef_deadlinegehaald,")}
+    ${ifSource("stg_lef_leads_agg","lef.deadlineGehaaldImporteur AS lef_deadlinegehaaldimporteur,")}
     ${ifSource("stg_lef_leads_agg","lef.eersteDeadline AS lef_eerstedeadline,")}
+    ${ifSource("stg_lef_leads_agg","lef.eersteDeadlineImporteur AS lef_eerstedeadlineimporteur,")}
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,")}
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotEersteContactpoging AS doorlooptijd_tot_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.ingezienDatum AS lef_ingeziendatum,")}
