@@ -117,6 +117,7 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
+  ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
   ${ifSource('stg_sam_offertes', 'offerte_SALESTRAJECT_TRAJECTID, DATE(offerte_SALESTRAJECT_AFGERONDDATUM) AS offerte_SALESTRAJECT_AFGERONDDATUM, DATE(offerte_SALESTRAJECT_CREATIEDATUM) AS offerte_SALESTRAJECT_CREATIEDATUM, offerte_OFFERTESTATUS_OMSCHRIJVING, offerte_OFFERTE_TOTAALBEDRAG, offerte_HERKOMST_OMSCHRIJVING, offerte_OFFERTE_OFFERTEID, getekende_offertes, offerte_SALESTRAJECT_TRAJECTSTATUSID, offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, offerte_MERK_OMSCHRIJVING, offerte_AFLEVERINGMODEL_OMSCHRIJVING, offerte_DEALER_NAAM, offerte_VERKOPER_NAAM,')}
   ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
   
