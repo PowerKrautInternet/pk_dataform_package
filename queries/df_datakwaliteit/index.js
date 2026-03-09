@@ -185,7 +185,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n))\n"
                 rowNr += 1
             } else {
-                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
+                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n" + "-- of type " + type + "\n" 
             }
     }
     query += ") GROUP BY BRON, KEY1"
