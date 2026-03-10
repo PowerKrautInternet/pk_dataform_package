@@ -50,7 +50,7 @@ function dk_maxReceivedon(extraSelect = "", extraSource = "", extraWhere = "", e
 
         //for each data source
             let name = sources[s].name ?? "";
-            if (type === "dataProducer" && sources[s].recency !== false && sources[s].recency !== "false") {
+            if (type === "dataProducer") {
                 if (rowNr > 0) {
                     query += "\nUNION ALL\n\n"
                 }
@@ -185,7 +185,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 query += "\n\nFROM `" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + "` \n\nGROUP BY BRON, KEY1\n))\n"
                 rowNr += 1
             } else {
-                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n"
+                query += "\n--" + sources[s].database + "." + sources[s].schema + "." + sources[s].name + ": Has not been implemented\n" + "-- of type " + type + "\n" 
             }
     }
     query += ") GROUP BY BRON, KEY1"
@@ -200,7 +200,7 @@ function dk_monitor(){
         let name = sources[s].name;
 
         //for each data source
-        if (type !== "NONE" && sources[s].recency !== false && sources[s].recency !== "false" && type !== "google_sheet") {
+        if (type !== "NONE" && type !== "google_sheet") {
             if (rowNr > 0) { query += "\nUNION ALL\n\n" } // Just to join the sources
 
             //SELECT ...
