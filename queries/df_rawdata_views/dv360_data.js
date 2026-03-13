@@ -65,5 +65,5 @@ let query = `
         site_id
 
 `
-let refs = pk.getRefs()
+let refs = getRefs()
 module.exports = {query, refs}
