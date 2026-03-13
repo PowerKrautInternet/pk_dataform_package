@@ -64,6 +64,9 @@ FROM (
         ${ifSource("dv360_data", "dv360.rich_media_audio_midpoints AS dv360_rich_media_audio_midpoints,")}
         ${ifSource("dv360_data", "dv360.rich_media_audio_third_quartile_completes AS dv360_rich_media_audio_third_quartile_completes,")}
         ${ifSource("dv360_data", "dv360.rich_media_audio_completions AS dv360_rich_media_audio_completions,")}
+        ${ifSource("dv360_data", "dv360.dv360_city AS dv360_city,")}
+        ${ifSource("dv360_data", "dv360.dv360_country AS dv360_country,")}
+        ${ifSource("dv360_data", "dv360.dv360_zip AS dv360_zip,")}
         ${ifSource("stg_bing_ad_group_performance", "microsoft.quality_score,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.comments,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.shares,")}
