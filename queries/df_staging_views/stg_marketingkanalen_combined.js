@@ -2,7 +2,7 @@
 let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
-SELECT 
+SELECT  
     * ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
