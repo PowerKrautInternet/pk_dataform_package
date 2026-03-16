@@ -22,9 +22,9 @@ let query = `
         MAX(creative) AS creative,
         MAX(creative_size) AS creative_size,
         MAX(creative_type) AS creative_type,
-    	MAX(city) AS dv360_city,
-        MAX(country_code) AS dv360_country,
-        MAX(zip_postal_code) AS dv360_zip,
+    	city AS dv360_city,
+        country_code AS dv360_country,
+        zip_postal_code AS dv360_zip,
         date,
         site_id,
         MAX(site) AS site,
@@ -62,7 +62,10 @@ let query = `
         line_item_id,
         creative_id,
         date,
-        site_id
+        site_id,
+        city,
+        zip_postal_code,
+        country_code
 
 `
 let refs = getRefs()
