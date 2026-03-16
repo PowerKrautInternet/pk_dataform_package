@@ -22,9 +22,9 @@ let query = `
         MAX(creative) AS creative,
         MAX(creative_size) AS creative_size,
         MAX(creative_type) AS creative_type,
-    	${ifNull("MAX(city) AS dv360_city,")}
-        ${ifNull("MAX(country_code) AS dv360_country,")}
-        ${ifNull("MAX(zip_postal_code) AS dv360_zip,")}
+    	MAX(city) AS dv360_city,
+        MAX(country_code) AS dv360_country,
+        MAX(zip_postal_code) AS dv360_zip,
         date,
         site_id,
         MAX(site) AS site,
