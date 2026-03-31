@@ -50,7 +50,7 @@ SELECT
         WHEN REGEXP_CONTAINS(LOWER(session_source),'(facebook|fb|instagram|ig|meta)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|facebookadvertising|instant_experience)') THEN 'META'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'linkedin') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'LinkedIn'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'(google|adwords)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Google Ads'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Microsoft Ads'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|search_paid)') THEN 'Microsoft Ads'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'gaspedaal') THEN 'Gaspedaal'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'activecampaign') THEN 'ActiveCampaign'
         ELSE NULL
