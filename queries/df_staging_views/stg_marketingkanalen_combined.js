@@ -67,6 +67,7 @@ FROM (
         ${ifSource("dv360_data", "dv360.dv360_city AS dv360_city,")}
         ${ifSource("dv360_data", "dv360.dv360_country AS dv360_country,")}
         ${ifSource("dv360_data", "dv360.dv360_zip AS dv360_zip,")}
+        ${ifSource("dv360_data", "dv360.dv360_region AS dv360_region,")}
         ${ifSource("stg_bing_ad_group_performance", "microsoft.quality_score,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.comments,")}
         ${ifSource("stg_linkedin_ads_combined", "linkedin.shares,")}
