@@ -25,6 +25,7 @@ let query = `
     	city AS dv360_city,
         country_code AS dv360_country,
         zip_postal_code AS dv360_zip,
+        region AS dv360_region,
         date,
         site_id,
         MAX(site) AS site,
