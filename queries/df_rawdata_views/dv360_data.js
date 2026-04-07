@@ -66,7 +66,8 @@ let query = `
         site_id,
         city,
         zip_postal_code,
-        country_code
+        country_code,
+        region
 
 `
 let refs = getRefs()
