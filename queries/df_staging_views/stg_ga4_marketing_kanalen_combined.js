@@ -190,7 +190,7 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,")}
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotEersteContactpoging AS doorlooptijd_tot_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.ingezienDatum AS lef_ingeziendatum,")}
-    ${ifSource("stg_sam_offertes",
+    ${ifSource("stg_sam_offertes_orders",
                `offerte_SALESTRAJECT_TRAJECTID, 
                offerte_SALESTRAJECT_AFGERONDDATUM, 
                offerte_SALESTRAJECT_CREATIEDATUM, 
