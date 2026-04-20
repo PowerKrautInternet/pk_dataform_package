@@ -37,8 +37,6 @@ FROM ${ref("stg_sam_offertes")} offertes
 LEFT JOIN ${ref("stg_sam_orders")} orders
 ON offerte_SALESTRAJECT_TRAJECTID = order_TRAJECT_TRAJECTID
 AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = orders.DTCMEDIA_CRM_ID
-
-WHERE order_TRAJECT_TRAJECTID <> ""
 `
 let refs = pk.getRefs()
 module.exports = {query, refs}
