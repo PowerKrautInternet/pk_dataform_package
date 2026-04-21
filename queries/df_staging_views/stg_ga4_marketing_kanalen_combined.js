@@ -190,7 +190,31 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,")}
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotEersteContactpoging AS doorlooptijd_tot_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.ingezienDatum AS lef_ingeziendatum,")}
-    ${ifSource("stg_sam_offertes","offerte_SALESTRAJECT_TRAJECTID, offerte_SALESTRAJECT_AFGERONDDATUM, offerte_SALESTRAJECT_CREATIEDATUM, offerte_OFFERTESTATUS_OMSCHRIJVING, offerte_OFFERTE_TOTAALBEDRAG, offerte_HERKOMST_OMSCHRIJVING, offerte_OFFERTE_OFFERTEID, getekende_offertes, offerte_SALESTRAJECT_TRAJECTSTATUSID, offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, offerte_MERK_OMSCHRIJVING, offerte_AFLEVERINGMODEL_OMSCHRIJVING, offerte_DEALER_NAAM, offerte_VERKOPER_NAAM,")}
+    ${ifSource("stg_sam_offertes_orders",
+               `offerte_SALESTRAJECT_TRAJECTID, 
+               offerte_SALESTRAJECT_AFGERONDDATUM, 
+               offerte_SALESTRAJECT_CREATIEDATUM, 
+               offerte_SALESTRAJECT_SOORTAUTO,
+               offerte_OFFERTESTATUS_OMSCHRIJVING, 
+               offerte_OFFERTE_TOTAALBEDRAG, 
+               offerte_HERKOMST_OMSCHRIJVING, 
+               offerte_OFFERTE_OFFERTEID, 
+               getekende_offertes, 
+               offerte_SALESTRAJECT_TRAJECTSTATUSID, 
+               offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, 
+               offerte_MERK_OMSCHRIJVING, 
+               offerte_AFLEVERINGMODEL_OMSCHRIJVING, 
+               offerte_DEALER_NAAM, 
+               offerte_VERKOPER_NAAM,
+               offerte_LEADTRAJECT_TRAJECTID,
+               offerte_LEADTRAJECT_EERSTEKWALIFICATIE,
+               order_TRAJECT_TRAJECTID,
+               order_AFLEVERTRAJECT_AANTAL,
+               afleveringstatus_omschrijving,
+               SOORTKLANTCATEGORIE_OMSCHRIJVING,
+               SOORTBRANDSTOF_OMSCHRIJVING,
+               ORDERDATUM
+                `)}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}

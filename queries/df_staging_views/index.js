@@ -444,6 +444,20 @@ function stg_sam_orders() {
     return table;
 }
 
+function stg_sam_offertes_orders() {
+    let table = {
+        "name": "stg_sam_offertes_orders",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_sam_offertes_orders').refs
+        },
+        "query": require('./stg_sam_offertes_orders').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function stg_otm_aggregated() {
     let table = {
         "name": "stg_otm_aggregated",
@@ -490,6 +504,7 @@ module.exports = {
     sam_trajects_offertes,
     stg_sam_offertes,
     stg_sam_orders,
+    stg_sam_offertes_orders,
     stg_otm_aggregated,
     stg_vistar_media_ads
 }
