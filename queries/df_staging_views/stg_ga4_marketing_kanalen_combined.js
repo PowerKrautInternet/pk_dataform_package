@@ -39,7 +39,7 @@ SELECT * ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep, campagne, accou
       event_merk_concat,
       ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
       ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
-      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location")}
     ], ' ')) AS master_bu_concat
   
 
