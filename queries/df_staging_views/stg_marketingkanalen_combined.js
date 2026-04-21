@@ -7,13 +7,21 @@ SELECT
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
-        ifSource("gs_merken", `${ref("lookupTable")}(CONCAT(IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')), TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`)
+        ifSource("gs_merken", `${ref("lookupTable")}(ads_merk_concat, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`)
     ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),
-        ifSource('gs_modellen', `${ref("lookupTable")}(CONCAT(IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')), INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))))`)
+        ifSource('gs_modellen', `${ref("lookupTable")}(ads_merk_concat, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))))`)
     ], "as model,")}
 FROM (
+   SELECT 
+      *,
+      TRIM(CONCAT(IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'), ''), ' ', 
+      IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'), ''), ' ', 
+      IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'campagnegroep'), ''), ' ',
+      IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')
+      )) AS ads_merk_concat
+   FROM(
     SELECT
         ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_vistar_media_ads','vistar_media.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
         ${ifNull(['google_ads.account', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account'), ifSource('stg_vistar_media_ads','vistar_media.account'), ifSource('stg_handmatige_uitgaves_pivot','handmatig.account')])} as account,
@@ -96,7 +104,7 @@ FROM (
     ${join("full outer join", "df_staging_views", "stg_vistar_media_ads", "AS vistar_media ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_handmatige_uitgaves_pivot", "AS handmatig ON 1=0")}
 
-)
+))
     `
 let refs = getRefs()
 module.exports = {query, refs}
