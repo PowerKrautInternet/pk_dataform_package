@@ -15,12 +15,14 @@ SELECT
     ], "as model,")}
 FROM (
    SELECT 
-      *,
-      TRIM(CONCAT(IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'), ''), ' ', 
-      IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'), ''), ' ', 
-      IFNULL(orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'campagnegroep'), ''), ' ',
-      IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')
-      )) AS ads_merk_concat
+    *,
+    TRIM(CONCAT(
+        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk')}, ''), ' ', 
+        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model')}, ''), ' ', 
+        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'campagnegroep')}, ''), ' ',
+        IFNULL(campaign_name, ''), ' ', 
+        IFNULL(ad_group_name, '')
+    )) AS ads_merk_concat
    FROM(
     SELECT
         ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_vistar_media_ads','vistar_media.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
