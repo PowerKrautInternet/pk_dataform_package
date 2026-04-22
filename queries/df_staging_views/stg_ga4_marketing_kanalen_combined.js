@@ -205,8 +205,10 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
+    ${ifSource("stg_lef_leads_agg","lef.model AS model,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstMerk AS lef_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","lef.autosoort AS autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours AS mean_doorlooptijd_hours,")}
