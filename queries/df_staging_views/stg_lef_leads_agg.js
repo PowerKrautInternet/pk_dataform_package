@@ -118,7 +118,7 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
-  ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
+  ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes_orders', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
   ${ifSource('stg_sam_offertes_orders', 
              `offerte_SALESTRAJECT_TRAJECTID, 
              offerte_SALESTRAJECT_AFGERONDDATUM, 
@@ -144,7 +144,7 @@ FROM(
              SOORTBRANDSTOF_OMSCHRIJVING,
              ORDERDATUM
              `)}
-  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
+  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
   
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
