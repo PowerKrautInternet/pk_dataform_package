@@ -9,6 +9,7 @@ ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron
 lef.account AS account,
 ${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_MERK_OMSCHRIJVING'), 'gewenstMerk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
 ${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_AFLEVERINGMODEL_OMSCHRIJVING'), 'gewenstModel'])} AS model,
+${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_SALESTRAJECT_SOORTAUTO'), 'gewenstAutoSoort'])} AS autosoort,
 lef.medewerker AS medewerker,
 lef.vestiging AS vestiging,
 ${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))} 
