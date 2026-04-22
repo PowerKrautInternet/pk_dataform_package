@@ -142,7 +142,7 @@ FROM(
              afleveringstatus_omschrijving,
              SOORTKLANTCATEGORIE_OMSCHRIJVING,
              SOORTBRANDSTOF_OMSCHRIJVING,
-             ORDERDATUM
+             ORDERDATUM,
              `)}
   ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
   
