@@ -213,7 +213,7 @@ SELECT
                afleveringstatus_omschrijving,
                SOORTKLANTCATEGORIE_OMSCHRIJVING,
                SOORTBRANDSTOF_OMSCHRIJVING,
-               ORDERDATUM
+               ORDERDATUM,
                 `)}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}

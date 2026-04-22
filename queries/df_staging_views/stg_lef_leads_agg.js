@@ -118,7 +118,7 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
-  ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
+  ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes_orders', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
   ${ifSource('stg_sam_offertes_orders', 
              `offerte_SALESTRAJECT_TRAJECTID, 
              offerte_SALESTRAJECT_AFGERONDDATUM, 
@@ -142,9 +142,9 @@ FROM(
              afleveringstatus_omschrijving,
              SOORTKLANTCATEGORIE_OMSCHRIJVING,
              SOORTBRANDSTOF_OMSCHRIJVING,
-             ORDERDATUM
+             ORDERDATUM,
              `)}
-  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
+  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
   
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
@@ -157,7 +157,7 @@ WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
 
-${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id")}
 ) lef
 ${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
 
