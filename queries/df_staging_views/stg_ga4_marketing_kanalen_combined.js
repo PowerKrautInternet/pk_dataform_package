@@ -31,9 +31,10 @@ SELECT * ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep, campagne, accou
   ga4_ads.account AS account`)},
   LOWER(ARRAY_TO_STRING([
       ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
-      ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
+      ${ifSource("stg_lef_leads_agg","autosoort,")}
       ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
       ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
+      ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
       event_buy_status, 
       soort_conversie, 
       event_merk_concat,
