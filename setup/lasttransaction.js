@@ -33,7 +33,7 @@ function lasttransaction(refVal) {
     -- 3. Logic to populate variables
     SET dataform_table_type = (
       SELECT ANY_VALUE(table_type)
-      FROM \`${refVal.database ?? dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
+      FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
       WHERE table_name = '${tableName}_lasttransaction'
     );
 
@@ -46,7 +46,7 @@ function lasttransaction(refVal) {
     SET has_publisher = (
       SELECT EXISTS (
         SELECT 1
-        FROM \`${dataform.projectConfig.defaultDatabase}.${refVal.schema}.INFORMATION_SCHEMA.COLUMNS\`
+        FROM \`${refVal.database ?? dataform.projectConfig.defaultDatabase}.${refVal.schema}.INFORMATION_SCHEMA.COLUMNS\`
         WHERE table_name = '${tableName}'
           AND UPPER(column_name) = 'PUBLISHER'
       )
