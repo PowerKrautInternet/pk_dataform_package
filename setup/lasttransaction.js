@@ -33,7 +33,7 @@ function lasttransaction(refVal) {
     -- 3. Logic to populate variables
     SET dataform_table_type = (
       SELECT ANY_VALUE(table_type)
-      FROM \`${dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
+      FROM \`${refVal.database ?? dataform.projectConfig.defaultDatabase}.df_rawdata_views${pk.schemaSuffix(config)}.INFORMATION_SCHEMA.TABLES\`
       WHERE table_name = '${tableName}_lasttransaction'
     );
 
