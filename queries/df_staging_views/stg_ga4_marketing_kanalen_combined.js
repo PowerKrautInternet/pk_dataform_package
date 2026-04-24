@@ -27,7 +27,7 @@ ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
   
   FROM(
 SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
-  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,`)},
+  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep`)},
   LOWER(ARRAY_TO_STRING([
       ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
       ${ifSource("stg_lef_leads_agg","autosoort,")}
