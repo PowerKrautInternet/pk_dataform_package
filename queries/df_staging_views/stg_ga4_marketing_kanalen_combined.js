@@ -5,7 +5,7 @@ SELECT
 *
 ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep), 
   ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
-  CASE
+  /* CASE
     WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') 
       THEN 'HR'
     WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') 
@@ -17,7 +17,7 @@ ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
     WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') 
       THEN 'Verkoop Nieuw'
     ELSE NULL
-END AS business_unit
+END AS business_unit */
   FROM(
 SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
   IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep`)},
