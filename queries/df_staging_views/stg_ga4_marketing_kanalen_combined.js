@@ -26,9 +26,8 @@ ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
   END AS business_unit
   
   FROM(
-SELECT * ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep, campagne, account), 
-  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, 
-  ga4_ads.account AS account`)},
+SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
+  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep,`)},
   LOWER(ARRAY_TO_STRING([
       ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
       ${ifSource("stg_lef_leads_agg","autosoort,")}
@@ -205,7 +204,7 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
-    ${ifSource("stg_lef_leads_agg","lef.model AS model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenst_model AS gewenst_model,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstMerk AS lef_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.autosoort AS autosoort,")}
