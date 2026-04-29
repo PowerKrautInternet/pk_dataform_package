@@ -5,30 +5,22 @@ SELECT
 *
 ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep), 
   ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
-  CASE
-    -- 1. HR & Recruitment (Hoogste prioriteit)
-    WHEN REGEXP_CONTAINS(LOWER(master_bu_concat), r'vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job') 
+ CASE
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') 
       THEN 'HR'
-    -- 2. Aftersales (Service, Onderhoud, Schade)
-    WHEN REGEXP_CONTAINS(LOWER(master_bu_concat), r'werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') 
       THEN 'Aftersales'
-    -- 3. Zakelijk (Fleet & Lease)
-    WHEN REGEXP_CONTAINS(LOWER(master_bu_concat), r'zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)') 
       THEN 'Zakelijk'
-    -- 4. Occasions (Gebruikte auto's & Inkoop)
-    WHEN REGEXP_CONTAINS(LOWER(master_bu_concat), r'occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)') 
       THEN 'Occasions'
-    -- 5. Verkoop Nieuw (Inclusief Private Lease)
-    WHEN REGEXP_CONTAINS(LOWER(master_bu_concat), r'nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|202[4-6]') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') 
       THEN 'Verkoop Nieuw'
-    -- 6. Fallback naar Branding & Algemeen
     ELSE NULL
-  END AS business_unit
-  
+END AS business_unit
   FROM(
-SELECT * ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep, campagne, account), 
-  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, 
-  ga4_ads.account AS account`)},
+SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
+  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep`)},
   LOWER(ARRAY_TO_STRING([
       ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
       ${ifSource("stg_lef_leads_agg","autosoort,")}
@@ -205,7 +197,7 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
-    ${ifSource("stg_lef_leads_agg","lef.model AS model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenst_model AS gewenst_model,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstMerk AS lef_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.autosoort AS autosoort,")}
