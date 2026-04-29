@@ -5,19 +5,19 @@ SELECT
 *
 ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep), 
   ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
-  /* CASE
-    WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') 
+ CASE
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') 
       THEN 'HR'
-    WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') 
       THEN 'Aftersales'
-    WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)') 
       THEN 'Zakelijk'
-    WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)') 
       THEN 'Occasions'
-    WHEN REGEXP_CONTAINS(master_bu_concat, '(?i)(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') 
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') 
       THEN 'Verkoop Nieuw'
     ELSE NULL
-END AS business_unit */
+END AS business_unit
   FROM(
 SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
   IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep`)},
