@@ -8,7 +8,7 @@ SELECT
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
 ${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_MERK_OMSCHRIJVING'), 'gewenstMerk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
-${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_AFLEVERINGMODEL_OMSCHRIJVING'), 'gewenstModel'])} AS model,
+${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_AFLEVERINGMODEL_OMSCHRIJVING'), 'gewenstModel'])} AS gewenst_model,
 ${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_SALESTRAJECT_SOORTAUTO'), 'gewenstAutoSoort'])} AS autosoort,
 lef.medewerker AS medewerker,
 lef.vestiging AS vestiging,
