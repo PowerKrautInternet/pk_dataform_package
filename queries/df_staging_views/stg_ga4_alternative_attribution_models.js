@@ -6,6 +6,7 @@ WITH
   BaseData AS (
   SELECT
     conversies.unique_event_id AS conversie_event_id,
+    conversies.account AS account,
     conversies.event_name AS conversie_event_name,
     PARSE_DATE('%Y%m%d', conversies.event_date) AS conversie_event_date,
     sessies.user_pseudo_id,
