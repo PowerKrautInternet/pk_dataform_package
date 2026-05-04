@@ -4,6 +4,7 @@ let query = `
 SELECT *
 FROM(
     SELECT 
+account,
 event_date,
 event_timestamp,
 privacy_analytics_storage,
