@@ -56,7 +56,8 @@ WITH
   -- 2. Aggregeren per sessie/conversie, attributiepunten toekennen
   AggregatedData AS (
   SELECT
-    user_pseudo_id,
+    user_pseudo_id, 
+    account,
     conversie_event_id,
     conversie_event_name,
     conversie_event_date,
@@ -87,7 +88,8 @@ WITH
     conversie_event_name,
     conversie_event_date,
     session_source,
-    session_medium
+    session_medium,
+    account
   ),
 
   -- 3. Attributieberekening voor het middendeel
@@ -113,6 +115,7 @@ SELECT
   conversie_event_name,
   conversie_event_date,
   session_source,
+  account,
   session_medium,
   NULLIF(CONCAT(session_source,' / ', session_medium), '(direct) / (none)') AS session_source_medium,
   count_sessions,
