@@ -167,7 +167,7 @@ FROM(
     
     ))) events
 
-${ifSource("stg_ga4_attribution_model_sessies", join("LEFT JOIN", "df_staging_views", "stg_ga4_attribution_model_sessies", "AS attributie ON events.unique_event_id = attributie.unique_event_id AND events.account = attributie.account"))}
+${ifSource("stg_ga4_attribution_model_sessies", join("LEFT JOIN", "df_staging_views", "stg_ga4_alternative_attribution_models", "AS attributie ON events.unique_event_id = attributie.unique_event_id AND events.account = attributie.account"))}
 
 `
 let refs = getRefs()
