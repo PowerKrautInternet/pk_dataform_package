@@ -4,7 +4,7 @@ let query = `
 SELECT *
 FROM(
     SELECT 
-account,
+ga4_events.account AS account,
 event_date,
 event_timestamp,
 privacy_analytics_storage,
