@@ -165,7 +165,7 @@ FROM(
 
     ${join("LEFT JOIN", "df_rawdata_views", "ga4_items", "AS items ON events.unique_event_id = items.unique_event_id AND events.account = items.account")}
     
-    )))
+    ))) events
 
 ${ifSource("stg_ga4_attribution_model_sessies", join("LEFT JOIN", "df_staging_views", "stg_ga4_attribution_model_sessies", "AS attributie ON events.unique_event_id = attributie.unique_event_id AND events.account = attributie.account"))}
 
