@@ -36,7 +36,6 @@ ON TRIM(ga4_events.event_name) = TRIM(standaard_event.event_name))
 WHERE 
 privacy_analytics_storage != 'No'
 AND standaard_event = 0
-AND event_date >= '20250101'
 `
 let refs = getRefs()
 module.exports = {query, refs}
