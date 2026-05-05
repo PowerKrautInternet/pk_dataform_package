@@ -28,7 +28,6 @@ FROM ${ref("df_rawdata_views", "ga4_events")} ga4_events
 WHERE 
 privacy_analytics_storage != 'No'
 AND event_name = 'session_start'
-AND event_date >= '20240901'
 `
 let refs = getRefs()
 module.exports = {query, refs}
