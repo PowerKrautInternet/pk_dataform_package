@@ -3,7 +3,7 @@ let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
-events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
+events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session, haystack),
     IFNULL(merk_event, merk_session) AS merk_event,
     IFNULL(merk_session, merk_event) AS merk_session`)},
     IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal,
@@ -11,12 +11,8 @@ events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
 FROM(
     SELECT
     * EXCEPT(session_default_channel_group),
-    ${ifSource("gs_merken", `${ref("lookupTable")}(
-        event_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))
-    ) as merk_event,
-    ${ref("lookupTable")}(session_merk_concat,
-        TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)}))) as merk_session,`)}
+    ${ifSource("gs_merken", `${ref("lookup_table_sql")}(event_merk_concat, lookup_merken.haystack) as merk_event,
+    ${ref("lookup_table_sql")}(session_merk_concat, lookup_merken.haystack) as merk_session,`)}
     session_default_channel_group,
     CASE
     WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
@@ -158,9 +154,10 @@ FROM(
     AND events.account = sessie_assignment.account
 
     ${join("LEFT JOIN", "df_rawdata_views", "ga4_items", "AS items ON events.unique_event_id = items.unique_event_id AND events.account = items.account")}
-    
-    ))) events
 
+    ))
+    ${ifSource("gs_merken", `CROSS JOIN (SELECT TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})) AS haystack) lookup_merken`)}
+    ) events
 
 `
 let refs = getRefs()
