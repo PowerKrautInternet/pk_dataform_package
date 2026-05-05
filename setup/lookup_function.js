@@ -1,51 +1,32 @@
 let string = `
 
-
-function removeAccents(strAccents = "") {
-    strAccents = strAccents ?? ""
-    strAccents = strAccents.split('');
-    const accents =    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-    const accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnssYyyZz";
-    for (let i in accents){
-        let j = strAccents.indexOf(accents[i]);
-        if(j !== -1) {
-            strAccents[j] = accentsOut[i];
-        }
-    }
-    return strAccents.join('');
-}
-
-function lookupTable(needle, haystack){
-    needle = needle ?? "";
-    haystack = haystack ?? "";
-    const lookupTable = JSON.parse(haystack);
-    let options = []
-    for (let m of lookupTable) {
-        m = removeAccents(m);
-        m = m.replace(/[^a-zA-Z0-9]/gi, " ");
-        m = m.replace(/\\s+/gi, " ");
-        m = m.replace(/\\\\/gi, " ");
-        m = m.toLowerCase();
-        options.push(m);
-    }
-    string = removeAccents(needle);
-    string = string.replace(/[^a-zA-Z0-9]/gi, " ");
-    string = string.replace(/\\s+/gi, " ");
-    string = string.replace(/\\\\/gi, " ");
-    string = string.toLowerCase();
-    
-    const pattern = '\\\\b('+options.sort((a, b) => b.length - a.length).join("|")+')\\\\b'
-    const regexp = new RegExp(pattern, "gim");
-    
-    let matches = [...string.matchAll(regexp)];
-    if(matches.length < 1){
-        return null  //return null if empty
-    } else if(matches[0][0].length > 2){
-        return matches[0][0].charAt(0).toUpperCase() + matches[0][0].slice(1)   
-    } else {
-        return matches[0][0].toUpperCase()
-    }
-}
+(
+  SELECT
+    CASE
+      WHEN m IS NULL THEN NULL
+      WHEN CHAR_LENGTH(m) > 2 THEN CONCAT(UPPER(SUBSTR(m, 1, 1)), SUBSTR(m, 2))
+      ELSE UPPER(m)
+    END
+  FROM (
+    SELECT REGEXP_EXTRACT(
+      REGEXP_REPLACE(
+        REGEXP_REPLACE(NORMALIZE_AND_CASEFOLD(IFNULL(needle, ''), NFD), r'\\p{Mn}+', ''),
+        r'[^a-z0-9]+', ' '
+      ),
+      CONCAT(r'\\b(?:', (
+        SELECT STRING_AGG(
+          REGEXP_REPLACE(
+            REGEXP_REPLACE(NORMALIZE_AND_CASEFOLD(opt, NFD), r'\\p{Mn}+', ''),
+            r'[^a-z0-9]+', ' '
+          ),
+          '|'
+          ORDER BY CHAR_LENGTH(opt) DESC
+        )
+        FROM UNNEST(JSON_VALUE_ARRAY(IFNULL(haystack, '[]'))) AS opt
+      ), r')\\b')
+    ) AS m
+  )
+)
 
 `;
 

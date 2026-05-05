@@ -31,45 +31,27 @@ assert.ok(
     "Alle queries moeten strings zijn"
 );
 
-for(let config of function_config){
-    eval(require("../setup/lookup_function"))
-}
-
-const haystack = "[\"Abarth\",\"AC\", \"volkswagen\", \"audi\", \"alfa romeo\", \"skoda\", \"citroen\", \"vw\", \"vw professional\"]"
-
-let test1 = lookupTable("this is an test for audi, and not for volkswagen", haystack)
-console.log(`Test 1: ${test1}`)
+// lookupTable is nu een SQL UDF, niet meer JS.
+const lookup_ddl = result.find(q => typeof q === "string" && q.includes("lookupTable"));
+assert.ok(lookup_ddl, "Verwacht een DDL voor lookupTable");
 assert.ok(
-     test1 === "Audi",
-    "Test 1: 2 merken"
-)
-
-let test2 = lookupTable("This is another test with some $ extra ' special \n characters to see if it fails, but with volkswagen and not audi", haystack)
-console.log(`Test 2: ${test2}`)
+    lookup_ddl.includes("RETURNS STRING") && lookup_ddl.includes(" AS ( "),
+    "lookupTable moet een SQL UDF zijn (RETURNS STRING AS ( ... ))"
+);
 assert.ok(
-    test2 === "Volkswagen",
-    "Test 2: 2 merken with breaking characters"
-)
-
-let test3 = lookupTable("Will i buy an alfa romeo or an audi? Nobody knows!", haystack)
-console.log(`Test 3: ${test3}`)
+    !lookup_ddl.includes("LANGUAGE js"),
+    "lookupTable mag geen JavaScript UDF meer zijn"
+);
 assert.ok(
-    test3 === "Alfa romeo",
-    "Test 3: 2 merken with space characters"
-)
-
-function test_an_function(name, function_result, result, description) {
-    console.log(name + ": " + function_result)
-    assert.ok(
-        result === function_result,
-        name + ": " + description
-    )
-}
-
-test_an_function('test 4', lookupTable("Now i want to maybe buy an Škoda or maybe an Citroën", haystack), 'Skoda', '2 merken met speciale characters')
-test_an_function('test 5', lookupTable("Now i want an beautiful vw professional truck", haystack), 'Vw professional', 'VW professional ipv VW')
-test_an_function('test 6', lookupTable("Now i want an beautiful vw truck", haystack), 'VW', 'VW full word uppercase')
-test_an_function('Test 7; NULL value test', lookupTable(null, haystack), null, "Null stays null")
-
+    lookup_ddl.includes("REGEXP_EXTRACT") &&
+    lookup_ddl.includes("STRING_AGG") &&
+    lookup_ddl.includes("JSON_VALUE_ARRAY") &&
+    lookup_ddl.includes("NORMALIZE_AND_CASEFOLD"),
+    "lookupTable SQL body mist verwachte BigQuery-functies"
+);
+assert.ok(
+    lookup_ddl.includes("ORDER BY CHAR_LENGTH(opt) DESC"),
+    "lookupTable moet langste-merk-eerst prioriteit hanteren"
+);
 
 console.log("✓ implementation tests passed");

@@ -12,7 +12,7 @@ let function_config = [
         name: "lookupTable",
         vars: {needle: "STRING", haystack: "STRING"},
         function: require("./lookup_function"),
-        type: "javascript"
+        function_type: "sql"
     },
     {
         database: dataform.projectConfig.defaultDatabase,
