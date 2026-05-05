@@ -3,10 +3,10 @@ let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
-* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session, haystack),
+events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session, haystack),
     IFNULL(merk_event, merk_session) AS merk_event,
     IFNULL(merk_session, merk_event) AS merk_session`)},
-    IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal
+    IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal,
 
 FROM(
     SELECT
@@ -157,7 +157,7 @@ FROM(
 
     ))
     ${ifSource("gs_merken", `CROSS JOIN (SELECT TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})) AS haystack) lookup_merken`)}
-    )
+    ) events
 
 `
 let refs = getRefs()

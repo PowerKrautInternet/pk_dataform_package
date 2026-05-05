@@ -472,7 +472,51 @@ function stg_otm_aggregated() {
     return table;
 }
 
-module.exports = {
+function stg_ga4_attribution_model_sessies() {
+    let table = {
+        "name": "stg_ga4_attribution_model_sessies",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_attribution_model_sessies').refs
+        },
+        "query": require('./stg_ga4_attribution_model_sessies').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_ga4_attribution_model_conversies() {
+    let table = {
+        "name": "stg_ga4_attribution_model_conversies",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_attribution_model_conversies').refs
+        },
+        "query": require('./stg_ga4_attribution_model_conversies').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_ga4_alternative_attribution_models() {
+    let table = {
+        "name": "stg_ga4_alternative_attribution_models",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_alternative_attribution_models').refs
+        },
+        "query": require('./stg_ga4_alternative_attribution_models').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = {stg_ga4_attribution_model_sessies,
+    stg_ga4_alternative_attribution_models,
+    stg_ga4_attribution_model_conversies,
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
     stg_pivot_targets,
