@@ -3,10 +3,10 @@ let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
-* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
+events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
     IFNULL(merk_event, merk_session) AS merk_event,
     IFNULL(merk_session, merk_event) AS merk_session`)},
-    IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal
+    IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal,
 
 FROM(
     SELECT
@@ -159,7 +159,8 @@ FROM(
 
     ${join("LEFT JOIN", "df_rawdata_views", "ga4_items", "AS items ON events.unique_event_id = items.unique_event_id AND events.account = items.account")}
     
-    )))
+    ))) events
+
 
 `
 let refs = getRefs()
