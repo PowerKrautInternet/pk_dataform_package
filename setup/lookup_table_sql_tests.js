@@ -40,15 +40,15 @@ const test_cases = [
     }
 ];
 
-function buildAssert(call, expected, description, idx) {
+function buildAssert(fnName, call, expected, description, idx) {
     const condition = expected.trim().toUpperCase() === "NULL"
         ? `${call} IS NULL`
         : `${call} = ${expected}`;
-    const message = `lookupTable test ${idx + 1} (${description}) failed`.replace(/'/g, "''");
+    const message = `${fnName} test ${idx + 1} (${description}) failed`.replace(/'/g, "''");
     return `ASSERT (${condition}) AS '${message}';`;
 }
 
-function lookupTableTestAndSwap(functionObject) {
+function lookupTableSqlTestAndSwap(functionObject) {
     const test_function = new FunctionObject({
         database: functionObject.database,
         schema: functionObject.schema,
@@ -58,21 +58,20 @@ function lookupTableTestAndSwap(functionObject) {
         function_type: functionObject.type
     });
 
-    const real_name = `\`${functionObject.database}.${functionObject.schema}.${functionObject.name}\``;
     const test_name = `\`${test_function.database}.${test_function.schema}.${test_function.name}\``;
 
     const asserts = test_cases
-        .map((tc, i) => buildAssert(`${test_name}(${tc.needle}, ${merken_haystack})`, tc.expected, tc.description, i))
+        .map((tc, i) => buildAssert(functionObject.name, `${test_name}(${tc.needle}, ${merken_haystack})`, tc.expected, tc.description, i))
         .join("\n  ");
 
     return `BEGIN
-  -- Stap 1: nieuwe SQL UDF onder test-naam, oude lookupTable blijft intact
+  -- Stap 1: nieuwe SQL UDF onder test-naam, oude ${functionObject.name} blijft (indien aanwezig) intact
   ${test_function.sql}
 
   -- Stap 2: gedragstesten draaien tegen de test-versie
   ${asserts}
 
-  -- Stap 3: alle asserts geslaagd, vervang nu de echte lookupTable
+  -- Stap 3: alle asserts geslaagd, (her)maak nu de echte ${functionObject.name}
   ${functionObject.sql}
 
   -- Stap 4: opruimen
@@ -80,4 +79,4 @@ function lookupTableTestAndSwap(functionObject) {
 END;`;
 }
 
-module.exports = { lookupTableTestAndSwap, test_cases };
+module.exports = { lookupTableSqlTestAndSwap, test_cases };
