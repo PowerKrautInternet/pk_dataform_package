@@ -160,7 +160,7 @@ ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = ka
 
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id")}
 ) lef
-${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND lef.vestiging = mapping.lef_vestiging AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
+${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
 
 ${join("LEFT JOIN", "googleSheets", "gs_lef_medewerker_functie_mapping", "AS functiemapping ON functiemapping.medewerker = lef.medewerker")}
 
