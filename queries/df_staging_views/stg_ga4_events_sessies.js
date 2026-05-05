@@ -3,7 +3,7 @@ let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
 SELECT
-* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
+* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session, haystack),
     IFNULL(merk_event, merk_session) AS merk_event,
     IFNULL(merk_session, merk_event) AS merk_session`)},
     IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal
