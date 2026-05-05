@@ -39,20 +39,6 @@ WITH
       ),
       '(none)' -- Gebruik (none) als fallback
     ) AS session_medium,
-    --Bepalen van de session_campaign
-        COALESCE(
-      IF(
-        sessies.event_gclid <> "",
-        sessies.cross_channel_campaign_last_click_campaign_name,
-        sessies.collected_traffic_source_manual_campaign_name,
-      ),
-      IF(
-        sessies.event_gclid <> "",
-        sessies.collected_traffic_source_manual_campaign_name,
-        sessies.cross_channel_campaign_last_click_campaign_name
-      ),
-      '(direct)' -- Gebruik (direct) als fallback
-    ) AS campaign_name,
     -- Window Functions voor attributie:
     COUNT(*) OVER (PARTITION BY sessies.user_pseudo_id, conversies.unique_event_id) AS total_interactions_per_conversion,
     ROW_NUMBER() OVER (PARTITION BY sessies.user_pseudo_id, conversies.unique_event_id ORDER BY sessies.event_timestamp) AS interaction_number,
@@ -77,7 +63,6 @@ WITH
     conversie_event_date,
     session_source,
     session_medium,
-    campaign_name,
     MAX(
       IF(interaction_number = 1, 1, NULL)
     ) AS is_first_click,
@@ -105,7 +90,6 @@ WITH
     session_source,
     session_medium,
     account,
-    campaign_name
   ),
 
   -- 3. Attributieberekening voor het middendeel
@@ -133,7 +117,6 @@ SELECT
   session_source,
   account,
   session_medium,
-  campaign_name,
   NULLIF(CONCAT(session_source,' / ', session_medium), '(direct) / (none)') AS session_source_medium,
   count_sessions,
   -- Bereken distribution_middle voor niet-eerste/laatste
