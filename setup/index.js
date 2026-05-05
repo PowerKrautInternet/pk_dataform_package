@@ -1,6 +1,7 @@
 let lasttransaction = require("./lasttransaction");
 let googleSheetTable = require("./googleSheetTable");
 let FunctionObject = require("./function_helper");
+let { lookupTableTestAndSwap } = require("./lookup_function_tests");
 const {addSource} = require("../sources");
 
 //TODO base class voor UDF's en de parser in een andere map. Templateengine voor sqlx
@@ -70,7 +71,11 @@ function setupFunctions(sources) {
 
     //Add functions to the dataform operation query
     for (let f of function_array) {
-        query.push(f.sql);   //add to query
+        if (f.name === "lookupTable") {
+            query.push(lookupTableTestAndSwap(f));
+        } else {
+            query.push(f.sql);
+        }
         addSource(f.source); //make the function available for internal use
     }
 
