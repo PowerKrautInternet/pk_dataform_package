@@ -7,12 +7,6 @@ events.* ${ifSource("gs_merken", `EXCEPT(merk_event, merk_session),
     IFNULL(merk_event, merk_session) AS merk_event,
     IFNULL(merk_session, merk_event) AS merk_session`)},
     IFNULL(IFNULL(NULLIF(session_default_channel_group, 'Unassigned'), custom_default_channel_group), 'Unassigned') as kanaal,
-    attributie.count_sessions AS attributie_count_sessions,
-    attributie.distribution_middle AS attributie_distribution_middle,
-    attributie.position_based_attribution AS attributie_position_based_attribution,
-    attributie.first_click_attribution AS attributie_first_click_attribution,
-    attributie.last_click_attribution AS attributie_last_click_attribution,
-
 
 FROM(
     SELECT
@@ -167,7 +161,6 @@ FROM(
     
     ))) events
 
-${ifSource("stg_ga4_attribution_model_sessies", join("LEFT JOIN", "df_staging_views", "stg_ga4_alternative_attribution_models", "AS attributie ON events.unique_event_id = attributie.conversie_event_id AND events.account = attributie.account"))}
 
 `
 let refs = getRefs()
