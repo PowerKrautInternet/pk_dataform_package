@@ -8,6 +8,7 @@ SELECT
 
 FROM (
   SELECT
+    account,
     pk_crm_id,
     date,
     campaign_name,
@@ -33,9 +34,10 @@ FROM (
     SUM(budget_spent_with_markup) AS budget_spent_with_markup,
     SUM(budget_spent) AS budget_spent
 
-  FROM ${ref("df_rawdata_views", "adpaq_data_pk")}
+  FROM ${ref("df_rawdata_views", "adpaq_data")}
 
   GROUP BY
+    account,
     pk_crm_id,
     date,
     campaign_name,
