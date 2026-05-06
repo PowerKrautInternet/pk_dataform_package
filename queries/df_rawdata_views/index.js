@@ -644,6 +644,20 @@ function taxatiemoduleonline() {
     pk.addSource(table);
     return table;
 }
+function adpaq_data_pk () {
+    let table = {
+        "name": "adpaq_data_pk",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./adpaq_data_pk').refs
+        },
+        "query": require('./adpaq_data_pk').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     activecampaign_edm,
     ga4_events,
@@ -652,6 +666,7 @@ module.exports = {
     syntec_leads,
     dv360_data,
     vistar_media_ads,
+    adpaq_data_pk,
     activecampaign_workflows,
     bing_ad_group_performance,
     bing_assetgroup_performance,
