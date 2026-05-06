@@ -2,16 +2,16 @@
 let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
-SELECT  
-    * ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
+SELECT
+    main_data.* ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
-        ifSource("gs_merken", `${ref("lookupTable")}(ads_merk_concat, TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`)
+        ifSource("gs_merken", `${ref("lookup_table_sql")}(main_data.ads_merk_concat, lookup_merken.haystack)`)
     ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),
-        ifSource('gs_modellen', `${ref("lookupTable")}(ads_merk_concat, INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))))`)
+        ifSource('gs_modellen', `${ref("lookup_table_sql")}(main_data.ads_merk_concat, lookup_modellen.haystack)`)
     ], "as model,")}
 FROM (
    SELECT 
@@ -106,7 +106,9 @@ FROM (
     ${join("full outer join", "df_staging_views", "stg_vistar_media_ads", "AS vistar_media ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_handmatige_uitgaves_pivot", "AS handmatig ON 1=0")}
 
-))
+)) main_data
+${ifSource("gs_merken", `CROSS JOIN (SELECT TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})) AS haystack) lookup_merken`)}
+${ifSource('gs_modellen', `CROSS JOIN (SELECT INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))) AS haystack) lookup_modellen`)}
     `
 let refs = getRefs()
 module.exports = {query, refs}
