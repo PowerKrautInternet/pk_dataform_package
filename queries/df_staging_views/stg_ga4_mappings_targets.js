@@ -14,7 +14,10 @@ SELECT
     attributie.distribution_middle AS attributie_distribution_middle,
     attributie.position_based_attribution AS attributie_position_based_attribution,
     attributie.first_click_attribution AS attributie_first_click_attribution,
-    attributie.last_click_attribution AS attributie_last_click_attribution,`)}
+    attributie.last_click_attribution AS attributie_last_click_attribution,
+    attributie.first_click_non_direct AS attributie_first_click_non_direct,
+    attributie.last_click_non_direct AS attributie_last_click_non_direct,
+    attributie.position_based_non_direct AS attributie_position_based_non_direct,`)}
 
 FROM(
 SELECT
