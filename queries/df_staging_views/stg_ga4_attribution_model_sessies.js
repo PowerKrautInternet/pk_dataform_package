@@ -1,7 +1,8 @@
 /*config*/
 const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
-SELECT 
+SELECT
+ga4_events.account AS account,
 event_date,
 event_timestamp,
 unique_event_id,
