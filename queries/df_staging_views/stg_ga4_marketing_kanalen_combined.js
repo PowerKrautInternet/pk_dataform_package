@@ -38,7 +38,7 @@ SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep),
 
 FROM(
 SELECT
-    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
+    ga4.* EXCEPT(account, bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
