@@ -27,12 +27,12 @@ SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep),
       ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
       ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
       ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
-      event_buy_status, 
-      soort_conversie, 
-      event_merk_concat,
       ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
       ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
-      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, 
+      soort_conversie, 
+      event_merk_concat
     ], ' ')) AS master_bu_concat
   
 
