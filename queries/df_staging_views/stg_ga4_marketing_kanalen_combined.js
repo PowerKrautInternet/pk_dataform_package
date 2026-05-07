@@ -43,7 +43,7 @@ SELECT
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    submission_id_otm,
+    submission_id_otm
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
     ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
