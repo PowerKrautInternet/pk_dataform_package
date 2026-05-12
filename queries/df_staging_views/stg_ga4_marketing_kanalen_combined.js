@@ -27,24 +27,23 @@ SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep),
       ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
       ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
       ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
-      event_buy_status, 
-      soort_conversie, 
-      event_merk_concat,
       ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
       ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
-      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, 
+      soort_conversie, 
+      event_merk_concat
     ], ' ')) AS master_bu_concat
   
 
 FROM(
 SELECT
-    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
+    ga4.* EXCEPT(account, bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    submission_id_otm,
-    account
+    submission_id_otm
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
     ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}

@@ -17,10 +17,10 @@ FROM (
    SELECT 
     *,
     TRIM(CONCAT(
-        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk')}, ''), ' ', 
-        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model')}, ''), ' ', 
-        IFNULL(${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'campagnegroep')}, ''), ' ',
-        IFNULL(campaign_name, ''), ' ', 
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(merk, ''), ' ',`)}
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(model, ''), ' ',`)}
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(campagnegroep, ''), ' ',`)}
+        IFNULL(campaign_name, ''), ' ',
         IFNULL(ad_group_name, '')
     )) AS ads_merk_concat
    FROM(
