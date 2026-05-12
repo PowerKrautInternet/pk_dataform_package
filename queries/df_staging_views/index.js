@@ -38,6 +38,19 @@ function stg_vistar_media_ads () {
     pk.addSource(table);
     return table;
 }
+function stg_adpaq () {
+    let table = {
+        "name": "stg_adpaq",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_adpaq').refs
+        },
+        "query": require('./stg_adpaq').query
+    }
+    pk.addSource(table);
+    return table;
+}
 function stg_ga4_events_sessies () {
     let table = {
         "name": "stg_ga4_events_sessies",
@@ -530,6 +543,7 @@ module.exports = {stg_ga4_attribution_model_sessies,
     stg_google_ads_adgroup_conversions,
     stg_facebookdata,
     stg_vistar_media_ads,
+    stg_adpaq,
     stg_bing_ad_group_performance,
     stg_linkedin_ads_combined,
     stg_activecampaign_workflow_edm,
