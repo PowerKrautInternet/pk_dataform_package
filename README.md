@@ -1,13 +1,11 @@
 # The pk_dataform_package 
 _A data automation package in dataform, developed by PowerKraut._
 
-
-
 Current features:
 * Data monitoring
 * Freshness alerting
 * Declaration handling
-* Publisher-level recency control (nieuw)
+* Publisher-level recency control (nieuw) 
 
 ### Deze package draait om twee principes:
 

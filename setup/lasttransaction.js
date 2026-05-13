@@ -46,7 +46,7 @@ function lasttransaction(refVal) {
     SET has_publisher = (
       SELECT EXISTS (
         SELECT 1
-        FROM \`${dataform.projectConfig.defaultDatabase}.${refVal.schema}.INFORMATION_SCHEMA.COLUMNS\`
+        FROM \`${refVal.database ?? dataform.projectConfig.defaultDatabase}.${refVal.schema}.INFORMATION_SCHEMA.COLUMNS\`
         WHERE table_name = '${tableName}'
           AND UPPER(column_name) = 'PUBLISHER'
       )

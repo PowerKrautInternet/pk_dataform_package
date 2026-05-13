@@ -38,6 +38,19 @@ function stg_vistar_media_ads () {
     pk.addSource(table);
     return table;
 }
+function stg_adpaq () {
+    let table = {
+        "name": "stg_adpaq",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_adpaq').refs
+        },
+        "query": require('./stg_adpaq').query
+    }
+    pk.addSource(table);
+    return table;
+}
 function stg_ga4_events_sessies () {
     let table = {
         "name": "stg_ga4_events_sessies",
@@ -444,6 +457,20 @@ function stg_sam_orders() {
     return table;
 }
 
+function stg_sam_offertes_orders() {
+    let table = {
+        "name": "stg_sam_offertes_orders",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_sam_offertes_orders').refs
+        },
+        "query": require('./stg_sam_offertes_orders').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function stg_otm_aggregated() {
     let table = {
         "name": "stg_otm_aggregated",
@@ -458,7 +485,51 @@ function stg_otm_aggregated() {
     return table;
 }
 
-module.exports = {
+function stg_ga4_attribution_model_sessies() {
+    let table = {
+        "name": "stg_ga4_attribution_model_sessies",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_attribution_model_sessies').refs
+        },
+        "query": require('./stg_ga4_attribution_model_sessies').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_ga4_attribution_model_conversies() {
+    let table = {
+        "name": "stg_ga4_attribution_model_conversies",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_attribution_model_conversies').refs
+        },
+        "query": require('./stg_ga4_attribution_model_conversies').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_ga4_alternative_attribution_models() {
+    let table = {
+        "name": "stg_ga4_alternative_attribution_models",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_ga4_alternative_attribution_models').refs
+        },
+        "query": require('./stg_ga4_alternative_attribution_models').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+module.exports = {stg_ga4_attribution_model_sessies,
+    stg_ga4_alternative_attribution_models,
+    stg_ga4_attribution_model_conversies,
     stg_ga4_events_sessies,
     stg_ga4_sessie_assignment,
     stg_pivot_targets,
@@ -472,6 +543,7 @@ module.exports = {
     stg_google_ads_adgroup_conversions,
     stg_facebookdata,
     stg_vistar_media_ads,
+    stg_adpaq,
     stg_bing_ad_group_performance,
     stg_linkedin_ads_combined,
     stg_activecampaign_workflow_edm,
@@ -490,6 +562,7 @@ module.exports = {
     sam_trajects_offertes,
     stg_sam_offertes,
     stg_sam_orders,
+    stg_sam_offertes_orders,
     stg_otm_aggregated,
     stg_vistar_media_ads
 }

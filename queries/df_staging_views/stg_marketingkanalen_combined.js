@@ -2,32 +2,42 @@
 let {ref, getRefs, join, ifNull, ifSource, orSource} = require("../../sources")
 let query = `
 
-SELECT 
-    * ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
+SELECT
+    main_data.* ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'EXCEPT (merk, model)')},
    ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'merk'),
         ifSource("stg_handmatige_uitgaves_pivot", "uitgave_merk"),
-        ifSource("gs_merken", `${ref("lookupTable")}(CONCAT(IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')), TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})))`)
+        ifSource("gs_merken", `${ref("lookup_table_sql")}(main_data.ads_merk_concat, lookup_merken.haystack)`)
     ], "as merk,")}
     ${ifNull([
         orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], 'model'),
-        ifSource('gs_modellen', `${ref("lookupTable")}(CONCAT(IFNULL(campaign_name, ''), ' ', IFNULL(ad_group_name, '')), INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))))`)
+        ifSource('gs_modellen', `${ref("lookup_table_sql")}(main_data.ads_merk_concat, lookup_modellen.haystack)`)
     ], "as model,")}
 FROM (
+   SELECT 
+    *,
+    TRIM(CONCAT(
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(merk, ''), ' ',`)}
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(model, ''), ' ',`)}
+        ${orSource(['googleads_campaignlabel', 'stg_bing_ad_group_performance'], `IFNULL(campagnegroep, ''), ' ',`)}
+        IFNULL(campaign_name, ''), ' ',
+        IFNULL(ad_group_name, '')
+    )) AS ads_merk_concat
+   FROM(
     SELECT
-        ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_vistar_media_ads','vistar_media.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
-        ${ifNull(['google_ads.account', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account'), ifSource('stg_vistar_media_ads','vistar_media.account'), ifSource('stg_handmatige_uitgaves_pivot','handmatig.account')])} as account,
-        ${ifNull(['CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_id'), ifSource('dv360_data','CAST(dv360.advertiser_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.account_id'), ifSource('stg_linkedin_ads_combined','linkedin.accountId'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name')])} as account_id,
-        ${ifNull([ifSource('ads_Customer', 'google_ads.advertiser_name'), 'CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_name'), ifSource('dv360_data','dv360.advertiser'), ifSource('stg_bing_ad_group_performance','microsoft.account_name'), ifSource('stg_linkedin_ads_combined','linkedin.account_name'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name')])} as advertiser_name,
-        ${ifNull(['CAST(google_ads.campaign_id AS STRING)', ifSource('stg_facebookdata','facebook.campaign_id'), ifSource('dv360_data','CAST(dv360.insertion_order_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.campaign_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_id'), ifSource('stg_vistar_media_ads','vistar_media.insertion_order')])} as campaign_id,
-        ${ifNull(['google_ads.campaign_name', ifSource('stg_facebookdata','facebook.campaign_name'), ifSource('dv360_data','dv360.insertion_order'), ifSource('stg_bing_ad_group_performance','microsoft.campaign_name'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_name'), ifSource('stg_vistar_media_ads','vistar_media.insertion_order_name')])} as campaign_name,
-        ${ifNull(['google_ads.segments_date', ifSource('stg_facebookdata','facebook.date_start'), ifSource('dv360_data','dv360.date'), ifSource('stg_bing_ad_group_performance','CAST(microsoft.time_period AS DATE)'), ifSource('stg_linkedin_ads_combined','linkedin.startDate'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.record_datum'), ifSource('stg_vistar_media_ads','vistar_media.date')])} as record_date,
-        ${ifNull(['CAST(google_ads.ad_group_id AS STRING)', ifSource('stg_facebookdata','facebook.adset_id'), ifSource('dv360_data','CAST(dv360.line_item_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_id'), ifSource('stg_vistar_media_ads','vistar_media.campaign_id')])} as ad_group_id,
-        ${ifNull(['google_ads.ad_group_name', ifSource('stg_facebookdata','facebook.adset_name'), ifSource('dv360_data','dv360.line_item'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_name'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_name'), ifSource('stg_vistar_media_ads','vistar_media.campaign_name')])} as ad_group_name,
-        ${ifNull(['google_ads.impressions', ifSource('stg_facebookdata','facebook.impressions'), ifSource('dv360_data','dv360.impressions'), ifSource('stg_bing_ad_group_performance','microsoft.impressions'), ifSource('stg_linkedin_ads_combined','linkedin.impressions'), ifSource('stg_vistar_media_ads','vistar_media.impressions')])} as ads_impressions,
-        ${ifNull(['google_ads.clicks', ifSource('stg_facebookdata','facebook.link_click'), ifSource('dv360_data','dv360.clicks'), ifSource('stg_bing_ad_group_performance','microsoft.clicks'), ifSource('stg_linkedin_ads_combined','linkedin.clicks')])} as ads_interactions,  
+        ${ifNull(['google_ads.bron', ifSource('stg_facebookdata','facebook.bron'), ifSource('dv360_data','dv360.bron'), ifSource('stg_bing_ad_group_performance','microsoft.bron'), ifSource('stg_linkedin_ads_combined','linkedin.bron'), ifSource('stg_vistar_media_ads','vistar_media.bron'), ifSource('stg_adpaq','adpaq.bron'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgave_bron')])} as bron,
+        ${ifNull(['google_ads.account', ifSource('stg_facebookdata','facebook.account'), ifSource('dv360_data','dv360.account'), ifSource('stg_bing_ad_group_performance','microsoft.account'), ifSource('stg_linkedin_ads_combined','linkedin.account'), ifSource('stg_vistar_media_ads','vistar_media.account'), ifSource('stg_adpaq','adpaq.account'), ifSource('stg_handmatige_uitgaves_pivot','handmatig.account')])} as account,
+        ${ifNull(['CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_id'), ifSource('dv360_data','CAST(dv360.advertiser_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.account_id'), ifSource('stg_linkedin_ads_combined','linkedin.accountId'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name'), ifSource('stg_adpaq','adpaq.advertiser_name')])} as account_id,
+        ${ifNull([ifSource('ads_Customer', 'google_ads.advertiser_name'), 'CAST(google_ads.account_id AS STRING)', ifSource('stg_facebookdata','facebook.account_name'), ifSource('dv360_data','dv360.advertiser'), ifSource('stg_bing_ad_group_performance','microsoft.account_name'), ifSource('stg_linkedin_ads_combined','linkedin.account_name'), ifSource('stg_vistar_media_ads','vistar_media.advertiser_name'), ifSource('stg_adpaq','adpaq.advertiser_name')])} as advertiser_name,
+        ${ifNull(['CAST(google_ads.campaign_id AS STRING)', ifSource('stg_facebookdata','facebook.campaign_id'), ifSource('dv360_data','CAST(dv360.insertion_order_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.campaign_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_id'), ifSource('stg_vistar_media_ads','vistar_media.insertion_order'), ifSource('stg_adpaq','adpaq.campaign_id')])} as campaign_id,
+        ${ifNull(['google_ads.campaign_name', ifSource('stg_facebookdata','facebook.campaign_name'), ifSource('dv360_data','dv360.insertion_order'), ifSource('stg_bing_ad_group_performance','microsoft.campaign_name'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_name'), ifSource('stg_vistar_media_ads','vistar_media.insertion_order_name'), ifSource('stg_adpaq','adpaq.campaign_name')])} as campaign_name,
+        ${ifNull(['google_ads.segments_date', ifSource('stg_facebookdata','facebook.date_start'), ifSource('dv360_data','dv360.date'), ifSource('stg_bing_ad_group_performance','CAST(microsoft.time_period AS DATE)'), ifSource('stg_linkedin_ads_combined','linkedin.startDate'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.record_datum'), ifSource('stg_vistar_media_ads','vistar_media.date'), ifSource('stg_adpaq','adpaq.date')])} as record_date,
+        ${ifNull(['CAST(google_ads.ad_group_id AS STRING)', ifSource('stg_facebookdata','facebook.adset_id'), ifSource('dv360_data','CAST(dv360.line_item_id AS STRING)'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_id'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_group_id'), ifSource('stg_vistar_media_ads','vistar_media.campaign_id'), ifSource('stg_adpaq','adpaq.line_item_name')])} as ad_group_id,
+        ${ifNull(['google_ads.ad_group_name', ifSource('stg_facebookdata','facebook.adset_name'), ifSource('dv360_data','dv360.line_item'), ifSource('stg_bing_ad_group_performance','microsoft.adgroup_name'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_name'), ifSource('stg_vistar_media_ads','vistar_media.campaign_name'), ifSource('stg_adpaq','adpaq.line_item_name')])} as ad_group_name,
+        ${ifNull(['google_ads.impressions', ifSource('stg_facebookdata','facebook.impressions'), ifSource('dv360_data','dv360.impressions'), ifSource('stg_bing_ad_group_performance','microsoft.impressions'), ifSource('stg_linkedin_ads_combined','linkedin.impressions'), ifSource('stg_vistar_media_ads','vistar_media.impressions'), ifSource('stg_adpaq','adpaq.impressions')])} as ads_impressions,
+        ${ifNull(['google_ads.clicks', ifSource('stg_facebookdata','facebook.link_click'), ifSource('dv360_data','dv360.clicks'), ifSource('stg_bing_ad_group_performance','microsoft.clicks'), ifSource('stg_linkedin_ads_combined','linkedin.clicks')])} as ads_interactions,
         ${ifNull(['google_ads.conversions', ifSource('stg_facebookdata','facebook.lead'), ifSource('dv360_data','dv360.click_through_conversions'), ifSource('stg_bing_ad_group_performance','microsoft.all_conversions'), ifSource('stg_linkedin_ads_combined','linkedin.website_conversions')])} as ads_conversions,
-        ${ifNull(['google_ads.Cost', ifSource('stg_facebookdata','facebook.spend'), ifSource('dv360_data','dv360.revenue_advertiser_currency'), ifSource('stg_bing_ad_group_performance','microsoft.spend'), ifSource('stg_linkedin_ads_combined','linkedin.cost'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgaven'), ifSource('stg_vistar_media_ads','vistar_media.client_cost')])} as ads_cost,
+        ${ifNull(['google_ads.Cost', ifSource('stg_facebookdata','facebook.spend'), ifSource('dv360_data','dv360.revenue_advertiser_currency'), ifSource('stg_bing_ad_group_performance','microsoft.spend'), ifSource('stg_linkedin_ads_combined','linkedin.cost'), ifSource('stg_handmatige_uitgaves_pivot', 'handmatig.uitgaven'), ifSource('stg_vistar_media_ads','vistar_media.client_cost'), ifSource('stg_adpaq','adpaq.budget_spent_with_markup')])} as ads_cost,
         ${ifNull(['google_ads.campaign_advertising_channel_type', ifSource('stg_bing_ad_group_performance','microsoft.campaign_type'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_cost_type')])} AS campaign_advertising_channel_type,
         ${ifNull(['google_ads.campaign_bidding_strategy_type', ifSource('dv360_data','line_item_type'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_optimization_target_type')])} AS bidding_strategy_type,
         ${ifNull(['google_ads.campaign_status', ifSource('stg_bing_ad_group_performance','microsoft.campaign_status'), ifSource('stg_linkedin_ads_combined','linkedin.campaign_status')])} AS campaign_status,
@@ -90,7 +100,17 @@ FROM (
         ${ifSource("stg_vistar_media_ads", "vistar_media.creative_name AS vistar_media_creative_name,")}
         ${ifSource("stg_vistar_media_ads", "vistar_media.spots AS vistar_media_spots,")}
         ${ifSource("stg_vistar_media_ads", "vistar_media.media_cost AS vistar_media_media_cost,")}
-    FROM 
+        ${ifSource("stg_adpaq", "adpaq.creative_name AS adpaq_creative_name,")}
+        ${ifSource("stg_adpaq", "adpaq.publisher_name AS adpaq_publisher_name,")}
+        ${ifSource("stg_adpaq", "adpaq.device_type AS adpaq_device_type,")}
+        ${ifSource("stg_adpaq", "adpaq.station AS adpaq_station,")}
+        ${ifSource("stg_adpaq", "adpaq.deal_id AS adpaq_deal_id,")}
+        ${ifSource("stg_adpaq", "adpaq.agency_name AS adpaq_agency_name,")}
+        ${ifSource("stg_adpaq", "adpaq.ssp_name AS adpaq_ssp_name,")}
+        ${ifSource("stg_adpaq", "adpaq.tech_fees AS adpaq_tech_fees,")}
+        ${ifSource("stg_adpaq", "adpaq.agency_fees AS adpaq_agency_fees,")}
+        ${ifSource("stg_adpaq", "adpaq.budget_spent AS adpaq_budget_spent,")}
+    FROM
         ${ref("df_staging_views", "stg_googleads_combined")} google_ads
 
     ${join("full outer join", "df_staging_views", "stg_facebookdata", "AS facebook ON 1=0")}
@@ -98,9 +118,12 @@ FROM (
     ${join("full outer join", "df_staging_views", "stg_bing_ad_group_performance", "AS microsoft ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_linkedin_ads_combined", "AS linkedin ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_vistar_media_ads", "AS vistar_media ON 1=0")}
+    ${join("full outer join", "df_staging_views", "stg_adpaq", "AS adpaq ON 1=0")}
     ${join("full outer join", "df_staging_views", "stg_handmatige_uitgaves_pivot", "AS handmatig ON 1=0")}
 
-)
+)) main_data
+${ifSource("gs_merken", `CROSS JOIN (SELECT TO_JSON_STRING(ARRAY(SELECT merk FROM ${ref("df_googlesheets_tables","gs_merken", true)})) AS haystack) lookup_merken`)}
+${ifSource('gs_modellen', `CROSS JOIN (SELECT INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))) AS haystack) lookup_modellen`)}
     `
 let refs = getRefs()
 module.exports = {query, refs}

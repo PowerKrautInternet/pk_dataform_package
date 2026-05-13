@@ -3,22 +3,47 @@ const {join, ref, getRefs, ifSource, ifNull, orSource} = require("../../sources"
 let query = `
 SELECT
 *
-${ifSource(
-  "gs_campagnegroepen",
-  `EXCEPT(campagnegroep), ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)}
-  
+${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep), 
+  ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
+ CASE
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') 
+      THEN 'HR'
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') 
+      THEN 'Aftersales'
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)') 
+      THEN 'Zakelijk'
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)') 
+      THEN 'Occasions'
+    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') 
+      THEN 'Verkoop Nieuw'
+    ELSE NULL
+END AS business_unit
   FROM(
-SELECT * ${ifSource("gs_campagnegroepen", "EXCEPT(campagnegroep, campagne, account), IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep, ga4_ads.account AS account")}
+SELECT ga4_ads.* ${ifSource("gs_campagnegroepen", `EXCEPT(campagnegroep), 
+  IFNULL(ga4_ads.campagnegroep, groep.campagne) AS campagnegroep`)},
+  LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
+      ${ifSource("stg_lef_leads_agg","autosoort,")}
+      ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
+      ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
+      ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, 
+      soort_conversie, 
+      event_merk_concat
+    ], ' ')) AS master_bu_concat
+  
 
 FROM(
 SELECT
-    ga4.* EXCEPT(bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
+    ga4.* EXCEPT(account, bron, kanaal, session_campaign, event_date, session_campaign_id, session_google_ads_ad_group_id, session_google_ads_ad_group_name, event_name, event_page_location,
     session_landingpage_title,
     session_geo_city,
     session_source_medium,
     user_pseudo_id,
-    submission_id_otm,
-    account
+    submission_id_otm
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_name")}
     ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
@@ -171,7 +196,10 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.ordernummer AS lef_ordernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.dealernummer AS lef_order_dealernummer,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstModel AS lef_model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenst_model AS gewenst_model,")}
+    ${ifSource("stg_lef_leads_agg","lef.gewenstMerk AS lef_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstAutoSoort AS lef_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","lef.autosoort AS autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBrandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.gewenstBouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours AS mean_doorlooptijd_hours,")}
@@ -189,7 +217,31 @@ SELECT
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,")}
     ${ifSource("stg_lef_leads_agg","lef.doorlooptijdTotEersteContactpoging AS doorlooptijd_tot_eerstecontactpoging,")}
     ${ifSource("stg_lef_leads_agg","lef.ingezienDatum AS lef_ingeziendatum,")}
-    ${ifSource("stg_sam_offertes","offerte_SALESTRAJECT_TRAJECTID, offerte_SALESTRAJECT_AFGERONDDATUM, offerte_SALESTRAJECT_CREATIEDATUM, offerte_OFFERTESTATUS_OMSCHRIJVING, offerte_OFFERTE_TOTAALBEDRAG, offerte_HERKOMST_OMSCHRIJVING, offerte_OFFERTE_OFFERTEID, getekende_offertes, offerte_SALESTRAJECT_TRAJECTSTATUSID, offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, offerte_MERK_OMSCHRIJVING, offerte_AFLEVERINGMODEL_OMSCHRIJVING, offerte_DEALER_NAAM, offerte_VERKOPER_NAAM,")}
+    ${ifSource("stg_sam_offertes_orders",
+               `offerte_SALESTRAJECT_TRAJECTID, 
+               offerte_SALESTRAJECT_AFGERONDDATUM, 
+               offerte_SALESTRAJECT_CREATIEDATUM, 
+               offerte_SALESTRAJECT_SOORTAUTO,
+               offerte_OFFERTESTATUS_OMSCHRIJVING, 
+               offerte_OFFERTE_TOTAALBEDRAG, 
+               offerte_HERKOMST_OMSCHRIJVING, 
+               offerte_OFFERTE_OFFERTEID, 
+               getekende_offertes, 
+               offerte_SALESTRAJECT_TRAJECTSTATUSID, 
+               offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, 
+               offerte_MERK_OMSCHRIJVING, 
+               offerte_AFLEVERINGMODEL_OMSCHRIJVING, 
+               offerte_DEALER_NAAM, 
+               offerte_VERKOPER_NAAM,
+               offerte_LEADTRAJECT_TRAJECTID,
+               offerte_LEADTRAJECT_EERSTEKWALIFICATIE,
+               order_TRAJECT_TRAJECTID,
+               order_AFLEVERTRAJECT_AANTAL,
+               afleveringstatus_omschrijving,
+               SOORTKLANTCATEGORIE_OMSCHRIJVING,
+               SOORTBRANDSTOF_OMSCHRIJVING,
+               ORDERDATUM,
+                `)}
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
