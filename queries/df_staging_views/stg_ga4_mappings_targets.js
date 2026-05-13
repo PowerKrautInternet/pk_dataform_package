@@ -10,6 +10,14 @@ SELECT
     ${ifSource("stg_hubspot_workflowstats" ,`hs_workflow_name,
     edm_name,`)}
     ${ifSource("gs_activecampaign_ga4_mapping", 'ac.mapping_thema,')}
+    ${ifSource("stg_ga4_attribution_model_sessies", `attributie.count_sessions AS attributie_count_sessions,
+    attributie.distribution_middle AS attributie_distribution_middle,
+    attributie.position_based_attribution AS attributie_position_based_attribution,
+    attributie.first_click_attribution AS attributie_first_click_attribution,
+    attributie.last_click_attribution AS attributie_last_click_attribution,
+    attributie.first_click_non_direct AS attributie_first_click_non_direct,
+    attributie.last_click_non_direct AS attributie_last_click_non_direct,
+    attributie.position_based_non_direct AS attributie_position_based_non_direct,`)}
 
 FROM(
 SELECT
@@ -50,7 +58,7 @@ SELECT
         WHEN REGEXP_CONTAINS(LOWER(session_source),'(facebook|fb|instagram|ig|meta)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|facebookadvertising|instant_experience)') THEN 'META'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'linkedin') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'LinkedIn'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'(google|adwords)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Google Ads'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Microsoft Ads'
+        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|search_paid)') THEN 'Microsoft Ads'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'gaspedaal') THEN 'Gaspedaal'
         WHEN REGEXP_CONTAINS(LOWER(session_source),'activecampaign') THEN 'ActiveCampaign'
         ELSE NULL
@@ -91,6 +99,7 @@ MAX(edm_name) AS edm_name,
 hs_email_campaignId
 FROM`,"stg_hubspot_workflowstats", "AS hs GROUP BY hs_email_campaignId) ON session_content = hs_email_campaignId")}
     ${join(`FULL OUTER JOIN`, 'googleSheets', 'gs_activecampaign_ga4_mapping', 'ac ON ac.session_campaign = ga4.session_campaign')}
+${ifSource("stg_ga4_attribution_model_sessies", join("LEFT JOIN", "df_staging_views", "stg_ga4_alternative_attribution_models", "AS attributie ON ga4.unique_event_id = attributie.conversie_event_id AND ga4.account = attributie.account"))}
 
 `
 

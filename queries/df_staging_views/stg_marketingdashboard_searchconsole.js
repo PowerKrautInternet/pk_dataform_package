@@ -7,7 +7,7 @@ let query = `
         'GSC' as bron,
         account,
         data_date,
-        url,
+        REGEXP_REPLACE(url, r'[?].*', '') as url,
         query,
         country,
         search_type,

@@ -11,7 +11,7 @@ SELECT
   JSON_VALUE(PAYLOAD, '$.dtcmedia_crm_id') AS AFLEVERINGMODEL_DTCMEDIA_CRM_ID
   FROM ${ref("odbcDataProducer_lasttransaction")}
 WHERE PUBLISHER = "SAMAfleveringModelPublisher"
-AND JSON_VALUE(PAYLOAD, '$.omschrijving') <> ""
+AND JSON_VALUE(PAYLOAD, '$.response.omschrijving') <> ""
 
 `
 let refs = pk.getRefs()
