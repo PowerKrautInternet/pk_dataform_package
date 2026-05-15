@@ -77,20 +77,20 @@ ga4_ads AS (
         "ga4.session_campaign_id",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_id")
     ], "AS campaign_id,")}
-    ${ifNull(["ga4.session_google_ads_ad_group_id",     ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_id")],      "AS ad_group_id,")}
-    ${ifNull(["ga4.session_google_ads_ad_group_name",   ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")],    "AS ad_group_name,")}
+    ${ifNull(["ga4.session_google_ads_ad_group_id", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_id")], "AS ad_group_id,")}
+    ${ifNull(["ga4.session_google_ads_ad_group_name", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")], "AS ad_group_name,")}
 
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url"),
         ifSource("stg_lef_leads_agg","lef.session_landingpage_location")
     ], "AS landingpage_location,")}
-    ${ifNull(["ga4.session_term",                       ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")],                "AS term,")}
+    ${ifNull(["ga4.session_term", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")], "AS term,")}
     ${ifNull(["ga4.session_device_category",
         ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)"),
         ifSource("stg_lef_leads_agg","lef.session_device_category")
     ], "AS device_category,")}
-    ${ifNull(["ga4.session_geo_country",                ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")],              "AS geo_country,")}
+    ${ifNull(["ga4.session_geo_country", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")], "AS geo_country,")}
 
     -- Merk
     ${ifNull([
