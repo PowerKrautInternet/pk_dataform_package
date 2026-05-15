@@ -1,21 +1,8 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull, channelCase} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 let query = `
 
 SELECT
-"LEF" AS bron,
-* EXCEPT( ${ifSource("stg_lef_leads_avg", "week,")} medewerker, vestiging, sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
-${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
-lef.account AS account,
-${ifNull([ifSource('stg_sam_offertes_orders', 'sam_merk'), 'lef_gewenst_merk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
-${ifNull([ifSource('stg_sam_offertes_orders', 'sam_model'), 'lef_gewenst_model'])} AS lef_gewenst_model,
-${ifNull([ifSource('stg_sam_offertes_orders', 'sam_soort_auto'), 'lef_gewenst_autosoort'])} AS lef_autosoort,
-lef.medewerker AS medewerker,
-lef.vestiging AS vestiging,
-${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN lef_lead_type = "Aftersales" THEN "Aftersales" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Occasion" THEN "Verkoop occasion" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Nieuw" THEN "Verkoop nieuw" WHEN lef_soort_lead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))}
-
-FROM(
-  SELECT
   lef.account,
   pk_crm_id,
   type,
@@ -59,19 +46,6 @@ FROM(
   ordernummer AS lef_ordernummer,
   dealernummer AS lef_dealernummer,
   laatsteMutatieDatum,
-  achternaam,
-  tussenvoegsel,
-  voorletters,
-  geslachtType,
-  relatieType,
-  postcode,
-  huisnummer,
-  huisnummertoevoeging,
-  straat,
-  plaats,
-  email,
-  telefoon,
-  klantinfo_bewaartermijn,
   gewenstMerk AS lef_gewenst_merk,
   gewenstModel AS lef_gewenst_model,
   gewenstAutoSoort AS lef_gewenst_autosoort,
@@ -85,8 +59,6 @@ FROM(
   huidigBrandstof,
   huidigKenteken,
   huidigBouwjaar,
-  RECEIVEDON,
-  ACTION,
   google_clientid,
   user_pseudo_id,
   event_date,
@@ -97,10 +69,10 @@ FROM(
   session_landingpage_title,
   session_device_category,
   session_geo_city,
+  session_geo_country,
   session_source,
   session_medium,
   session_source_medium,
-  ${channelCase('session_source', 'session_medium')} AS sessie_conversie_bron,
   session_campaign,
   merk_session,
   kanaal,
@@ -130,33 +102,10 @@ FROM(
     SOORTBRANDSTOF_OMSCHRIJVING AS sam_soort_brandstof,
     ORDERDATUM AS sam_order_datum,
     `)}
-  ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
 
-FROM
-  ${ref("df_rawdata_views", "lef_leads")} lef
-LEFT JOIN
-(SELECT
-*
-FROM
-  ${ref("df_staging_tables", "stg_ga4_events_sessies")}
-WHERE event_name = "session_start"
-) kanalen
-ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
+FROM ${ref("df_rawdata_views", "lef_leads")} lef
 
-${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id")}
-) lef
-${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
-
-${join("LEFT JOIN", "googleSheets", "gs_lef_medewerker_functie_mapping", "AS functiemapping ON functiemapping.medewerker = lef.medewerker")}
-
-${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS mean_stddev")}
-
-${join("LEFT JOIN", "df_staging_views", "stg_lef_leads_avg", `AS mean_stddev_leads
-ON mean_stddev_leads.medewerker = lef.medewerker
-AND mean_stddev_leads.vestiging = lef.vestiging
-AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.lef_aangemaakt_datum)`)}
-
-WHERE lead_rank = 1
+${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON SAM.offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND SAM.offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id")}
 `
 let refs = getRefs()
 module.exports = {query, refs}
