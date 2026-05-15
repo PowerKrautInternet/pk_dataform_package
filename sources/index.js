@@ -435,6 +435,26 @@ function getTypeSource(source){
     else if (source.schema === "googleSheets") type = "google_sheet"
     return type
 }
-//TODO support/queryhelpers
+/**
+ * @brief Genereert een CASE-statement voor kanaaldetectie op basis van source en medium velden.
+ * Centrale definitie zodat alle views dezelfde logica gebruiken.
+ *
+ * @param {string} source_field - SQL expressie voor het source veld (bijv. 'session_source')
+ * @param {string} medium_field - SQL expressie voor het medium veld (bijv. 'session_medium')
+ * @returns {string} SQL CASE statement
+ */
+function channelCase(source_field, medium_field) {
+    return `CASE
+        WHEN REGEXP_CONTAINS(LOWER(${medium_field}), 'whatsapp') THEN 'Whatsapp'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), 'dv360') OR REGEXP_CONTAINS(LOWER(${medium_field}), 'cpm') THEN 'DV360'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), '(facebook|fb|instagram|ig|meta)') AND REGEXP_CONTAINS(LOWER(${medium_field}), '(cp|ppc|paid|facebookadvertising|instant_experience)') THEN 'META'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), 'linkedin') AND REGEXP_CONTAINS(LOWER(${medium_field}), '(cp|ppc|paid)') THEN 'LinkedIn'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), '(google|adwords)') AND REGEXP_CONTAINS(LOWER(${medium_field}), '(cp|ppc|paid)') THEN 'Google Ads'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), 'bing') AND REGEXP_CONTAINS(LOWER(${medium_field}), '(cp|ppc|paid|search_paid)') THEN 'Microsoft Ads'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), 'gaspedaal') THEN 'Gaspedaal'
+        WHEN REGEXP_CONTAINS(LOWER(${source_field}), 'activecampaign') THEN 'ActiveCampaign'
+        ELSE NULL
+    END`
+}
 
-module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account, isSource};
+module.exports = { addSource, setSources, getSources, ref, getRefs, schemaSuffix, crm_id, join, ifNull, ifSource, getTypeSource, addSuffix, orSource, join_on_account, isSource, channelCase};
