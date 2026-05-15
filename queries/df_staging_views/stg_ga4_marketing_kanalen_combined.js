@@ -29,9 +29,7 @@ ga4_ads AS (
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
-        ifSource("stg_lef_leads_agg", "lef.bron"),
-        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.bron"),
+        ifSource("stg_crm_mapping", "crm.bron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.bron"),
         ifSource("stg_hubspot_workflowstats", "hs_bron"),
         ifSource("stg_otm_aggregated", "otm.bron"),
@@ -39,18 +37,14 @@ ga4_ads AS (
     ${ifNull([
         "ga4.account",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.account"),
-        ifSource("stg_lef_leads_agg", "lef.account"),
-        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.account"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.account"),
+        ifSource("stg_crm_mapping", "crm.account"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.account"),
         ifSource("stg_otm_aggregated", "otm.account")
     ])} AS account,
     ${ifNull([
         "ga4.kanaal",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
-        ifSource("stg_lef_leads_agg", "lef.kanaal"),
-        ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
-        ifSource("gs_kostensyntecmapping", "syntec.uitgavebron"),
+        ifSource("stg_crm_mapping", "crm.kanaal"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.kanaal"),
         ifSource("stg_hubspot_workflowstats","hs.kanaal"),
         ifSource("stg_otm_aggregated","kanaal_otm"),
@@ -58,17 +52,15 @@ ga4_ads AS (
     ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
-        ifSource("stg_lef_leads_agg", "lef.session_campaign"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.onderwerp"),
+        ifSource("stg_crm_mapping", "crm.session_campaign"),
         ifSource("stg_hubspot_workflowstats", "hs.session_campaign"),
         ifSource("stg_otm_aggregated", "session_campaign_otm"),
     ])} AS campaign_name,
     ${ifNull([
         "ga4.event_date",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.record_date"),
-        ifSource("stg_lef_leads_agg", "lef.record_date"),
+        ifSource("stg_crm_mapping", "crm.record_date"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.record_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
         ifSource("stg_hubspot_workflowstats", "hs_date"),
         ifSource("stg_otm_aggregated", "created_at_date_otm")
@@ -83,12 +75,12 @@ ga4_ads AS (
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url"),
-        ifSource("stg_lef_leads_agg","lef.session_landingpage_location")
+        ifSource("stg_crm_mapping", "crm.session_landingpage_location")
     ], "AS landingpage_location,")}
     ${ifNull(["ga4.session_term", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")], "AS term,")}
     ${ifNull(["ga4.session_device_category",
         ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)"),
-        ifSource("stg_lef_leads_agg","lef.session_device_category")
+        ifSource("stg_crm_mapping", "crm.device_category")
     ], "AS device_category,")}
     ${ifNull(["ga4.session_geo_country", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")], "AS geo_country,")}
 
@@ -96,8 +88,7 @@ ga4_ads AS (
     ${ifNull([
         ifSource("gs_merken", "ga4.merk_event"),
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_lef_leads_agg", "lef.merk_session"),
-        ifSource("stg_syntec_leads_orders_combined", "syntec.merk"),
+        ifSource("stg_crm_mapping", "crm.merk"),
         "'Overig'"
     ], "AS merk,")}
 
@@ -106,11 +97,6 @@ ga4_ads AS (
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.clicks AS gsc_clicks,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.sum_position AS gsc_sum_position,")}
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.average_position AS gsc_average_position,")}
-
-    -- Syntec velden
-    ${ifSource("stg_syntec_leads_orders_combined", `syntec.* EXCEPT(bron, kanaal, onderwerp, record_date, merk, account, model ${ifSource("gs_kostensyntecmapping", `, uitgavebron, uitgave_categorie`)} ),`)}
-    ${ifSource("stg_syntec_leads_orders_combined", "syntec.model AS syntec_model,")}
-    ${ifSource("stg_syntec_leads_orders_combined", "syntec.kanaal AS syntec_kanaal,")}
 
     -- ActiveCampaign velden
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","mapping_thema"), ifSource(["stg_activecampaign_ga4_sheets", "gs_activecampaign_ga4_mapping"], "flow_thema")], "AS ac_flow_thema,")}
@@ -134,94 +120,100 @@ ga4_ads AS (
     ${ifNull([ifSource("gs_activecampaign_ga4_mapping","ac_workflow_edm"), ifSource("stg_activecampaign_ga4_sheets","ac_bron")], "AS ac_bron,")}
     ${ifSource("stg_activecampaign_ga4_sheets", "ac.aantal_contacts AS ac_aantal_contacts,")}
 
-    -- GA4 event velden met fallback op LEF
-    ${ifNull(["ga4.event_name",
-        ifSource("stg_lef_leads_agg","lef.event_name")
-    ], "AS event_name,")}
-    ${ifNull(["ga4.event_page_location",
-        ifSource("stg_lef_leads_agg","lef.event_page_location")
-    ], "AS event_page_location,")}
-    ${ifNull(["ga4.session_landingpage_title",
-        ifSource("stg_lef_leads_agg","lef.session_landingpage_title")
-    ], "AS session_landingpage_title,")}
-    ${ifNull(["ga4.session_geo_city",
-        ifSource("stg_lef_leads_agg","lef.session_geo_city")
-    ], "AS session_geo_city,")}
-    ${ifNull(["ga4.session_source_medium",
-        ifSource("stg_lef_leads_agg","lef.session_source_medium"),
+    -- GA4 event velden met fallback op CRM
+    ${ifNull(["ga4.event_name", ifSource("stg_crm_mapping","crm.event_name")], "AS event_name,")}
+    ${ifNull(["ga4.event_page_location", ifSource("stg_crm_mapping","crm.event_page_location")], "AS event_page_location,")}
+    ${ifNull(["ga4.session_landingpage_title", ifSource("stg_crm_mapping","crm.session_landingpage_title")], "AS session_landingpage_title,")}
+    ${ifNull(["ga4.session_geo_city", ifSource("stg_crm_mapping","crm.session_geo_city")], "AS session_geo_city,")}
+    ${ifNull([
+        "ga4.session_source_medium",
+        ifSource("stg_crm_mapping", "crm.session_source_medium"),
         ifSource("stg_hubspot_workflowstats", "hs.session_source_medium"),
         ifSource("stg_otm_aggregated", "session_source_medium_otm"),
     ], "AS session_source_medium,")}
-    ${ifNull(["ga4.user_pseudo_id",
-        ifSource("stg_lef_leads_agg","lef.google_clientid")
-    ], "AS user_pseudo_id,")}
+    ${ifNull(["ga4.user_pseudo_id", ifSource("stg_crm_mapping","crm.user_pseudo_id")], "AS user_pseudo_id,")}
 
     -- LEF CRM velden
-    ${ifSource("stg_lef_leads_agg","lef.lef_lead_id,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_aangemaakt_datum,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_afgerond_datum,")}
-    ${ifSource("stg_lef_leads_agg","lef.lead_bron AS lef_lead_bron,")}
-    ${ifSource("stg_lef_leads_agg","lef.systeem AS lef_systeem,")}
-    ${ifSource("stg_lef_leads_agg","lef.kwalificatie AS lef_kwalificatie,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_lead_type,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_initiatief,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_soort_lead,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_lead_omschrijving,")}
-    ${ifSource("stg_lef_leads_agg","lef.vestiging AS lef_vestiging,")}
-    ${ifSource("stg_lef_leads_agg","lef.medewerker AS lef_medewerker,")}
-    ${ifSource("stg_lef_leads_agg","lef.resultaat AS lef_resultaat,")}
-    ${ifSource("stg_lef_leads_agg","lef.afsluitreden AS lef_afsluitreden,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_heeft_offerte,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_heeft_order,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_ordernummer,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_dealernummer,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_model,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_merk,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_autosoort,")}
-    ${ifSource("stg_lef_leads_agg","gewenst_model,")}
-    ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_brandstof AS lef_brandstof,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_bouwjaar AS lef_bouwjaar,")}
-    ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours,")}
-    ${ifSource("stg_lef_leadopvolging_avg","lef.std_doorlooptijd_hours,")}
-    ${ifSource("stg_lef_leadopvolging_avg","lef.mean_deals,")}
-    ${ifSource("stg_lef_leadopvolging_avg","lef.std_deals,")}
-    ${ifSource("stg_lef_leads_avg","lef.mean_leads,")}
-    ${ifSource("stg_lef_leads_avg","lef.std_leads,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_eerste_contactpoging,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_laatste_status_startgesprek,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_deadline_gehaald,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_deadline_gehaald_importeur,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_eerste_deadline,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_eerste_deadline_importeur,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_doorlooptijd_tot_ingezien,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_doorlooptijd_tot_eerste_contactpoging,")}
-    ${ifSource("stg_lef_leads_agg","lef.lef_ingezien_datum,")}
+    ${ifSource("stg_crm_mapping","crm.lef_lead_id,")}
+    ${ifSource("stg_crm_mapping","crm.lef_aangemaakt_datum,")}
+    ${ifSource("stg_crm_mapping","crm.lef_afgerond_datum,")}
+    ${ifSource("stg_crm_mapping","crm.lef_lead_bron,")}
+    ${ifSource("stg_crm_mapping","crm.lef_systeem,")}
+    ${ifSource("stg_crm_mapping","crm.lef_kwalificatie,")}
+    ${ifSource("stg_crm_mapping","crm.lef_lead_type,")}
+    ${ifSource("stg_crm_mapping","crm.lef_initiatief,")}
+    ${ifSource("stg_crm_mapping","crm.lef_soort_lead,")}
+    ${ifSource("stg_crm_mapping","crm.lef_lead_omschrijving,")}
+    ${ifSource("stg_crm_mapping","crm.lef_vestiging,")}
+    ${ifSource("stg_crm_mapping","crm.lef_medewerker,")}
+    ${ifSource("stg_crm_mapping","crm.lef_resultaat,")}
+    ${ifSource("stg_crm_mapping","crm.lef_afsluitreden,")}
+    ${ifSource("stg_crm_mapping","crm.lef_heeft_offerte,")}
+    ${ifSource("stg_crm_mapping","crm.lef_heeft_order,")}
+    ${ifSource("stg_crm_mapping","crm.lef_ordernummer,")}
+    ${ifSource("stg_crm_mapping","crm.lef_dealernummer,")}
+    ${ifSource("stg_crm_mapping","crm.gewenst_model,")}
+    ${ifSource("stg_crm_mapping","crm.lef_gewenst_merk,")}
+    ${ifSource("stg_crm_mapping","crm.gewenst_autosoort,")}
+    ${ifSource("stg_crm_mapping","crm.lef_brandstof,")}
+    ${ifSource("stg_crm_mapping","crm.lef_bouwjaar,")}
+    ${ifSource("stg_crm_mapping","crm.lef_eerste_contactpoging,")}
+    ${ifSource("stg_crm_mapping","crm.lef_laatste_status_startgesprek,")}
+    ${ifSource("stg_crm_mapping","crm.lef_deadline_gehaald,")}
+    ${ifSource("stg_crm_mapping","crm.lef_deadline_gehaald_importeur,")}
+    ${ifSource("stg_crm_mapping","crm.lef_eerste_deadline,")}
+    ${ifSource("stg_crm_mapping","crm.lef_eerste_deadline_importeur,")}
+    ${ifSource("stg_crm_mapping","crm.lef_doorlooptijd_tot_ingezien,")}
+    ${ifSource("stg_crm_mapping","crm.lef_doorlooptijd_tot_eerste_contactpoging,")}
+    ${ifSource("stg_crm_mapping","crm.lef_ingezien_datum,")}
 
-    -- SAM velden (via lef join)
-    ${ifSource("stg_sam_offertes_orders","lef.sam_salestraject_id,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_salestraject_afgerond_datum,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_salestraject_creatie_datum,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_soort_auto,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_offerte_status,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_offerte_totaalbedrag,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_herkomst,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_offerte_id,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_getekende_offertes,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_salestraject_status_id,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_brutomarge,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_merk,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_model,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_dealer_naam,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_verkoper_naam,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_leadtraject_id,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_leadtraject_eerste_kwalificatie,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_order_id,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_aflevertraject_aantal,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_afleveringstatus,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_soort_klantcategorie,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_soort_brandstof,")}
-    ${ifSource("stg_sam_offertes_orders","lef.sam_order_datum,")}
+    -- SAM velden
+    ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_id,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_afgerond_datum,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_creatie_datum,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_soort_auto,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_status,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_totaalbedrag,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_herkomst,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_id,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_getekende_offertes,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_status_id,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_brutomarge,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_merk,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_model,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_dealer_naam,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_verkoper_naam,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_leadtraject_id,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_leadtraject_eerste_kwalificatie,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_order_id,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_aflevertraject_aantal,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_afleveringstatus,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_soort_klantcategorie,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_soort_brandstof,")}
+    ${ifSource("stg_sam_offertes_orders","crm.sam_order_datum,")}
+
+    -- Syntec velden
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_lead_id,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_ordersoort,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_onderwerp,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_vestiging,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_model,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_kenteken,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_aangelegd,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_datum_gesloten,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_sluitreden,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_lead_order_id,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_klantkoppeling,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_verkoper,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_laatste_opmerking,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_contactmomenten,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_min_voor_geopend,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_order_id,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_order_status,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_date_delivery,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_customergroup,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_kanaal_groep,")}
+    ${ifSource("stg_syntec_leads_orders_combined","crm.syntec_kanaal,")}
 
     -- HubSpot velden
     ${ifSource("stg_hubspot_workflowstats", "hs.* EXCEPT(hs_date, hs_bron, session_campaign, session_source_medium, kanaal, hs_workflow_name, edm_name),")}
@@ -229,63 +221,117 @@ ga4_ads AS (
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
 
     -- Uitgave categorisatie
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("gs_kostenlefmapping","lef.uitgave_categorie"), ifSource("gs_kostensyntecmapping", "syntec.uitgave_categorie")], "AS uitgave_categorie,")}
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("gs_kostenlefmapping","lef.kanaal"), ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")], "AS uitgave_bron,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("stg_crm_mapping", "crm.uitgave_categorie")], "AS uitgave_categorie,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("stg_crm_mapping", "crm.uitgave_bron")], "AS uitgave_bron,")}
 
     -- OTM velden
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
     ${ifSource("stg_otm_aggregated", "otm.* EXCEPT(created_at_date_otm, session_campaign_otm, session_source_medium_otm, kanaal_otm, bron, submission_id_otm, account)")}
 
+    -- LEF leadopvolging statistieken (los toegevoegd voor apart dashboard-tabblad)
+    ${ifSource("stg_lef_leadopvolging_avg", "lef_opvolging.mean_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leadopvolging_avg", "lef_opvolging.std_doorlooptijd_hours,")}
+    ${ifSource("stg_lef_leadopvolging_avg", "lef_opvolging.mean_deals,")}
+    ${ifSource("stg_lef_leadopvolging_avg", "lef_opvolging.std_deals,")}
+    ${ifSource("stg_lef_leads_avg", "lef_leads_avg.mean_leads,")}
+    ${ifSource("stg_lef_leads_avg", "lef_leads_avg.std_leads,")}
+
   FROM ga4_base ga4
 
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingkanalen_combined", "AS marketing_kanalen ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_marketingdashboard_searchconsole", "AS searchconsole ON 1=0")}
-  ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
+  ${join("FULL OUTER JOIN", "df_staging_views", "stg_crm_mapping", "AS crm ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
-  ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_otm_aggregated", "AS otm ON 1=0")}
-),
-
--- CTE 2: campagnegroep lookup + master_bu_concat opbouwen voor business unit classificatie
-ga4_ads_campagne AS (
-  SELECT
-    ga4_ads.* ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
-    ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
-    LOWER(ARRAY_TO_STRING([
-        ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
-        ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
-        ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
-        ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
-        ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
-        ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
-        ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
-        ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
-        event_buy_status,
-        soort_conversie,
-        event_merk_concat
-      ], ' ')) AS master_bu_concat
-  FROM ga4_ads
-  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_lef_leads_agg", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
+  ${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS lef_opvolging")}
+  ${join("LEFT JOIN", "df_staging_views", "stg_lef_leads_avg", `AS lef_leads_avg
+  ON lef_leads_avg.medewerker = crm.lef_medewerker
+  AND lef_leads_avg.vestiging = crm.lef_vestiging
+  AND lef_leads_avg.week = EXTRACT(WEEK FROM crm.lef_aangemaakt_datum)`)}
 )
 
 -- Eindresultaat: business unit classificatie op basis van master_bu_concat
 SELECT
-  * EXCEPT(master_bu_concat),
+  *,
+  LOWER(ARRAY_TO_STRING([
+    ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+    ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+    ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+    ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+    ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+    ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+    ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+    ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+    event_buy_status,
+    soort_conversie,
+    event_merk_concat
+  ], ' ')) AS master_bu_concat,
   CASE
-    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)')
-      THEN 'HR'
-    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)')
-      THEN 'Aftersales'
-    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)')
-      THEN 'Zakelijk'
-    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)')
-      THEN 'Occasions'
-    WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)')
-      THEN 'Verkoop Nieuw'
+    WHEN REGEXP_CONTAINS(LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+      ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+      ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+      ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+      ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, soort_conversie, event_merk_concat
+    ], ' ')), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)') THEN 'HR'
+    WHEN REGEXP_CONTAINS(LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+      ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+      ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+      ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+      ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, soort_conversie, event_merk_concat
+    ], ' ')), '(werkplaats|onderhoud|apk|beurt|reparatie|banden|wintercheck|zomercheck|airco|service|schade|onderdelen)') THEN 'Aftersales'
+    WHEN REGEXP_CONTAINS(LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+      ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+      ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+      ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+      ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, soort_conversie, event_merk_concat
+    ], ' ')), '(zakelijk|fleet|lcv|bedrijfswagen|bestelwagen|operational|ondernemer|zzp|bijtelling)') THEN 'Zakelijk'
+    WHEN REGEXP_CONTAINS(LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+      ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+      ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+      ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+      ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, soort_conversie, event_merk_concat
+    ], ' ')), '(occasion|gebruikt|voorraad|used|inruil|taxatie|waarde|inkoop|tweedehands)') THEN 'Occasions'
+    WHEN REGEXP_CONTAINS(LOWER(ARRAY_TO_STRING([
+      ${ifSource("stg_crm_mapping", "syntec_ordersoort,")}
+      ${ifSource("stg_crm_mapping", "gewenst_model,")}
+    ${ifSource("stg_crm_mapping", "gewenst_autosoort,")}
+      ${ifSource("stg_crm_mapping", "lef_lead_type,")}
+      ${ifSource("stg_crm_mapping", "lef_soort_lead,")}
+      ${ifSource("stg_crm_mapping", "lef_kwalificatie,")}
+      ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
+      ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
+      event_buy_status, soort_conversie, event_merk_concat
+    ], ' ')), '(nieuw|private|model|showroom|actie|offerte|configurator|proefrit|hybride|elektrisch|ev|phev|2024|2025|2026)') THEN 'Verkoop Nieuw'
     ELSE NULL
   END AS business_unit
-FROM ga4_ads_campagne
+FROM ga4_ads
 `
 let refs = getRefs()
 module.exports = {query, refs}
