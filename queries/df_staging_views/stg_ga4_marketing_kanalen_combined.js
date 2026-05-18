@@ -178,6 +178,8 @@ ga4_ads AS (
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_model,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","gewenst_model,")}
+    ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_brandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_bouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours,")}
