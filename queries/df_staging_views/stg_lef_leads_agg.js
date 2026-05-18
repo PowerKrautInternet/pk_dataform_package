@@ -8,8 +8,8 @@ SELECT
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
 ${ifNull([ifSource('stg_sam_offertes_orders', 'sam_merk'), 'lef_gewenst_merk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
-${ifNull([ifSource('stg_sam_offertes_orders', 'sam_model'), 'lef_gewenst_model'])} AS lef_gewenst_model,
-${ifNull([ifSource('stg_sam_offertes_orders', 'sam_soort_auto'), 'lef_gewenst_autosoort'])} AS lef_autosoort,
+${ifNull([ifSource('stg_sam_offertes_orders', 'sam_model'), 'lef_gewenst_model'])} AS gewenst_model,
+${ifNull([ifSource('stg_sam_offertes_orders', 'sam_soort_auto'), 'lef_gewenst_autosoort'])} AS gewenst_autosoort,
 lef.medewerker AS medewerker,
 lef.vestiging AS vestiging,
 ${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN lef_lead_type = "Aftersales" THEN "Aftersales" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Occasion" THEN "Verkoop occasion" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Nieuw" THEN "Verkoop nieuw" WHEN lef_soort_lead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))}
