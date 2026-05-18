@@ -1,37 +1,37 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, channelCase} = require("../../sources");
 let query = `
 
-SELECT 
+SELECT
 "LEF" AS bron,
 * EXCEPT( ${ifSource("stg_lef_leads_avg", "week,")} medewerker, vestiging, sessie_conversie_bron, kanaal, lead_rank, event_timestamp, account, merk_session ${ifSource('gs_kostenlefmapping', ',lef_bron, lef_kwalificatie, lef_systeem, uitgave_bron, uitgave_merk, uitgave_categorie')} ),
 ${ifNull(['sessie_conversie_bron', ifSource('gs_kostenlefmapping', 'uitgave_bron')])} AS kanaal,
 lef.account AS account,
-${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_MERK_OMSCHRIJVING'), 'gewenstMerk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
-${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_AFLEVERINGMODEL_OMSCHRIJVING'), 'gewenstModel'])} AS gewenst_model,
-${ifNull([ifSource('stg_sam_offertes_orders', 'offerte_SALESTRAJECT_SOORTAUTO'), 'gewenstAutoSoort'])} AS autosoort,
+${ifNull([ifSource('stg_sam_offertes_orders', 'sam_merk'), 'lef_gewenst_merk', 'merk_session', ifSource('gs_kostenlefmapping', 'uitgave_merk')])} AS merk_session,
+${ifNull([ifSource('stg_sam_offertes_orders', 'sam_model'), 'lef_gewenst_model'])} AS gewenst_model,
+${ifNull([ifSource('stg_sam_offertes_orders', 'sam_soort_auto'), 'lef_gewenst_autosoort'])} AS gewenst_autosoort,
 lef.medewerker AS medewerker,
 lef.vestiging AS vestiging,
-${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN leadType = "Aftersales" THEN "Aftersales" WHEN leadType = "Sales" AND gewenstAutoSoort = "Occasion" THEN "Verkoop occasion" WHEN leadType = "Sales" AND gewenstAutoSoort = "Nieuw" THEN "Verkoop nieuw" WHEN soortLead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))} 
-                                                                     
+${ifSource('gs_kostenlefmapping', ifNull(['uitgave_categorie', 'CASE WHEN lef_lead_type = "Aftersales" THEN "Aftersales" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Occasion" THEN "Verkoop occasion" WHEN lef_lead_type = "Sales" AND lef_gewenst_autosoort = "Nieuw" THEN "Verkoop nieuw" WHEN lef_soort_lead = "Private lease" THEN "Private lease" ELSE NULL END'], 'AS uitgave_categorie'))}
+
 FROM(
   SELECT
   lef.account,
   pk_crm_id,
   type,
-  LEFleadID,
-  aangemaaktDatum,
-  eersteDeadline,
-  eersteDeadlineImporteur,
-  ingezienDatum,
-  eersteContactpoging,
-  afgerondDatum,
+  LEFleadID AS lef_lead_id,
+  aangemaaktDatum AS lef_aangemaakt_datum,
+  eersteDeadline AS lef_eerste_deadline,
+  eersteDeadlineImporteur AS lef_eerste_deadline_importeur,
+  ingezienDatum AS lef_ingezien_datum,
+  eersteContactpoging AS lef_eerste_contactpoging,
+  afgerondDatum AS lef_afgerond_datum,
   aantalIngezien,
-  doorlooptijdTotIngezien,
-  doorlooptijdTotEersteContactpoging,
+  doorlooptijdTotIngezien AS lef_doorlooptijd_tot_ingezien,
+  doorlooptijdTotEersteContactpoging AS lef_doorlooptijd_tot_eerste_contactpoging,
   doorlooptijdEersteContactpogingBinnenOpvolgtijdenMinuten,
-  deadlineGehaald,
-  deadlineGehaaldImporteur,
+  deadlineGehaald AS lef_deadline_gehaald,
+  deadlineGehaaldImporteur AS lef_deadline_gehaald_importeur,
   aantalActiesOpLead,
   aantalNietBereikt,
   aantalOpnieuwIngepland,
@@ -40,13 +40,13 @@ FROM(
   bron AS lead_bron,
   systeem,
   kwalificatie,
-  leadType,
-  initiatief,
-  soortLead,
-  leadOmschrijving,
+  leadType AS lef_lead_type,
+  initiatief AS lef_initiatief,
+  soortLead AS lef_soort_lead,
+  leadOmschrijving AS lef_lead_omschrijving,
   vestiging,
   medewerker,
-  laatsteStatus_startGesprek,
+  laatsteStatus_startGesprek AS lef_laatste_status_startgesprek,
   resultaat,
   afsluitreden,
   afsluitreden_opmerking,
@@ -54,10 +54,10 @@ FROM(
   leadresultaat_datumTot,
   leadresultaat_verkoper,
   leadresultaat_vestiging,
-  heeftOfferte,
-  heeftOrder,
-  ordernummer,
-  dealernummer,
+  heeftOfferte AS lef_heeft_offerte,
+  heeftOrder AS lef_heeft_order,
+  ordernummer AS lef_ordernummer,
+  dealernummer AS lef_dealernummer,
   laatsteMutatieDatum,
   achternaam,
   tussenvoegsel,
@@ -72,11 +72,11 @@ FROM(
   email,
   telefoon,
   klantinfo_bewaartermijn,
-  gewenstMerk,
-  gewenstModel,
-  gewenstAutoSoort,
-  gewenstBrandstof,
-  gewenstBouwjaar,
+  gewenstMerk AS lef_gewenst_merk,
+  gewenstModel AS lef_gewenst_model,
+  gewenstAutoSoort AS lef_gewenst_autosoort,
+  gewenstBrandstof AS lef_gewenst_brandstof,
+  gewenstBouwjaar AS lef_gewenst_bouwjaar,
   gewenstUitvoering,
   gewenstKenteken,
   huidigMerk,
@@ -100,56 +100,41 @@ FROM(
   session_source,
   session_medium,
   session_source_medium,
-  CASE
-    WHEN regexp_contains(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
-    WHEN regexp_contains(session_source,'dv360') 
-    OR regexp_contains(session_medium,'^(.*cpm.*)$') THEN 'DV360'
-    WHEN regexp_contains(session_source,'facebook|Facebook|fb|instagram|ig|meta')
-    AND regexp_contains(session_medium,'^(.*cp.*|ppc|facebookadvertising|Instant_Experience|.*paid.*)$') THEN 'META'
-    WHEN regexp_contains(session_source,'linkedin')
-    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'LinkedIn'
-    WHEN regexp_contains(session_source,'google|adwords')
-    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Google Ads'
-    WHEN regexp_contains(session_source,'bing')
-    AND regexp_contains(session_medium,'^(.*cp.*|ppc|.*paid.*)$') THEN 'Microsoft Ads'
-    WHEN regexp_contains(session_source,'ActiveCampaign') THEN 'ActiveCampaign'
-    WHEN regexp_contains(LOWER(session_source),'hs_') OR regexp_contains(LOWER(session_source),'hubspot') THEN 'Hubspot'
-    ELSE NULL
-  END AS sessie_conversie_bron,
+  ${channelCase('session_source', 'session_medium')} AS sessie_conversie_bron,
   session_campaign,
   merk_session,
   kanaal,
   ${ifNull(["DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes_orders', "DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
-  ${ifSource('stg_sam_offertes_orders', 
-             `offerte_SALESTRAJECT_TRAJECTID, 
-             offerte_SALESTRAJECT_AFGERONDDATUM, 
-             offerte_SALESTRAJECT_CREATIEDATUM, 
-             offerte_SALESTRAJECT_SOORTAUTO,
-             offerte_OFFERTESTATUS_OMSCHRIJVING, 
-             offerte_OFFERTE_TOTAALBEDRAG, 
-             offerte_HERKOMST_OMSCHRIJVING, 
-             offerte_OFFERTE_OFFERTEID, 
-             getekende_offertes, 
-             offerte_SALESTRAJECT_TRAJECTSTATUSID, 
-             offerte_OFFERTEVTR_BRUTOMARGEBEDRAG, 
-             offerte_MERK_OMSCHRIJVING, 
-             offerte_AFLEVERINGMODEL_OMSCHRIJVING, 
-             offerte_DEALER_NAAM, 
-             CONCAT(IFNULL(offerte_VERKOPER_VOORVOEGSEL, ''), ' ', IFNULL(offerte_VERKOPER_NAAM, '')) AS offerte_VERKOPER_NAAM,
-             offerte_LEADTRAJECT_TRAJECTID,
-             offerte_LEADTRAJECT_EERSTEKWALIFICATIE,
-             order_TRAJECT_TRAJECTID,
-             order_AFLEVERTRAJECT_AANTAL,
-             afleveringstatus_omschrijving,
-             SOORTKLANTCATEGORIE_OMSCHRIJVING,
-             SOORTBRANDSTOF_OMSCHRIJVING,
-             ORDERDATUM,
-             `)}
+  ${ifSource('stg_sam_offertes_orders',
+    `offerte_SALESTRAJECT_TRAJECTID AS sam_salestraject_id,
+    DATE(offerte_SALESTRAJECT_AFGERONDDATUM) AS sam_salestraject_afgerond_datum,
+    DATE(offerte_SALESTRAJECT_CREATIEDATUM) AS sam_salestraject_creatie_datum,
+    offerte_SALESTRAJECT_SOORTAUTO AS sam_soort_auto,
+    offerte_OFFERTESTATUS_OMSCHRIJVING AS sam_offerte_status,
+    offerte_OFFERTE_TOTAALBEDRAG AS sam_offerte_totaalbedrag,
+    offerte_HERKOMST_OMSCHRIJVING AS sam_herkomst,
+    offerte_OFFERTE_OFFERTEID AS sam_offerte_id,
+    getekende_offertes AS sam_getekende_offertes,
+    offerte_SALESTRAJECT_TRAJECTSTATUSID AS sam_salestraject_status_id,
+    offerte_OFFERTEVTR_BRUTOMARGEBEDRAG AS sam_brutomarge,
+    offerte_MERK_OMSCHRIJVING AS sam_merk,
+    offerte_AFLEVERINGMODEL_OMSCHRIJVING AS sam_model,
+    offerte_DEALER_NAAM AS sam_dealer_naam,
+    CONCAT(IFNULL(offerte_VERKOPER_VOORVOEGSEL, ''), ' ', IFNULL(offerte_VERKOPER_NAAM, '')) AS sam_verkoper_naam,
+    offerte_LEADTRAJECT_TRAJECTID AS sam_leadtraject_id,
+    offerte_LEADTRAJECT_EERSTEKWALIFICATIE AS sam_leadtraject_eerste_kwalificatie,
+    order_TRAJECT_TRAJECTID AS sam_order_id,
+    order_AFLEVERTRAJECT_AANTAL AS sam_aflevertraject_aantal,
+    afleveringstatus_omschrijving AS sam_afleveringstatus,
+    SOORTKLANTCATEGORIE_OMSCHRIJVING AS sam_soort_klantcategorie,
+    SOORTBRANDSTOF_OMSCHRIJVING AS sam_soort_brandstof,
+    ORDERDATUM AS sam_order_datum,
+    `)}
   ROW_NUMBER() OVER(PARTITION BY lef.account, LEFleadID ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_TRAJECTID')} ORDER BY event_timestamp ASC ${ifSource('stg_sam_offertes_orders', ', offerte_SALESTRAJECT_CREATIEDATUM DESC')} ) AS lead_rank
-  
+
 FROM
   ${ref("df_rawdata_views", "lef_leads")} lef
-LEFT JOIN 
+LEFT JOIN
 (SELECT
 *
 FROM
@@ -169,7 +154,7 @@ ${join("CROSS JOIN", "df_staging_views", "stg_lef_leadopvolging_avg", "AS mean_s
 ${join("LEFT JOIN", "df_staging_views", "stg_lef_leads_avg", `AS mean_stddev_leads
 ON mean_stddev_leads.medewerker = lef.medewerker
 AND mean_stddev_leads.vestiging = lef.vestiging
-AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.aangemaaktDatum)`)}
+AND mean_stddev_leads.week = EXTRACT(WEEK FROM lef.lef_aangemaakt_datum)`)}
 
 WHERE lead_rank = 1
 `
