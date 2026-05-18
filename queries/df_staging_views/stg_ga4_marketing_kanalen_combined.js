@@ -252,7 +252,7 @@ ga4_ads_campagne AS (
     ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
         ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
-        ${ifSource("stg_lef_leads_agg","lef_autosoort,")}
+        ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
         ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
         ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
         ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
