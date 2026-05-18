@@ -178,6 +178,8 @@ ga4_ads AS (
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_model,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_merk,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_autosoort,")}
+    ${ifSource("stg_lef_leads_agg","gewenst_model,")}
+    ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_brandstof AS lef_brandstof,")}
     ${ifSource("stg_lef_leads_agg","lef.lef_gewenst_bouwjaar AS lef_bouwjaar,")}
     ${ifSource("stg_lef_leadopvolging_avg","lef.mean_doorlooptijd_hours,")}
@@ -249,7 +251,7 @@ ga4_ads AS (
 ga4_ads_campagne AS (
   SELECT
     ga4_ads.* ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
-    ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
+    ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
         ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
         ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
