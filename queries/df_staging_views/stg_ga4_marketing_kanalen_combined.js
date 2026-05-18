@@ -249,7 +249,7 @@ ga4_ads AS (
 ga4_ads_campagne AS (
   SELECT
     ga4_ads.* ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
-    ${ifNull(["campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
+    ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
         ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
         ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
