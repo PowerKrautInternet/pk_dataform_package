@@ -120,7 +120,7 @@ SELECT
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_date_delivery,")}
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_customergroup,")}
 
-FROM (SELECT 1 WHERE FALSE) AS _stub
+FROM UNNEST(ARRAY<INT64>[]) AS _stub
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
 ${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
 `
