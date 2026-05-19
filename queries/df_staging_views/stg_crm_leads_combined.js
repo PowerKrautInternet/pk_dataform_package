@@ -1,74 +1,92 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
+const {join, ref, getRefs, ifSource, ifNull, isSource} = require("../../sources");
+
+// Voeg hier een nieuwe bron toe om deze op te nemen in de view.
+// De eerste beschikbare bron wordt de FROM-anchor; overige bronnen worden als FULL OUTER JOIN ON 1=0 toegevoegd.
+const crmSources = [
+    { name: "stg_lef_leads_agg",               alias: "lef",    schema: "df_staging_views" },
+    { name: "stg_syntec_leads_orders_combined", alias: "syntec", schema: "df_staging_views" },
+];
+
+const anchor     = crmSources.find(s => isSource(s.name));
+const fromClause = anchor
+    ? `FROM ${ref(anchor.schema, anchor.name)} ${anchor.alias}`
+    : `-- Geen CRM-bron geconfigureerd`;
+const otherJoins = crmSources
+    .filter(s => s !== anchor)
+    .map(s => join("FULL OUTER JOIN", s.schema, s.name, `AS ${s.alias} ON 1=0`))
+    .join("\n");
+
 let query = `
 
 SELECT
-  IFNULL(lef.bron, syntec.bron) AS bron,
-  IFNULL(lef.account, syntec.account) AS account,
-  IFNULL(lef.kanaal, syntec.kanaal) AS kanaal,
-  IFNULL(lef.record_date, syntec.record_date) AS record_date,
-  IFNULL(lef.merk_session, syntec.merk) AS merk,
-  IFNULL(lef.session_campaign, syntec.onderwerp) AS session_campaign,
-  IFNULL(lef.lef_lead_id, CAST(syntec.syntec_lead_id AS STRING)) AS lead_id,
-  IFNULL(lef.lef_aangemaakt_datum, syntec.syntec_aangelegd) AS aangemaakt_datum,
-  IFNULL(lef.lef_afgerond_datum, syntec.syntec_datum_gesloten) AS afgerond_datum,
-  IFNULL(lef.vestiging, syntec.vestiging) AS vestiging,
-  IFNULL(lef.medewerker, syntec.syntec_verkoper) AS medewerker,
-  IFNULL(lef.gewenst_model, syntec.model) AS model,
-  IFNULL(lef.uitgave_categorie, syntec.uitgave_categorie) AS uitgave_categorie,
-  IFNULL(lef.kanaal, syntec.uitgavebron) AS uitgave_bron,
+  -- Uniforme velden
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.bron"),               ifSource("stg_syntec_leads_orders_combined", "syntec.bron")])} AS bron,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.account"),            ifSource("stg_syntec_leads_orders_combined", "syntec.account")])} AS account,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.kanaal"),             ifSource("stg_syntec_leads_orders_combined", "syntec.kanaal")])} AS kanaal,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.record_date"),        ifSource("stg_syntec_leads_orders_combined", "syntec.record_date")])} AS record_date,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.merk_session"),       ifSource("stg_syntec_leads_orders_combined", "syntec.merk")])} AS merk,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.session_campaign"),   ifSource("stg_syntec_leads_orders_combined", "syntec.onderwerp")])} AS session_campaign,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.lef_lead_id"),        ifSource("stg_syntec_leads_orders_combined", "CAST(syntec.syntec_lead_id AS STRING)")])} AS lead_id,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.lef_aangemaakt_datum"), ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_aangelegd")])} AS aangemaakt_datum,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.lef_afgerond_datum"), ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_datum_gesloten")])} AS afgerond_datum,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.vestiging"),          ifSource("stg_syntec_leads_orders_combined", "syntec.vestiging")])} AS vestiging,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.medewerker"),         ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_verkoper")])} AS medewerker,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.gewenst_model"),      ifSource("stg_syntec_leads_orders_combined", "syntec.model")])} AS model,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.uitgave_categorie"),  ifSource("stg_syntec_leads_orders_combined", "syntec.uitgave_categorie")])} AS uitgave_categorie,
+  ${ifNull([ifSource("stg_lef_leads_agg", "lef.kanaal"),             ifSource("stg_syntec_leads_orders_combined", "syntec.uitgavebron")])} AS uitgave_bron,
 
   -- GA4 sessie velden (alleen LEF)
-  lef.session_source_medium,
-  lef.event_name,
-  lef.event_page_location,
-  lef.session_landingpage_location,
-  lef.session_landingpage_title,
-  lef.session_device_category,
-  lef.session_geo_city,
-  lef.google_clientid AS user_pseudo_id,
+  ${ifSource("stg_lef_leads_agg", "lef.session_source_medium,")}
+  ${ifSource("stg_lef_leads_agg", "lef.event_name,")}
+  ${ifSource("stg_lef_leads_agg", "lef.event_page_location,")}
+  ${ifSource("stg_lef_leads_agg", "lef.session_landingpage_location,")}
+  ${ifSource("stg_lef_leads_agg", "lef.session_landingpage_title,")}
+  ${ifSource("stg_lef_leads_agg", "lef.session_device_category,")}
+  ${ifSource("stg_lef_leads_agg", "lef.session_geo_city,")}
+  ${ifSource("stg_lef_leads_agg", "lef.google_clientid AS user_pseudo_id,")}
 
   -- LEF velden
-  lef.lef_lead_id,
-  lef.lef_aangemaakt_datum,
-  lef.lef_afgerond_datum,
-  lef.lead_bron AS lef_lead_bron,
-  lef.systeem AS lef_systeem,
-  lef.kwalificatie AS lef_kwalificatie,
-  lef.lef_lead_type,
-  lef.lef_initiatief,
-  lef.lef_soort_lead,
-  lef.lef_lead_omschrijving,
-  lef.vestiging AS lef_vestiging,
-  lef.medewerker AS lef_medewerker,
-  lef.resultaat AS lef_resultaat,
-  lef.afsluitreden AS lef_afsluitreden,
-  lef.lef_heeft_offerte,
-  lef.lef_heeft_order,
-  lef.lef_ordernummer,
-  lef.lef_dealernummer,
-  lef.lef_gewenst_model,
-  lef.lef_gewenst_merk,
-  lef.lef_gewenst_autosoort,
-  lef.gewenst_model,
-  lef.gewenst_autosoort,
-  lef.lef_gewenst_brandstof AS lef_brandstof,
-  lef.lef_gewenst_bouwjaar AS lef_bouwjaar,
-  lef.lef_eerste_contactpoging,
-  lef.lef_laatste_status_startgesprek,
-  lef.lef_deadline_gehaald,
-  lef.lef_deadline_gehaald_importeur,
-  lef.lef_eerste_deadline,
-  lef.lef_eerste_deadline_importeur,
-  lef.lef_doorlooptijd_tot_ingezien,
-  lef.lef_doorlooptijd_tot_eerste_contactpoging,
-  lef.lef_ingezien_datum,
-  lef.mean_doorlooptijd_hours,
-  lef.std_doorlooptijd_hours,
-  lef.mean_deals,
-  lef.std_deals,
-  lef.mean_leads,
-  lef.std_leads,
+  ${ifSource("stg_lef_leads_agg", "lef.lef_lead_id,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_aangemaakt_datum,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_afgerond_datum,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lead_bron AS lef_lead_bron,")}
+  ${ifSource("stg_lef_leads_agg", "lef.systeem AS lef_systeem,")}
+  ${ifSource("stg_lef_leads_agg", "lef.kwalificatie AS lef_kwalificatie,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_lead_type,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_initiatief,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_soort_lead,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_lead_omschrijving,")}
+  ${ifSource("stg_lef_leads_agg", "lef.vestiging AS lef_vestiging,")}
+  ${ifSource("stg_lef_leads_agg", "lef.medewerker AS lef_medewerker,")}
+  ${ifSource("stg_lef_leads_agg", "lef.resultaat AS lef_resultaat,")}
+  ${ifSource("stg_lef_leads_agg", "lef.afsluitreden AS lef_afsluitreden,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_heeft_offerte,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_heeft_order,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_ordernummer,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_dealernummer,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_gewenst_model,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_gewenst_merk,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_gewenst_autosoort,")}
+  ${ifSource("stg_lef_leads_agg", "lef.gewenst_model,")}
+  ${ifSource("stg_lef_leads_agg", "lef.gewenst_autosoort,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_gewenst_brandstof AS lef_brandstof,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_gewenst_bouwjaar AS lef_bouwjaar,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_eerste_contactpoging,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_laatste_status_startgesprek,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_deadline_gehaald,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_deadline_gehaald_importeur,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_eerste_deadline,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_eerste_deadline_importeur,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_doorlooptijd_tot_ingezien,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_doorlooptijd_tot_eerste_contactpoging,")}
+  ${ifSource("stg_lef_leads_agg", "lef.lef_ingezien_datum,")}
+  ${ifSource("stg_lef_leadopvolging_avg", "lef.mean_doorlooptijd_hours,")}
+  ${ifSource("stg_lef_leadopvolging_avg", "lef.std_doorlooptijd_hours,")}
+  ${ifSource("stg_lef_leadopvolging_avg", "lef.mean_deals,")}
+  ${ifSource("stg_lef_leadopvolging_avg", "lef.std_deals,")}
+  ${ifSource("stg_lef_leads_avg", "lef.mean_leads,")}
+  ${ifSource("stg_lef_leads_avg", "lef.std_leads,")}
 
   -- SAM velden
   ${ifSource("stg_sam_offertes_orders", "lef.sam_salestraject_id,")}
@@ -118,9 +136,8 @@ SELECT
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_date_delivery,")}
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_customergroup,")}
 
-FROM ${ref("df_staging_views", "stg_lef_leads_agg")} lef
-
-${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
+${fromClause}
+${otherJoins}
 `
 let refs = getRefs()
 module.exports = {query, refs}
