@@ -1,21 +1,5 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull, isSource} = require("../../sources");
-
-// Voeg hier een nieuwe bron toe om deze op te nemen in de view.
-// De eerste beschikbare bron wordt de FROM-anchor; overige bronnen worden als FULL OUTER JOIN ON 1=0 toegevoegd.
-const crmSources = [
-    { name: "stg_lef_leads_agg",               alias: "lef",    schema: "df_staging_views" },
-    { name: "stg_syntec_leads_orders_combined", alias: "syntec", schema: "df_staging_views" },
-];
-
-const anchor     = crmSources.find(s => isSource(s.name));
-const fromClause = anchor
-    ? `FROM ${ref(anchor.schema, anchor.name)} ${anchor.alias}`
-    : `-- Geen CRM-bron geconfigureerd`;
-const otherJoins = crmSources
-    .filter(s => s !== anchor)
-    .map(s => join("FULL OUTER JOIN", s.schema, s.name, `AS ${s.alias} ON 1=0`))
-    .join("\n");
+const {join, ref, getRefs, ifSource, ifNull} = require("../../sources");
 
 let query = `
 
@@ -136,8 +120,9 @@ SELECT
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_date_delivery,")}
   ${ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_customergroup,")}
 
-${fromClause}
-${otherJoins}
+FROM (SELECT 1 WHERE FALSE) AS _stub
+${join("FULL OUTER JOIN", "df_staging_views", "stg_lef_leads_agg", "AS lef ON 1=0")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_syntec_leads_orders_combined", "AS syntec ON 1=0")}
 `
 let refs = getRefs()
 module.exports = {query, refs}
