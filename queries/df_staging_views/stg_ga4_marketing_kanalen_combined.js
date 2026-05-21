@@ -264,11 +264,11 @@ ga4_ads_campagne AS (
     ga4_ads.* ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
     ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
-        ${ifSource("stg_crm_leads_combined", "syntec_ordersoort,")}
-        ${ifSource("stg_crm_leads_combined","gewenst_autosoort,")}
-        ${ifSource("stg_crm_leads_combined","lef_lead_type,")}
-        ${ifSource("stg_crm_leads_combined","lef_soort_lead,")}
-        ${ifSource("stg_crm_leads_combined","lef_kwalificatie,")}
+        ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
+        ${ifSource("stg_lef_leads_agg", "gewenst_autosoort,")}
+        ${ifSource("stg_lef_leads_agg", "lef_lead_type,")}
+        ${ifSource("stg_lef_leads_agg", "lef_soort_lead,")}
+        ${ifSource("stg_lef_leads_agg", "lef_kwalificatie,")}
         ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
@@ -277,7 +277,7 @@ ga4_ads_campagne AS (
         event_merk_concat
       ], ' ')) AS master_bu_concat
   FROM ga4_ads
-  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_crm_leads_combined", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
+  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_lef_leads_agg", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
 )
 
 -- Eindresultaat: business unit classificatie op basis van master_bu_concat
