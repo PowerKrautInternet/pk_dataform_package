@@ -471,6 +471,20 @@ function stg_sam_offertes_orders() {
     return table;
 }
 
+function stg_crm_leads_combined() {
+    let table = {
+        "name": "stg_crm_leads_combined",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_crm_leads_combined').refs
+        },
+        "query": require('./stg_crm_leads_combined').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function stg_otm_aggregated() {
     let table = {
         "name": "stg_otm_aggregated",
@@ -563,6 +577,7 @@ module.exports = {stg_ga4_attribution_model_sessies,
     stg_sam_offertes,
     stg_sam_orders,
     stg_sam_offertes_orders,
+    stg_crm_leads_combined,
     stg_otm_aggregated,
     stg_vistar_media_ads
 }
