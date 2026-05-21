@@ -17,8 +17,8 @@ SELECT
   ${ifNull([ifSource("stg_lef_leads_agg", "lef.vestiging"),          ifSource("stg_syntec_leads_orders_combined", "syntec.vestiging")])} AS vestiging,
   ${ifNull([ifSource("stg_lef_leads_agg", "lef.medewerker"),         ifSource("stg_syntec_leads_orders_combined", "syntec.syntec_verkoper")])} AS medewerker,
   ${ifNull([ifSource("stg_lef_leads_agg", "lef.gewenst_model"),      ifSource("stg_syntec_leads_orders_combined", "syntec.model")])} AS model,
-  ${ifNull([ifSource("gs_kostenlefmapping", "lef.uitgave_categorie"), ifSource("gs_kostensyntecmapping", "syntec.uitgave_categorie")])} AS uitgave_categorie,
-  ${ifNull([ifSource("gs_kostenlefmapping", "lef.kanaal"),            ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")])} AS uitgave_bron,
+  ${ifNull([ifSource("gs_kostenlefmapping", "lef.uitgave_categorie"), ifSource("gs_kostensyntecmapping", "syntec.uitgave_categorie")], "AS uitgave_categorie,")}
+  ${ifNull([ifSource("gs_kostenlefmapping", "lef.kanaal"),            ifSource("gs_kostensyntecmapping", "syntec.uitgavebron")],       "AS uitgave_bron,")}
 
   -- GA4 sessie velden (alleen LEF)
   ${ifSource("stg_lef_leads_agg", "lef.session_source_medium,")}
