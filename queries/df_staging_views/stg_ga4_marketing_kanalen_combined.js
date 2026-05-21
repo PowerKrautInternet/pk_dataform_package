@@ -217,11 +217,11 @@ ga4_ads AS (
     ${ifSource("stg_sam_offertes_orders","crm.sam_soort_auto,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_status,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_totaalbedrag,")}
-    ${ifSource("stg_sam_offertes_orders","crm.sam_herkomst,")}
+    ${ifSource(["stg_sam_offertes_orders", "sam_herkomst"],"crm.sam_herkomst,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_id,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_getekende_offertes,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_status_id,")}
-    ${ifSource("stg_sam_offertes_orders","crm.sam_brutomarge,")}
+    ${ifSource(["stg_sam_offertes_orders", "sam_offerte_vtr"],"crm.sam_brutomarge,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_merk,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_model,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_dealer_naam,")}

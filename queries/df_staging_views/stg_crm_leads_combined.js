@@ -79,11 +79,11 @@ SELECT
   ${ifSource("stg_sam_offertes_orders", "lef.sam_soort_auto,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_offerte_status,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_offerte_totaalbedrag,")}
-  ${ifSource("stg_sam_offertes_orders", "lef.sam_herkomst,")}
+  ${ifSource(["stg_sam_offertes_orders", "sam_herkomst"], "lef.sam_herkomst,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_offerte_id,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_getekende_offertes,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_salestraject_status_id,")}
-  ${ifSource("stg_sam_offertes_orders", "lef.sam_brutomarge,")}
+  ${ifSource(["stg_sam_offertes_orders", "sam_offerte_vtr"], "lef.sam_brutomarge,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_merk,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_model,")}
   ${ifSource("stg_sam_offertes_orders", "lef.sam_dealer_naam,")}
