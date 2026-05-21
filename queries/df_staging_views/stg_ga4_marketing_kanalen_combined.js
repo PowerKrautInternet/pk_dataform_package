@@ -241,8 +241,8 @@ ga4_ads AS (
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
 
     -- Uitgave categorisatie
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("stg_crm_leads_combined", "crm.uitgave_categorie")], "AS uitgave_categorie,")}
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("stg_crm_leads_combined", "crm.uitgave_bron")], "AS uitgave_bron,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_categorie")], "AS uitgave_categorie,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_bron")], "AS uitgave_bron,")}
 
     -- OTM velden
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
