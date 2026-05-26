@@ -45,7 +45,8 @@ function buildAssert(fnName, call, expected, description, idx) {
         ? `${call} IS NULL`
         : `${call} = ${expected}`;
     const message = `${fnName} test ${idx + 1} (${description}) failed`.replace(/'/g, "''");
-    return `ASSERT (${condition}) AS '${message}';`;
+    const stmt = `ASSERT (${condition}) AS '${message}'`.replace(/'/g, "''");
+    return `EXECUTE IMMEDIATE '${stmt}';`;
 }
 
 function lookupTableSqlTestAndSwap(functionObject) {
