@@ -78,12 +78,12 @@ ga4_ads AS (
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url"),
-        ifSource("stg_crm_leads_combined","crm.session_landingpage_location")
+        ifSource("stg_lef_leads_agg","crm.session_landingpage_location")
     ], "AS landingpage_location,")}
     ${ifNull(["ga4.session_term", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")], "AS term,")}
     ${ifNull(["ga4.session_device_category",
         ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)"),
-        ifSource("stg_crm_leads_combined","crm.session_device_category")
+        ifSource("stg_lef_leads_agg","crm.session_device_category")
     ], "AS device_category,")}
     ${ifNull(["ga4.session_geo_country", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")], "AS geo_country,")}
 
@@ -148,24 +148,24 @@ ga4_ads AS (
 
     -- GA4 event velden met fallback op CRM
     ${ifNull(["ga4.event_name",
-        ifSource("stg_crm_leads_combined","crm.event_name")
+        ifSource("stg_lef_leads_agg","crm.event_name")
     ], "AS event_name,")}
     ${ifNull(["ga4.event_page_location",
-        ifSource("stg_crm_leads_combined","crm.event_page_location")
+        ifSource("stg_lef_leads_agg","crm.event_page_location")
     ], "AS event_page_location,")}
     ${ifNull(["ga4.session_landingpage_title",
-        ifSource("stg_crm_leads_combined","crm.session_landingpage_title")
+        ifSource("stg_lef_leads_agg","crm.session_landingpage_title")
     ], "AS session_landingpage_title,")}
     ${ifNull(["ga4.session_geo_city",
-        ifSource("stg_crm_leads_combined","crm.session_geo_city")
+        ifSource("stg_lef_leads_agg","crm.session_geo_city")
     ], "AS session_geo_city,")}
     ${ifNull(["ga4.session_source_medium",
-        ifSource("stg_crm_leads_combined","crm.session_source_medium"),
+        ifSource("stg_lef_leads_agg","crm.session_source_medium"),
         ifSource("stg_hubspot_workflowstats", "hs.session_source_medium"),
         ifSource("stg_otm_aggregated", "session_source_medium_otm"),
     ], "AS session_source_medium,")}
     ${ifNull(["ga4.user_pseudo_id",
-        ifSource("stg_crm_leads_combined","crm.user_pseudo_id")
+        ifSource("stg_lef_leads_agg","crm.user_pseudo_id")
     ], "AS user_pseudo_id,")}
 
     -- LEF CRM velden
