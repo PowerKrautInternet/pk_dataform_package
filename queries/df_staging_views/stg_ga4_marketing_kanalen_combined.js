@@ -277,7 +277,7 @@ ga4_ads_campagne AS (
         event_merk_concat
       ], ' ')) AS master_bu_concat
   FROM ga4_ads
-  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_crm_leads_combined", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
+  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_lef_leads_agg", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
 )
 
 -- Eindresultaat: business unit classificatie op basis van master_bu_concat
