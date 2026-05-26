@@ -78,12 +78,12 @@ ga4_ads AS (
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.url"),
-        ifSource("stg_crm_leads_combined","crm.session_landingpage_location")
+        ifSource("stg_lef_leads_agg","crm.session_landingpage_location")
     ], "AS landingpage_location,")}
     ${ifNull(["ga4.session_term", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.query")], "AS term,")}
     ${ifNull(["ga4.session_device_category",
         ifSource("stg_marketingdashboard_searchconsole", "LOWER(searchconsole.device)"),
-        ifSource("stg_crm_leads_combined","crm.session_device_category")
+        ifSource("stg_lef_leads_agg","crm.session_device_category")
     ], "AS device_category,")}
     ${ifNull(["ga4.session_geo_country", ifSource("stg_marketingdashboard_searchconsole", "searchconsole.country")], "AS geo_country,")}
 
@@ -148,24 +148,24 @@ ga4_ads AS (
 
     -- GA4 event velden met fallback op CRM
     ${ifNull(["ga4.event_name",
-        ifSource("stg_crm_leads_combined","crm.event_name")
+        ifSource("stg_lef_leads_agg","crm.event_name")
     ], "AS event_name,")}
     ${ifNull(["ga4.event_page_location",
-        ifSource("stg_crm_leads_combined","crm.event_page_location")
+        ifSource("stg_lef_leads_agg","crm.event_page_location")
     ], "AS event_page_location,")}
     ${ifNull(["ga4.session_landingpage_title",
-        ifSource("stg_crm_leads_combined","crm.session_landingpage_title")
+        ifSource("stg_lef_leads_agg","crm.session_landingpage_title")
     ], "AS session_landingpage_title,")}
     ${ifNull(["ga4.session_geo_city",
-        ifSource("stg_crm_leads_combined","crm.session_geo_city")
+        ifSource("stg_lef_leads_agg","crm.session_geo_city")
     ], "AS session_geo_city,")}
     ${ifNull(["ga4.session_source_medium",
-        ifSource("stg_crm_leads_combined","crm.session_source_medium"),
+        ifSource("stg_lef_leads_agg","crm.session_source_medium"),
         ifSource("stg_hubspot_workflowstats", "hs.session_source_medium"),
         ifSource("stg_otm_aggregated", "session_source_medium_otm"),
     ], "AS session_source_medium,")}
     ${ifNull(["ga4.user_pseudo_id",
-        ifSource("stg_crm_leads_combined","crm.user_pseudo_id")
+        ifSource("stg_lef_leads_agg","crm.user_pseudo_id")
     ], "AS user_pseudo_id,")}
 
     -- LEF CRM velden
@@ -264,11 +264,11 @@ ga4_ads_campagne AS (
     ga4_ads.* ${ifSource("gs_campagnegroepen",`EXCEPT(campagnegroep),
     ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
-        ${ifSource("stg_crm_leads_combined", "syntec_ordersoort,")}
-        ${ifSource("stg_crm_leads_combined","gewenst_autosoort,")}
-        ${ifSource("stg_crm_leads_combined","lef_lead_type,")}
-        ${ifSource("stg_crm_leads_combined","lef_soort_lead,")}
-        ${ifSource("stg_crm_leads_combined","lef_kwalificatie,")}
+        ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
+        ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
+        ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
+        ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
+        ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
         ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
@@ -277,7 +277,7 @@ ga4_ads_campagne AS (
         event_merk_concat
       ], ' ')) AS master_bu_concat
   FROM ga4_ads
-  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_crm_leads_combined", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
+  ${join("LEFT JOIN", "df_googlesheets_tables", "gs_campagnegroepen", `AS groep ON LOWER(campaign_name) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%")) ${ifSource("stg_lef_leads_agg", `OR LOWER(lef_kwalificatie) LIKE LOWER(CONCAT("%", groep.campagnegroep, "%"))`)}`)}
 )
 
 -- Eindresultaat: business unit classificatie op basis van master_bu_concat
