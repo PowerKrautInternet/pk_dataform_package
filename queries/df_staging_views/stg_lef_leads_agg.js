@@ -1,5 +1,5 @@
 /*config*/
-const {join, ref, getRefs, ifSource, ifNull, channelCase} = require("../../sources");
+const {join, ref, getRefs, ifSource, isSource, ifNull, channelCase} = require("../../sources");
 let query = `
 
 SELECT
@@ -112,11 +112,11 @@ FROM(
     offerte_SALESTRAJECT_SOORTAUTO AS sam_soort_auto,
     offerte_OFFERTESTATUS_OMSCHRIJVING AS sam_offerte_status,
     offerte_OFFERTE_TOTAALBEDRAG AS sam_offerte_totaalbedrag,
-    offerte_HERKOMST_OMSCHRIJVING AS sam_herkomst,
+    ${ifSource("sam_herkomst", `offerte_HERKOMST_OMSCHRIJVING AS sam_herkomst,`)}
     offerte_OFFERTE_OFFERTEID AS sam_offerte_id,
     getekende_offertes AS sam_getekende_offertes,
     offerte_SALESTRAJECT_TRAJECTSTATUSID AS sam_salestraject_status_id,
-    offerte_OFFERTEVTR_BRUTOMARGEBEDRAG AS sam_brutomarge,
+    ${ifSource("sam_offerte_vtr", `offerte_OFFERTEVTR_BRUTOMARGEBEDRAG AS sam_brutomarge,`)}
     offerte_MERK_OMSCHRIJVING AS sam_merk,
     offerte_AFLEVERINGMODEL_OMSCHRIJVING AS sam_model,
     offerte_DEALER_NAAM AS sam_dealer_naam,
@@ -143,7 +143,7 @@ WHERE event_name = "session_start"
 ) kanalen
 ON TRIM(lef.google_clientid) = TRIM(kanalen.user_pseudo_id) AND lef.account = kanalen.account
 
-${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", "AS SAM ON offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id")}
+${join("FULL OUTER JOIN", "df_staging_views", "stg_sam_offertes_orders", `AS SAM ON ${isSource("sam_trajects_extern") ? "offerte_LEADTRAJECT_EXTERNLEADID = LEFleadID AND offerte_SALESTRAJECT_DTCMEDIA_CRM_ID = pk_crm_id" : "1=0"}`)}
 ) lef
 ${join("LEFT JOIN", "googleSheets", "gs_kostenlefmapping", "AS mapping ON mapping.lef_bron = lef.lead_bron AND mapping.lef_kwalificatie = lef.kwalificatie AND mapping.lef_systeem = lef.systeem AND IF(mapping.lef_source_medium IS NULL, '1', mapping.lef_source_medium)  = IF(mapping.lef_source_medium IS NULL, '1', lef.session_source_medium)")}
 

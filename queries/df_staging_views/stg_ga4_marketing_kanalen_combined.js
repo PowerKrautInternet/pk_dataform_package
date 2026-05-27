@@ -29,7 +29,7 @@ ga4_ads AS (
     ${ifNull([
         "ga4.bron",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
-        ifSource("stg_crm_leads_combined", "crm.bron"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.bron"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.bron"),
         ifSource("stg_hubspot_workflowstats", "hs_bron"),
@@ -38,7 +38,7 @@ ga4_ads AS (
     ${ifNull([
         "ga4.account",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.account"),
-        ifSource("stg_crm_leads_combined", "crm.account"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.account"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.account"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.account"),
         ifSource("stg_otm_aggregated", "otm.account")
@@ -46,7 +46,7 @@ ga4_ads AS (
     ${ifNull([
         "ga4.kanaal",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.bron"),
-        ifSource("stg_crm_leads_combined", "crm.kanaal"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.kanaal"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.kanaal"),
         ifSource("stg_hubspot_workflowstats","hs.kanaal"),
@@ -55,14 +55,14 @@ ga4_ads AS (
     ${ifNull([
         "ga4.session_campaign",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
-        ifSource("stg_crm_leads_combined", "crm.session_campaign"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.session_campaign"),
         ifSource("stg_hubspot_workflowstats", "hs.session_campaign"),
         ifSource("stg_otm_aggregated", "session_campaign_otm"),
     ])} AS campaign_name,
     ${ifNull([
         "ga4.event_date",
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.record_date"),
-        ifSource("stg_crm_leads_combined", "crm.record_date"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.record_date"),
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
         ifSource("stg_hubspot_workflowstats", "hs_date"),
@@ -91,7 +91,7 @@ ga4_ads AS (
     ${ifNull([
         ifSource("gs_merken", "ga4.merk_event"),
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
-        ifSource("stg_crm_leads_combined", "crm.merk"),
+        orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.merk"),
         "'Overig'"
     ], "AS merk,")}
 
@@ -217,11 +217,11 @@ ga4_ads AS (
     ${ifSource("stg_sam_offertes_orders","crm.sam_soort_auto,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_status,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_totaalbedrag,")}
-    ${ifSource("stg_sam_offertes_orders","crm.sam_herkomst,")}
+    ${ifSource(["stg_sam_offertes_orders", "sam_herkomst"],"crm.sam_herkomst,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_offerte_id,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_getekende_offertes,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_salestraject_status_id,")}
-    ${ifSource("stg_sam_offertes_orders","crm.sam_brutomarge,")}
+    ${ifSource(["stg_sam_offertes_orders", "sam_offerte_vtr"],"crm.sam_brutomarge,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_merk,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_model,")}
     ${ifSource("stg_sam_offertes_orders","crm.sam_dealer_naam,")}
@@ -241,8 +241,8 @@ ga4_ads AS (
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
 
     -- Uitgave categorisatie
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), ifSource("stg_handmatige_uitgaves_pivot", "crm.uitgave_categorie")], "AS uitgave_categorie,")}
-    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), ifSource("stg_handmatige_uitgaves_pivot", "crm.uitgave_bron")], "AS uitgave_bron,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_categorie")], "AS uitgave_categorie,")}
+    ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_bron")], "AS uitgave_bron,")}
 
     -- OTM velden
     ${ifNull(["CAST(ga4.submission_id_otm AS STRING)", ifSource("stg_otm_aggregated", "otm.submission_id_otm")], "AS submission_id_otm,")}
@@ -265,10 +265,10 @@ ga4_ads_campagne AS (
     ${ifNull(["groep.campagnegroep", orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "uitgave_categorie")], "AS campagnegroep" )}`)},
     LOWER(ARRAY_TO_STRING([
         ${ifSource("stg_syntec_leads_orders_combined", "syntec_ordersoort,")}
-        ${ifSource("stg_lef_leads_agg","gewenst_autosoort,")}
-        ${ifSource("stg_lef_leads_agg","lef_lead_type,")}
-        ${ifSource("stg_lef_leads_agg","lef_soort_lead,")}
-        ${ifSource("stg_lef_leads_agg","lef_kwalificatie,")}
+        ${ifSource("stg_lef_leads_agg", "gewenst_autosoort,")}
+        ${ifSource("stg_lef_leads_agg", "lef_lead_type,")}
+        ${ifSource("stg_lef_leads_agg", "lef_soort_lead,")}
+        ${ifSource("stg_lef_leads_agg", "lef_kwalificatie,")}
         ${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "term,")}
         ${ifSource("stg_marketingdashboard_searchconsole", "landingpage_location,")}
