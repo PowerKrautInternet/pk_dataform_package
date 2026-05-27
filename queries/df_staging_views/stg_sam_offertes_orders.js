@@ -16,12 +16,12 @@ SELECT
   offerte_OFFERTESTATUS_OMSCHRIJVING,
   offerte_OFFERTE_TOTAALBEDRAG,
   offerte_AUTOPRIJSCONSUMENT,
-  offerte_HERKOMST_OMSCHRIJVING,
+  ${pk.ifSource("sam_herkomst", `offerte_HERKOMST_OMSCHRIJVING,`)}
   offerte_OFFERTE_OFFERTEID,
   offerte_OFFERTE_DATUMOFFERTE,
   getekende_offertes,
   offerte_SALESTRAJECT_TRAJECTSTATUSID,
-  offerte_OFFERTEVTR_BRUTOMARGEBEDRAG,
+  ${pk.ifSource("sam_offerte_vtr", `offerte_OFFERTEVTR_BRUTOMARGEBEDRAG,`)}
   offerte_MERK_OMSCHRIJVING,
   offerte_AFLEVERINGMODEL_OMSCHRIJVING,
   offerte_DEALER_NAAM,
@@ -29,7 +29,7 @@ SELECT
   offerte_VERKOPER_NAAM,
   offerte_LEADTRAJECT_TRAJECTID,
   offerte_LEADTRAJECT_EERSTEKWALIFICATIE,
-  offerte_LEADTRAJECT_EXTERNLEADID,
+  ${pk.ifSource("sam_trajects_extern", `offerte_LEADTRAJECT_EXTERNLEADID,`)}
   order_TRAJECT_TRAJECTID,
   order_AFLEVERTRAJECT_AANTAL,
   afleveringstatus_omschrijving,
