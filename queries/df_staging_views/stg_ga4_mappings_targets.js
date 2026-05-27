@@ -1,5 +1,5 @@
 /*config*/
-const {ref, join, getRefs, ifSource, ifNull, join_on_account} = require("../../sources");
+const {ref, join, getRefs, ifSource, ifNull, join_on_account, channelCase} = require("../../sources");
 let query = `
     
 
@@ -52,17 +52,7 @@ SELECT
         "account",
         ifSource("stg_pivot_targets", "target_account"),
     ])} as account,
-    CASE
-        WHEN REGEXP_CONTAINS(LOWER(session_medium),'whatsapp') THEN 'Whatsapp'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'dv360') OR REGEXP_CONTAINS(LOWER(session_medium),'cpm') THEN 'DV360'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'(facebook|fb|instagram|ig|meta)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|facebookadvertising|instant_experience)') THEN 'META'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'linkedin') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'LinkedIn'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'(google|adwords)') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid)') THEN 'Google Ads'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'bing') AND REGEXP_CONTAINS(LOWER(session_medium),'(cp|ppc|paid|search_paid)') THEN 'Microsoft Ads'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'gaspedaal') THEN 'Gaspedaal'
-        WHEN REGEXP_CONTAINS(LOWER(session_source),'activecampaign') THEN 'ActiveCampaign'
-        ELSE NULL
-    END AS sessie_conversie_bron
+    ${channelCase('session_source', 'session_medium')} AS sessie_conversie_bron
 FROM(
     SELECT 
       events_sessies.* EXCEPT(session_source, session_medium, session_campaign),
