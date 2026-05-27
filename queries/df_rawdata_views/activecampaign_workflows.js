@@ -7,7 +7,7 @@ SELECT
   JSON_VALUE(PAYLOAD, "$.dtcmedia_crm_id") AS dtcmedia_crm_id,
   JSON_VALUE(PAYLOAD, "$.type") AS type,
   JSON_VALUE(PAYLOAD, "$.id") AS campaign_id,
-  PARSE_DATE('%d-%m-%Y', JSON_VALUE(PAYLOAD, "$.date")) AS campaign_date,
+  SAFE.PARSE_DATE('%d-%m-%Y', JSON_VALUE(PAYLOAD, "$.date")) AS campaign_date,
   JSON_VALUE(PAYLOAD, "$.response.name") AS flow_name,
   JSON_VALUE(PAYLOAD, "$.response.status") AS status,
   CAST(JSON_VALUE(PAYLOAD, "$.response.contacts_entered") AS INT64) AS contacts_entered,

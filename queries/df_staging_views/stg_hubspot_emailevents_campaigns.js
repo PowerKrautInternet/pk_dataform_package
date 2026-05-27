@@ -19,15 +19,15 @@ email_events.id,
     browser_type,
     duration,
     device_type,
-    TIMESTAMP_MILLIS(CAST(created AS INT64)) AS created,
-    CAST(TIMESTAMP_MILLIS(CAST(created AS INT64)) AS DATE) AS created_date,
-    TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64)) AS sent_by_created,
-    CAST(TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64)) AS DATE) AS sent_by_created_date,
+    SAFE.TIMESTAMP_MILLIS(CAST(created AS INT64)) AS created,
+    CAST(SAFE.TIMESTAMP_MILLIS(CAST(created AS INT64)) AS DATE) AS created_date,
+    SAFE.TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64)) AS sent_by_created,
+    CAST(SAFE.TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64)) AS DATE) AS sent_by_created_date,
     EXTRACT(DAYOFWEEK FROM
-        TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64))
+        SAFE.TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64))
     ) AS sent_by_created_dayofweek,
     EXTRACT(HOUR FROM
-        TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64))
+        SAFE.TIMESTAMP_MILLIS(CAST(sent_by_created AS INT64))
     ) AS sent_by_created_hour,
     user_agent,
     filtered_event,
