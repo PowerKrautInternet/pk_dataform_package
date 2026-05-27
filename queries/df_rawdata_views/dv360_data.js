@@ -8,6 +8,7 @@ let query = `
         account,
         advertiser_id,
         campaign_id,
+        MAX(campaign) AS campaign,
         MAX(advertiser) AS advertiser,
         MAX(advertiser_currency) AS advertiser_currency,
         insertion_order_id,
