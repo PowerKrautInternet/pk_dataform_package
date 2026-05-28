@@ -15,11 +15,11 @@ let query = `
               soort_conversie,
                  kanaal,
                  merk,
-                 PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
+                 SAFE.PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)) as jaar_maand,
                  cast(regexp_replace(CAST(target as string), r',', '.') as float64) as target, --Voor 'nederlandse' getallen in gsheet gebruikt hij soms de , ipv de . en dat kan bigquery nie hebben
                  GENERATE_DATE_ARRAY(
-                         PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)),
-                         LAST_DAY(PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)), MONTH)
+                         SAFE.PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)),
+                         LAST_DAY(SAFE.PARSE_DATE('%Y%m%d', CONCAT(jaar, maand)), MONTH)
                  )                                         as dates
 
           FROM (SELECT account,

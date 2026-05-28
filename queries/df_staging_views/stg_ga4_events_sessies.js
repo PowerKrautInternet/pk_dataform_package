@@ -63,7 +63,7 @@ FROM(
         SELECT
     events.account,
     events.unique_event_id,
-    PARSE_DATE('%Y%m%d',event_date) as event_date,
+    SAFE.PARSE_DATE('%Y%m%d',event_date) as event_date,
     event_timestamp,
     events.event_name,
     events.user_pseudo_id,

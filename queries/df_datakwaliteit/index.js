@@ -69,7 +69,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tDATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+                query += "\n\tSAFE.DATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
@@ -115,7 +115,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tDATE(MAX(CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime))) AS MAX_RECEIVEDON, '"
+                query += "\n\tSAFE.DATE(MAX(CAST(SAFE.PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime))) AS MAX_RECEIVEDON, '"
                 query += sources[s].account ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
@@ -207,16 +207,16 @@ function dk_monitor(){
             query += "\nSELECT stats.BRON, "
 
             query += "stats.KEY1"
-            query += ", date(stats.RECEIVEDON) as RECEIVEDON, date(MAX(maxdate.MAX_RECEIVEDON)) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, max(freshnessDays) as freshnessDays, max(enabledRecency) as enabledRecency, "
+            query += ", SAFE.DATE(stats.RECEIVEDON) as RECEIVEDON, SAFE.DATE(MAX(maxdate.MAX_RECEIVEDON)) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, max(freshnessDays) as freshnessDays, max(enabledRecency) as enabledRecency, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
             //FROM ... database . schema . name AS BRON
             query += "\nFROM (\n"
             if(type === "dataProducer") {
-                query += "SELECT PAYLOAD, DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
+                query += "SELECT PAYLOAD, SAFE.DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
-                query += "SELECT 'insert' AS ACTION, CAST(PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime) AS RECEIVEDON, 'GA4' "
+                query += "SELECT 'insert' AS ACTION, CAST(SAFE.PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime) AS RECEIVEDON, 'GA4' "
             } else if (type === "googleAds"){
                 query += "SELECT 'insert' AS ACTION, _DATA_DATE AS RECEIVEDON, 'GoogleAds' "
             } else if (type === "DV360") {

@@ -23,9 +23,9 @@ SELECT
 FROM (
     SELECT
         ${ifNull([
-            "DATE(email.sent_by_created_date)",
-            ifSource("hubspot_bigquerylogging", "DATE(flows.flow_date)"),
-            ifSource("stg_hubspot_contacts_count", "DATE(aantal.RECEIVEDON)")    
+            "SAFE.DATE(email.sent_by_created_date)",
+            ifSource("hubspot_bigquerylogging", "SAFE.DATE(flows.flow_date)"),
+            ifSource("stg_hubspot_contacts_count", "SAFE.DATE(aantal.RECEIVEDON)")    
         ], "AS hs_date,")}
         ${ifNull([
             "email.source",
