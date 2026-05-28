@@ -10,7 +10,7 @@ WITH
     conversies.unique_event_id AS conversie_event_id,
     conversies.account AS account,
     conversies.event_name AS conversie_event_name,
-    PARSE_DATE('%Y%m%d', conversies.event_date) AS conversie_event_date,
+    SAFE.PARSE_DATE('%Y%m%d', conversies.event_date) AS conversie_event_date,
     conversies.event_timestamp AS conversie_event_timestamp,
     sessies.user_pseudo_id,
     sessies.event_ga_session_id,
@@ -38,7 +38,7 @@ WITH
    AND conversies.account = sessies.account
   WHERE
     sessies.event_timestamp <= conversies.event_timestamp
-    AND PARSE_DATE('%Y%m%d', sessies.event_date) > DATE_SUB(PARSE_DATE('%Y%m%d', conversies.event_date), INTERVAL 30 DAY)
+    AND SAFE.PARSE_DATE('%Y%m%d', sessies.event_date) > DATE_SUB(SAFE.PARSE_DATE('%Y%m%d', conversies.event_date), INTERVAL 30 DAY)
   ),
 
   -- 2. Resolveer atomic source/medium en bereken interaction-windows (regulier én non-direct).

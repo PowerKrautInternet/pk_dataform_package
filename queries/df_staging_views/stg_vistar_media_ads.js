@@ -18,7 +18,7 @@ FROM(
   insertion_order,
   deal_id,
   creative_id,
-  DATE(date) AS date,
+  SAFE.DATE(date) AS date,
   country,
   global_city,
   MAX(deal) as deal,

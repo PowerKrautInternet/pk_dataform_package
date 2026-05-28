@@ -7,7 +7,7 @@ SELECT
   account,
   JSON_VALUE(PAYLOAD, '$.pk_crm_id') AS pk_crm_id,
   JSON_VALUE(PAYLOAD, '$.type') AS type,
-  PARSE_DATE('%d/%m/%Y', JSON_VALUE(PAYLOAD, '$.date')) AS date,
+  SAFE.PARSE_DATE('%d/%m/%Y', JSON_VALUE(PAYLOAD, '$.date')) AS date,
   JSON_VALUE(PAYLOAD, '$.campaignName') AS campaign_name,
   JSON_VALUE(PAYLOAD, '$.creativeName') AS creative_name,
   JSON_VALUE(PAYLOAD, '$.publisherName') AS publisher_name,
