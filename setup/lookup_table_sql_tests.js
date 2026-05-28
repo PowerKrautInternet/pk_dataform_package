@@ -66,13 +66,14 @@ function lookupTableSqlTestAndSwap(functionObject) {
 
     return `BEGIN
   -- Stap 1: nieuwe SQL UDF onder test-naam, oude ${functionObject.name} blijft (indien aanwezig) intact
-  ${test_function.sql}
+  -- EXECUTE IMMEDIATE forceert synchrone commit zodat de functie zichtbaar is voor de ASSERTs hieronder
+  EXECUTE IMMEDIATE r"""${test_function.sql}""";
 
   -- Stap 2: gedragstesten draaien tegen de test-versie
   ${asserts}
 
   -- Stap 3: alle asserts geslaagd, (her)maak nu de echte ${functionObject.name}
-  ${functionObject.sql}
+  EXECUTE IMMEDIATE r"""${functionObject.sql}""";
 
   -- Stap 4: opruimen
   DROP FUNCTION IF EXISTS ${test_name};
