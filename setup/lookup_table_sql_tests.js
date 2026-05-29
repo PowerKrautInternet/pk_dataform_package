@@ -1,5 +1,3 @@
-let FunctionObject = require("./function_helper");
-
 const merken_haystack = `'["Abarth","AC","volkswagen","audi","alfa romeo","skoda","citroen","vw","vw professional"]'`;
 
 const test_cases = [
@@ -40,43 +38,36 @@ const test_cases = [
     }
 ];
 
-function buildAssert(fnName, call, expected, description, idx) {
+function inlineBody(body, needleExpr, haystackExpr) {
+    return body
+        .replace(/\bneedle\b/g, needleExpr)
+        .replace(/\bhaystack\b/g, haystackExpr);
+}
+
+function buildAssert(fnName, inlinedBody, expected, description, idx) {
     const condition = expected.trim().toUpperCase() === "NULL"
-        ? `${call} IS NULL`
-        : `${call} = ${expected}`;
+        ? `${inlinedBody} IS NULL`
+        : `${inlinedBody} = ${expected}`;
     const message = `${fnName} test ${idx + 1} (${description}) failed`.replace(/'/g, "\\'");
-    return `EXECUTE IMMEDIATE r"""ASSERT (${condition}) AS '${message}'""";`;
+    return `ASSERT (${condition}) AS '${message}';`;
 }
 
 function lookupTableSqlTestAndSwap(functionObject) {
-    const test_function = new FunctionObject({
-        database: functionObject.database,
-        schema: functionObject.schema,
-        name: `${functionObject.name}_test`,
-        vars: functionObject.varsForFunction,
-        function: functionObject.sql_object.function,
-        function_type: functionObject.type
-    });
-
-    const test_name = `\`${test_function.database}.${test_function.schema}.${test_function.name}\``;
+    const body = functionObject.sql_object.function;
 
     const asserts = test_cases
-        .map((tc, i) => buildAssert(functionObject.name, `${test_name}(${tc.needle}, ${merken_haystack})`, tc.expected, tc.description, i))
+        .map((tc, i) => buildAssert(functionObject.name, inlineBody(body, tc.needle, merken_haystack), tc.expected, tc.description, i))
         .join("\n  ");
 
     return `BEGIN
-  -- Stap 1: nieuwe SQL UDF onder test-naam, oude ${functionObject.name} blijft (indien aanwezig) intact
-  -- EXECUTE IMMEDIATE forceert synchrone commit zodat de functie zichtbaar is voor de ASSERTs hieronder
-  EXECUTE IMMEDIATE r"""${test_function.sql}""";
-
-  -- Stap 2: gedragstesten draaien tegen de test-versie
+  -- Stap 1: inline ASSERTs valideren de SQL body zonder een test-UDF aan te maken.
+  -- Een persistent UDF die in dit script wordt aangemaakt is niet altijd zichtbaar
+  -- voor opvolgende statements in hetzelfde BigQuery script-job (catalog-cache quirk),
+  -- daarom testen we de body direct als scalar subquery.
   ${asserts}
 
-  -- Stap 3: alle asserts geslaagd, (her)maak nu de echte ${functionObject.name}
-  EXECUTE IMMEDIATE r"""${functionObject.sql}""";
-
-  -- Stap 4: opruimen
-  DROP FUNCTION IF EXISTS ${test_name};
+  -- Stap 2: alle asserts geslaagd, (her)maak nu de echte ${functionObject.name}
+  ${functionObject.sql}
 END;`;
 }
 
