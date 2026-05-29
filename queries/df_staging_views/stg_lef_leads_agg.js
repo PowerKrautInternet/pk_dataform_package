@@ -104,11 +104,11 @@ FROM(
   session_campaign,
   merk_session,
   kanaal,
-  ${ifNull(["SAFE.DATE(lef.aangemaaktDatum)", ifSource('stg_sam_offertes_orders', "SAFE.DATE(offerte_SALESTRAJECT_CREATIEDATUM)")], "AS record_date,")}
+  ${ifNull(["SAFE_CAST(lef.aangemaaktDatum AS DATE)", ifSource('stg_sam_offertes_orders', "SAFE_CAST(offerte_SALESTRAJECT_CREATIEDATUM AS DATE)")], "AS record_date,")}
   ${ifSource('stg_sam_offertes_orders',
     `offerte_SALESTRAJECT_TRAJECTID AS sam_salestraject_id,
-    SAFE.DATE(offerte_SALESTRAJECT_AFGERONDDATUM) AS sam_salestraject_afgerond_datum,
-    SAFE.DATE(offerte_SALESTRAJECT_CREATIEDATUM) AS sam_salestraject_creatie_datum,
+    SAFE_CAST(offerte_SALESTRAJECT_AFGERONDDATUM AS DATE) AS sam_salestraject_afgerond_datum,
+    SAFE_CAST(offerte_SALESTRAJECT_CREATIEDATUM AS DATE) AS sam_salestraject_creatie_datum,
     offerte_SALESTRAJECT_SOORTAUTO AS sam_soort_auto,
     offerte_OFFERTESTATUS_OMSCHRIJVING AS sam_offerte_status,
     offerte_OFFERTE_TOTAALBEDRAG AS sam_offerte_totaalbedrag,
