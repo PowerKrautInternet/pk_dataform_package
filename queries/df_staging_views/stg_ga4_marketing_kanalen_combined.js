@@ -282,7 +282,7 @@ ga4_ads_campagne AS (
 
 -- Eindresultaat: business unit classificatie op basis van master_bu_concat
 SELECT
-  * EXCEPT(master_bu_concat),
+  * EXCEPT(${ifSource("stg_marketingkanalen_combined", "ads_merk_concat,")} event_merk_concat),
   CASE
     WHEN REGEXP_CONTAINS(lower(master_bu_concat), '(vacature|werkenbij|solliciteer|monteur|receptionist|stage|recruitment|job)')
       THEN 'HR'
