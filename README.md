@@ -2,7 +2,7 @@
 _A data automation package in dataform, developed by PowerKraut._ 
 
 Current features:
-* Data monitoring 
+* Data monitoring  
 * Freshness alerting
 * Declaration handling
 * Publisher-level recency control (nieuw) 
