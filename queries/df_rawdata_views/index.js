@@ -658,6 +658,104 @@ function adpaq_data () {
     return table;
 }
 
+function hubspot_exported_contacts () {
+    let table = {
+        "name": "hubspot_exported_contacts",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_exported_contacts').refs
+        },
+        "query": require('./hubspot_exported_contacts').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function hubspot_exported_deals () {
+    let table = {
+        "name": "hubspot_exported_deals",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_exported_deals').refs
+        },
+        "query": require('./hubspot_exported_deals').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function hubspot_exported_voertuigen () {
+    let table = {
+        "name": "hubspot_exported_voertuigen",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./hubspot_exported_voertuigen').refs
+        },
+        "query": require('./hubspot_exported_voertuigen').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspotworkflows_deals () {
+    let table = {
+        "name": "stg_hubspotworkflows_deals",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspotworkflows_deals').refs
+        },
+        "query": require('./stg_hubspotworkflows_deals').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspotworkflows_voertuigen () {
+    let table = {
+        "name": "stg_hubspotworkflows_voertuigen",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspotworkflows_voertuigen').refs
+        },
+        "query": require('./stg_hubspotworkflows_voertuigen').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_sales_rendement () {
+    let table = {
+        "name": "stg_sales_rendement",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_sales_rendement').refs
+        },
+        "query": require('./stg_sales_rendement').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspot_sales_emailstats () {
+    let table = {
+        "name": "stg_hubspot_sales_emailstats",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspot_sales_emailstats').refs
+        },
+        "query": require('./stg_hubspot_sales_emailstats').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {
     activecampaign_edm,
     ga4_events,
@@ -705,6 +803,13 @@ module.exports = {
     sam_trajects_def_offerte,
     sam_trajects_extern,
     sam_verkoper,
-    taxatiemoduleonline
+    taxatiemoduleonline,
+    hubspot_exported_contacts,
+    hubspot_exported_deals,
+    hubspot_exported_voertuigen,
+    stg_hubspotworkflows_deals,
+    stg_hubspotworkflows_voertuigen,
+    stg_sales_rendement,
+    stg_hubspot_sales_emailstats
     
 }
