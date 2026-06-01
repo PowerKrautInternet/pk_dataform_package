@@ -541,6 +541,62 @@ function stg_ga4_alternative_attribution_models() {
     return table;
 }
 
+function stg_hubspotworkflows_deals () {
+    let table = {
+        "name": "stg_hubspotworkflows_deals",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspotworkflows_deals').refs
+        },
+        "query": require('./stg_hubspotworkflows_deals').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspotworkflows_voertuigen () {
+    let table = {
+        "name": "stg_hubspotworkflows_voertuigen",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspotworkflows_voertuigen').refs
+        },
+        "query": require('./stg_hubspotworkflows_voertuigen').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_sales_rendement () {
+    let table = {
+        "name": "stg_sales_rendement",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_sales_rendement').refs
+        },
+        "query": require('./stg_sales_rendement').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspot_sales_emailstats () {
+    let table = {
+        "name": "stg_hubspot_sales_emailstats",
+        "config": {
+            "type": "view",
+            "schema": "df_rawdata_views",
+            "dependencies": require('./stg_hubspot_sales_emailstats').refs
+        },
+        "query": require('./stg_hubspot_sales_emailstats').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {stg_ga4_attribution_model_sessies,
     stg_ga4_alternative_attribution_models,
     stg_ga4_attribution_model_conversies,
@@ -579,5 +635,9 @@ module.exports = {stg_ga4_attribution_model_sessies,
     stg_sam_offertes_orders,
     stg_crm_leads_combined,
     stg_otm_aggregated,
-    stg_vistar_media_ads
+    stg_vistar_media_ads,
+    stg_hubspotworkflows_deals,
+    stg_hubspotworkflows_voertuigen,
+    stg_sales_rendement,
+    stg_hubspot_sales_emailstats
 }
