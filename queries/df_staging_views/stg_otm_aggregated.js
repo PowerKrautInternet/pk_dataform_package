@@ -42,18 +42,18 @@ SELECT
   status_created_at AS status_created_at_otm,
   status_updated_at AS status_updated_at_otm,
   taxation_date AS taxation_date_otm,
-  SAFE.DATE(created_at) AS created_at_date_otm,
+  SAFE_CAST(created_at AS DATE) AS created_at_date_otm,
   ${ifSource("stg_openRdwData", `
     datum_tenaamstelling AS datum_tenaamstelling_otm,
-    IF(SAFE.DATE(datum_tenaamstelling) >= SAFE.DATE(created_at), 1,0) AS verkocht_otm,`)}
+    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= SAFE_CAST(created_at AS DATE), 1,0) AS verkocht_otm,`)}
   ${ifSource(["stg_openRdwData", "lef_leads"], `
-    IF(heeftOrder = "true" AND SAFE.DATE(datum_tenaamstelling) < SAFE.DATE(created_at), 1,0) AS in_aflevering_otm,
-    IF(SAFE.DATE(datum_tenaamstelling) >= SAFE.DATE(created_at) AND (lef.heeftOrder = "false" OR lef.heeftOrder IS NULL), 1,0) AS elders_verkocht_otm,`)}
+    IF(heeftOrder = "true" AND SAFE_CAST(datum_tenaamstelling AS DATE) < SAFE_CAST(created_at AS DATE), 1,0) AS in_aflevering_otm,
+    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= SAFE_CAST(created_at AS DATE) AND (lef.heeftOrder = "false" OR lef.heeftOrder IS NULL), 1,0) AS elders_verkocht_otm,`)}
     ${ifSource("lef_leads", `
     IF(lef.heeftOrder = 'true', 1,0) AS heeft_order_otm,
     IF(lef.heeftOfferte = 'true',1,0) AS heeft_offerte_otm,
     LEFleadID AS LEFleadID_otm,
-    SAFE.DATE(lef.aangemaaktDatum) AS aangemaaktDatum_otm,`)}
+    SAFE_CAST(lef.aangemaaktDatum AS DATE) AS aangemaaktDatum_otm,`)}
   ${ifSource("stg_ga4_events_sessies", `
     session_campaign AS session_campaign_otm,
     session_source_medium AS session_source_medium_otm,
@@ -134,12 +134,12 @@ ${join(`LEFT JOIN (
   heeftOfferte,
   heeftOrder,
   LEFleadID,
-  SAFE.DATE(aangemaaktDatum) AS aangemaaktDatum,
-  ROW_NUMBER() OVER(PARTITION BY REPLACE(huidigKenteken, '-', '') ORDER BY SAFE.DATE(aangemaaktDatum) DESC) AS rank
-  FROM`, "df_rawdata_views", "lef_leads", 
+  SAFE_CAST(aangemaaktDatum AS DATE) AS aangemaaktDatum,
+  ROW_NUMBER() OVER(PARTITION BY REPLACE(huidigKenteken, '-', '') ORDER BY SAFE_CAST(aangemaaktDatum AS DATE) DESC) AS rank
+  FROM`, "df_rawdata_views", "lef_leads",
        `WHERE bron = "Taxatie Module Online")
   WHERE rank = 1) lef
-ON REPLACE(huidigKenteken, '-', '') = kenteken AND SAFE.DATE(created_at) = aangemaaktDatum
+ON REPLACE(huidigKenteken, '-', '') = kenteken AND SAFE_CAST(created_at AS DATE) = aangemaaktDatum
 `)}
 ${join(`LEFT JOIN (SELECT
 MAX(IFNULL(session_campaign, first_user_campaign_name)) as session_campaign,
