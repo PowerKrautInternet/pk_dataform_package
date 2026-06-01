@@ -14,7 +14,7 @@ SELECT
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.deal_start_datum') AS deal_start_datum,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.deal_status') AS deal_status,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.deal_vestiging') AS deal_vestiging,
-  JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.dealid') AS dealid,
+  JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.deal_id') AS deal_id,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.email') AS email,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.gewenst_merk') AS gewenst_merk,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.gewenst_model') AS gewenst_model,
