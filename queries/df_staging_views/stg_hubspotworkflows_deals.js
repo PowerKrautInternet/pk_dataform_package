@@ -12,7 +12,7 @@ SELECT
   deals.*,
   contacts.* EXCEPT(hs_object_id,type, pk_crm_id, createdate, lastmodifieddate, email)
 FROM
-  ${ref("hubspot_send_message")} msg
+  ${ref("hubspot_bigquerylogging")} msg
 LEFT JOIN
   ${ref("hubspot_exported_deals")} deals
 ON
