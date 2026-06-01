@@ -700,61 +700,7 @@ function hubspot_exported_voertuigen () {
     return table;
 }
 
-function stg_hubspotworkflows_deals () {
-    let table = {
-        "name": "stg_hubspotworkflows_deals",
-        "config": {
-            "type": "view",
-            "schema": "df_rawdata_views",
-            "dependencies": require('./stg_hubspotworkflows_deals').refs
-        },
-        "query": require('./stg_hubspotworkflows_deals').query
-    }
-    pk.addSource(table);
-    return table;
-}
 
-function stg_hubspotworkflows_voertuigen () {
-    let table = {
-        "name": "stg_hubspotworkflows_voertuigen",
-        "config": {
-            "type": "view",
-            "schema": "df_rawdata_views",
-            "dependencies": require('./stg_hubspotworkflows_voertuigen').refs
-        },
-        "query": require('./stg_hubspotworkflows_voertuigen').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
-function stg_sales_rendement () {
-    let table = {
-        "name": "stg_sales_rendement",
-        "config": {
-            "type": "view",
-            "schema": "df_rawdata_views",
-            "dependencies": require('./stg_sales_rendement').refs
-        },
-        "query": require('./stg_sales_rendement').query
-    }
-    pk.addSource(table);
-    return table;
-}
-
-function stg_hubspot_sales_emailstats () {
-    let table = {
-        "name": "stg_hubspot_sales_emailstats",
-        "config": {
-            "type": "view",
-            "schema": "df_rawdata_views",
-            "dependencies": require('./stg_hubspot_sales_emailstats').refs
-        },
-        "query": require('./stg_hubspot_sales_emailstats').query
-    }
-    pk.addSource(table);
-    return table;
-}
 
 module.exports = {
     activecampaign_edm,
@@ -806,10 +752,6 @@ module.exports = {
     taxatiemoduleonline,
     hubspot_exported_contacts,
     hubspot_exported_deals,
-    hubspot_exported_voertuigen,
-    stg_hubspotworkflows_deals,
-    stg_hubspotworkflows_voertuigen,
-    stg_sales_rendement,
-    stg_hubspot_sales_emailstats
+    hubspot_exported_voertuigen
     
 }
