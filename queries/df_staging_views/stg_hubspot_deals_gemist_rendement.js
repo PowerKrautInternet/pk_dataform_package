@@ -18,7 +18,7 @@ SELECT
 FROM ${ref("df_datamart_tables", "dm_hubspot_deals")}
 
 WHERE deal_status IN ("Gemiste Lead", "Gemist Salestraject")
-AND (lead_type != "Aftersales" OR lead_type IS NULL) 
+
 
 `
 let refs = pk.getRefs()
