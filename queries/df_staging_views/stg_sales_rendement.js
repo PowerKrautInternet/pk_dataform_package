@@ -108,7 +108,7 @@ FROM
           offerte_HERKOMST_OMSCHRIJVING,
           TRIM(IFNULL(offerte_RELATIE_EMAIL, RELATIE_EMAILZAKELIJK)) AS offerte_RELATIE_EMAIL
 
-        FROM ${ref("df_staging_tables", "stg_sam_offertes")} 
+        FROM ${ref("df_staging_views", "stg_sam_offertes")} 
 
         WHERE 
           REGEXP_CONTAINS(IFNULL(offerte_RELATIE_EMAIL, RELATIE_EMAILZAKELIJK), '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,5}')
