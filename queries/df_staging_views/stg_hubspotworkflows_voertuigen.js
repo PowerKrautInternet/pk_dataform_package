@@ -5,10 +5,10 @@ let query = `
 
 
 SELECT
-  CAST(UNIX_MILLIS(TIMESTAMP(DATE(RECEIVEDON))) AS STRING) AS datum_bericht,
+  CAST(UNIX_MILLIS(TIMESTAMP(DATE(flow_date))) AS STRING) AS datum_bericht,
   email,
-  msg.objectType,
-  msg.workflowId,
+  msg.object_type,
+  msg.workflow_id,
   msg.extra_information,
   voertuigen.* EXCEPT(objectType),
   contacts.* EXCEPT(hs_object_id,pk_crm_id, type, createdate, lastmodifieddate, email)
