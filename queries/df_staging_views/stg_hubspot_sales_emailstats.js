@@ -5,7 +5,7 @@ let query = `
 
 SELECT
   CAST(TIMESTAMP_MILLIS(CAST(datum_bericht AS INT64)) AS DATE) AS datum_bericht,
-  ifnull(verstuurd_bericht, msg.workflow_id) as verstuurd_bericht,
+  ifnull(workflow_name, msg.workflow_id) as verstuurd_bericht,
   email,
   deal_id,
   gewenst_merk,
