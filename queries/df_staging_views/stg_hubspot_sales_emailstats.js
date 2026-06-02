@@ -18,7 +18,7 @@ SELECT
     SELECT 
       COALESCE(deals.datum_bericht, voertuigen.datum_bericht) AS datum_bericht,
       COALESCE(deals.email, voertuigen.email) AS email,
-      COALESCE(deals.workflowId, voertuigen.workflowId) AS workflow_id,
+      COALESCE(deals.workflow_id, voertuigen.workflow_id) AS workflow_id,
       deal_id,
       gewenst_merk,
       gewenst_model,
