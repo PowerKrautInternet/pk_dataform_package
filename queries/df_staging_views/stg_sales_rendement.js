@@ -91,8 +91,7 @@ FROM
       (
         SELECT 
           "SAM" as extra_information,
-          offerte_SALESTRAJECT_DTCMEDIA_CRM_ID,
-          offerte_SALESTRAJECT_TRAJECTID,
+          offerte_SALESTRAJECT_TRAJECTID AS salesrendement_trajectid,
           offerte_SALESTRAJECT_CREATIEDATUM,
           offerte_SALESTRAJECT_AFGERONDDATUM,
           offerte_SALESTRAJECT_TRAJECTSTATUSID,
