@@ -8,7 +8,6 @@ SELECT
   CAST(UNIX_MILLIS(TIMESTAMP(DATE(flow_date))) AS STRING) AS datum_bericht,
   msg.object_type,
   msg.workflow_id,
-  msg.extra_information,
   deals.*,
   contacts.* EXCEPT(hs_object_id,type, pk_crm_id, createdate, lastmodifieddate, email)
 FROM
