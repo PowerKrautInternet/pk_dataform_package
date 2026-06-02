@@ -583,6 +583,20 @@ function stg_sales_rendement () {
     return table;
 }
 
+function stg_hubspot_deals_gemist_rendement () {
+    let table = {
+        "name": "stg_hubspot_deals_gemist_rendement",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_hubspot_deals_gemist_rendement').refs
+        },
+        "query": require('./stg_hubspot_deals_gemist_rendement').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 function stg_hubspot_sales_emailstats () {
     let table = {
         "name": "stg_hubspot_sales_emailstats",
@@ -639,5 +653,6 @@ module.exports = {stg_ga4_attribution_model_sessies,
     stg_hubspotworkflows_deals,
     stg_hubspotworkflows_voertuigen,
     stg_sales_rendement,
-    stg_hubspot_sales_emailstats
+    stg_hubspot_sales_emailstats,
+    stg_hubspot_deals_gemist_rendement
 }
