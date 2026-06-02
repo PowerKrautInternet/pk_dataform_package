@@ -17,13 +17,13 @@ FROM
 LEFT JOIN
   ${ref("hubspot_exported_voertuigen")} voertuigen
 ON
-  msg.objectId = voertuigen.hs_object_id
+  msg.object_id = voertuigen.hs_object_id
 LEFT JOIN
   ${ref("hubspot_exported_contacts")} contacts
 ON
-  msg.contact_hs_object_id = contacts.hs_object_id
+  msg.contact_object_id = contacts.hs_object_id
 WHERE
-  msg.objectType = "2-131617677"
+  msg.object_type = voertuigen.objectType
 
 `
 let refs = pk.getRefs()
