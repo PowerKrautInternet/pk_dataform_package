@@ -9,7 +9,6 @@ SELECT
   email,
   msg.object_type,
   msg.workflow_id,
-  msg.extra_information,
   voertuigen.* EXCEPT(objectType),
   contacts.* EXCEPT(hs_object_id,pk_crm_id, type, createdate, lastmodifieddate, email)
 FROM
