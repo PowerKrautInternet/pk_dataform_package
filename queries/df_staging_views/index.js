@@ -546,7 +546,7 @@ function stg_hubspotworkflows_deals () {
         "name": "stg_hubspotworkflows_deals",
         "config": {
             "type": "view",
-            "schema": "df_rawdata_views",
+            "schema": "df_staging_views",
             "dependencies": require('./stg_hubspotworkflows_deals').refs
         },
         "query": require('./stg_hubspotworkflows_deals').query
@@ -560,7 +560,7 @@ function stg_hubspotworkflows_voertuigen () {
         "name": "stg_hubspotworkflows_voertuigen",
         "config": {
             "type": "view",
-            "schema": "df_rawdata_views",
+            "schema": "df_staging_views",
             "dependencies": require('./stg_hubspotworkflows_voertuigen').refs
         },
         "query": require('./stg_hubspotworkflows_voertuigen').query
@@ -574,7 +574,7 @@ function stg_sales_rendement () {
         "name": "stg_sales_rendement",
         "config": {
             "type": "view",
-            "schema": "df_rawdata_views",
+            "schema": "df_staging_views",
             "dependencies": require('./stg_sales_rendement').refs
         },
         "query": require('./stg_sales_rendement').query
@@ -588,7 +588,7 @@ function stg_hubspot_sales_emailstats () {
         "name": "stg_hubspot_sales_emailstats",
         "config": {
             "type": "view",
-            "schema": "df_rawdata_views",
+            "schema": "df_staging_views",
             "dependencies": require('./stg_hubspot_sales_emailstats').refs
         },
         "query": require('./stg_hubspot_sales_emailstats').query
