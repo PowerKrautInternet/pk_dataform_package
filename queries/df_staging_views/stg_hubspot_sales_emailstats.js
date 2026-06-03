@@ -33,6 +33,7 @@ LEFT JOIN
   ${ref("googleSheets","gs_workflow_mapping")} flows
 ON
   msg.workflow_id = flows.workflow_id
+  AND flows.type = "Sales"
 WHERE msg.workflow_id <> ""
 
 `
