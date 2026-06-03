@@ -8,7 +8,7 @@ SELECT
   datum_bericht,
   email,
   binnen_90_dagen AS afspraak_na_mail,
-  IF(binnen_90_dagen = true, bedrag, 0) AS afspraak_factuurbedrag_na_mail,
+  IF(binnen_90_dagen = true, factuurbedrag, 0) AS afspraak_factuurbedrag_na_mail,
   werkplaatsafspraak_datum,
   werkplaats_vestiging,
   kenteken,
@@ -27,7 +27,7 @@ FROM (
     hubspot.* EXCEPT(email),
     werkplaatsafspraak_datum,
     IFNULL(werkplaatsafspraken.werkplaats_vestiging, hubspot.werkplaats_vestiging) as werkplaatsafspraak_vestiging,
-    werkplaatsafspraken.bedrag,
+    werkplaatsafspraken.factuurbedrag,
     IF(werkplaatsafspraak > CAST(datum_bericht AS DATE)
       AND werkplaatsafspraak <= DATE_ADD(CAST(datum_bericht AS DATE), INTERVAL 90 DAY),
        true, false) AS binnen_90_dagen,
