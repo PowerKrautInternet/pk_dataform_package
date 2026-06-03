@@ -611,6 +611,34 @@ function stg_hubspot_sales_emailstats () {
     return table;
 }
 
+function stg_aftersales_rendement () {
+    let table = {
+        "name": "stg_aftersales_rendement",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_aftersales_rendement').refs
+        },
+        "query": require('./stg_aftersales_rendement').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
+function stg_hubspot_aftersales_emailstats () {
+    let table = {
+        "name": "stg_hubspot_aftersales_emailstats",
+        "config": {
+            "type": "view",
+            "schema": "df_staging_views",
+            "dependencies": require('./stg_hubspot_aftersales_emailstats').refs
+        },
+        "query": require('./stg_hubspot_aftersales_emailstats').query
+    }
+    pk.addSource(table);
+    return table;
+}
+
 module.exports = {stg_ga4_attribution_model_sessies,
     stg_ga4_alternative_attribution_models,
     stg_ga4_attribution_model_conversies,
