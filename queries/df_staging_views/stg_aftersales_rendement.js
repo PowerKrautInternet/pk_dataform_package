@@ -23,7 +23,7 @@ FROM (
       PARTITION BY verstuurd_bericht, hubspot.kenteken, hubspot.email, datum_bericht
       ORDER BY werkplaatsafspraak DESC
     ) AS rank,
-    COALESCE(hubspot.email, werkplaatsafspraken.email) as email,
+    email,
     hubspot.* EXCEPT(email),
     IFNULL(werkplaatsafspraken.werkplaats_vestiging, hubspot.werkplaats_vestiging) as werkplaatsafspraak_vestiging,
     werkplaatsafspraken.factuurbedrag,
