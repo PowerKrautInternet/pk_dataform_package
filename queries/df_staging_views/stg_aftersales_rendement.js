@@ -20,23 +20,18 @@ SELECT
 FROM (
   SELECT
     ROW_NUMBER() OVER (
-      PARTITION BY verstuurd_bericht, voertuig_kenteken, hubspot.email, datum_bericht 
+      PARTITION BY verstuurd_bericht, hubspot.kenteken, hubspot.email, datum_bericht
       ORDER BY werkplaatsafspraak_datum DESC
     ) AS rank,
     COALESCE(hubspot.email, werkplaatsafspraken.email) as email,
     hubspot.* EXCEPT(email),
-    werkplaatsafspraak_datum,
     IFNULL(werkplaatsafspraken.werkplaats_vestiging, hubspot.werkplaats_vestiging) as werkplaatsafspraak_vestiging,
     werkplaatsafspraken.factuurbedrag,
     IF(werkplaatsafspraak > CAST(datum_bericht AS DATE)
       AND werkplaatsafspraak <= DATE_ADD(CAST(datum_bericht AS DATE), INTERVAL 90 DAY),
        true, false) AS binnen_90_dagen,
     werkplaatsafspraak as werkplaatsafspraak_datum,
-    werkplaatsafspraken.werkplaats_vestiging,
-    hubspot.kenteken,
-    merk,
-    model,
-  
+
   FROM
     ${ref("df_staging_views","stg_hubspot_aftersales_emailstats")} hubspot
 
@@ -48,6 +43,7 @@ FROM (
     )
 WHERE
   rank = 1
+  AND verstuurd_bericht IS NOT NULL
 `
 let refs = pk.getRefs()
 module.exports = {query, refs}
