@@ -69,7 +69,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tSAFE.DATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+                query += "\n\tSAFE_CAST(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR)) AS DATE) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
@@ -115,7 +115,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tSAFE.DATE(MAX(CAST(SAFE.PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime))) AS MAX_RECEIVEDON, '"
+                query += "\n\tSAFE_CAST(MAX(CAST(SAFE.PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime)) AS DATE) AS MAX_RECEIVEDON, '"
                 query += sources[s].account ?? sources[s].schema
                 query += "'  AS KEY1, 'GA4' AS BRON"      //BRON
 
@@ -207,13 +207,13 @@ function dk_monitor(){
             query += "\nSELECT stats.BRON, "
 
             query += "stats.KEY1"
-            query += ", SAFE.DATE(stats.RECEIVEDON) as RECEIVEDON, SAFE.DATE(MAX(maxdate.MAX_RECEIVEDON)) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, max(freshnessDays) as freshnessDays, max(enabledRecency) as enabledRecency, "
+            query += ", SAFE_CAST(stats.RECEIVEDON AS DATE) as RECEIVEDON, SAFE_CAST(MAX(maxdate.MAX_RECEIVEDON) AS DATE) as MAX_RECEIVEDON, MAX(RECENCY_CHECK) as RECENCY_CHECK, max(freshnessDays) as freshnessDays, max(enabledRecency) as enabledRecency, "
             query += "COUNT(*) as COUNT, SUM(IF(ACTION = 'insert', 1, 0)) AS count_insert, SUM(IF(ACTION = 'update', 1, 0)) AS count_update, SUM(IF(ACTION = 'delete', 1, 0)) AS count_delete, "
 
             //FROM ... database . schema . name AS BRON
             query += "\nFROM (\n"
             if(type === "dataProducer") {
-                query += "SELECT PAYLOAD, SAFE.DATE(date_add(RECEIVEDON,interval 2 hour)) AS RECEIVEDON, ACTION, "
+                query += "SELECT PAYLOAD, SAFE_CAST(date_add(RECEIVEDON,interval 2 hour) AS DATE) AS RECEIVEDON, ACTION, "
                 query += "'" + sources[s].name + "' "      //BRON
             } else if (type === "GA4") {
                 query += "SELECT 'insert' AS ACTION, CAST(SAFE.PARSE_DATE(\"%Y%m%d\",regexp_replace(CAST(event_date AS STRING), \"-\", \"\")) as datetime) AS RECEIVEDON, 'GA4' "
