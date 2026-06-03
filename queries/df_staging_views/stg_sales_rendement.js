@@ -82,7 +82,7 @@ FROM
         FROM ${ref("df_rawdata_views", "lef_leads")}
 
         WHERE 
-        REGEXP_CONTAINS(email, '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,5}')
+        REGEXP_CONTAINS(email, r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,5}')
       ) lef_leads
       ON 
         LOWER(TRIM(email_events.email)) = LOWER(TRIM(lef_leads.contactwijzen))
@@ -110,7 +110,7 @@ FROM
         FROM ${ref("df_staging_views", "stg_sam_offertes")} 
 
         WHERE 
-          REGEXP_CONTAINS(IFNULL(offerte_RELATIE_EMAIL, RELATIE_EMAILZAKELIJK), '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,5}')
+          REGEXP_CONTAINS(IFNULL(offerte_RELATIE_EMAIL, RELATIE_EMAILZAKELIJK), r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,5}')
       ) sam_salestrajecten
       ON 
         LOWER(TRIM(email_events.email)) = LOWER(TRIM(sam_salestrajecten.offerte_RELATIE_EMAIL))
