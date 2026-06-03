@@ -21,7 +21,7 @@ FROM (
   SELECT
     ROW_NUMBER() OVER (
       PARTITION BY verstuurd_bericht, hubspot.kenteken, hubspot.email, datum_bericht
-      ORDER BY werkplaatsafspraak_datum DESC
+      ORDER BY werkplaatsafspraak DESC
     ) AS rank,
     COALESCE(hubspot.email, werkplaatsafspraken.email) as email,
     hubspot.* EXCEPT(email),
