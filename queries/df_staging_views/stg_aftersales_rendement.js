@@ -41,7 +41,7 @@ FROM (
     ${ref("df_staging_views","stg_hubspot_aftersales_emailstats")} hubspot
 
   LEFT JOIN
-    ${ref("df_staging_views","stg_ma_assign_last_workorder")} werkplaatsafspraken
+    ${ref("df_staging_views","stg_ma_assign_workorder")} werkplaatsafspraken
     ON
     TRIM(REPLACE(hubspot.voertuig_kenteken, "-", "")) = TRIM(werkplaatsafspraken.kenteken)
     OR TRIM(hubspot.voertuig_id) = TRIM(werkplaatsafspraken.werkorder_voertuig_id)
