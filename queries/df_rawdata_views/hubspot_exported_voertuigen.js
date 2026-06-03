@@ -14,6 +14,7 @@ SELECT
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.hs_lastmodifieddate') AS hs_lastmodifieddate,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.kenteken') AS kenteken,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.merk') AS merk,
+  JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.model') AS model,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.werkplaats_vestiging') AS werkplaats_vestiging,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.voertuig_imported_from_pk_datalake') AS voertuig_imported_from_pk_datalake
 FROM
