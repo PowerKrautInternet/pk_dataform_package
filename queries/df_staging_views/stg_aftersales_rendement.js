@@ -8,7 +8,7 @@ SELECT
   datum_bericht,
   email,
   binnen_90_dagen AS afspraak_na_mail,
-  IF(binnen_90_dagen = true, factuurbedrag, 0) AS afspraak_factuurbedrag_na_mail,
+  IF(binnen_90_dagen = true, SAFE_CAST(factuurbedrag AS FLOAT64), 0) AS afspraak_factuurbedrag_na_mail,
   werkplaatsafspraak_datum,
   werkplaats_vestiging,
   kenteken,
