@@ -682,5 +682,7 @@ module.exports = {stg_ga4_attribution_model_sessies,
     stg_hubspotworkflows_voertuigen,
     stg_sales_rendement,
     stg_hubspot_sales_emailstats,
-    stg_hubspot_deals_gemist_rendement
+    stg_hubspot_deals_gemist_rendement,
+    stg_hubspot_aftersales_emailstats,
+    stg_aftersales_rendement
 }
