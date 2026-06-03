@@ -20,7 +20,7 @@ FROM(
     berijder_email AS email,
     kenteken,
     werkplaats_vestiging,
-    workflow_id,
+    msg.workflow_id,
     voertuig_id,
     merk,
     model
