@@ -43,7 +43,7 @@ FROM (
   LEFT JOIN
     ${ref("df_staging_views","stg_ma_assign_workorder")} werkplaatsafspraken
     ON
-    TRIM(REPLACE(hubspot.voertuig_kenteken, "-", "")) = TRIM(werkplaatsafspraken.kenteken)
+    TRIM(REPLACE(hubspot.kenteken, "-", "")) = TRIM(werkplaatsafspraken.kenteken)
     OR TRIM(hubspot.voertuig_id) = TRIM(werkplaatsafspraken.werkorder_voertuig_id)
     )
 WHERE
