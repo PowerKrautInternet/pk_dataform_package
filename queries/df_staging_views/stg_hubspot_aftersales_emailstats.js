@@ -10,6 +10,7 @@ verstuurd_bericht,
 email,
 kenteken,
 werkplaats_vestiging,
+voertuig_id
 FROM(
   SELECT
     CAST(TIMESTAMP_MILLIS(CAST(datum_bericht AS INT64)) AS DATE) AS datum_bericht,
@@ -18,7 +19,7 @@ FROM(
     kenteken,
     werkplaats_vestiging,
     workflow_id,
-
+    voertuig_id
   FROM(
     SELECT 
     *
