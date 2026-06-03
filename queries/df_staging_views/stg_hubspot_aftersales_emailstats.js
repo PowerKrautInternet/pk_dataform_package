@@ -37,7 +37,6 @@ FROM(
     msg.workflow_id = flows.workflow_id
   AND
     flows.type = "Aftersales"
-  WHERE workflow_id <> "" AND workflow_id is not null
 ) voertuig
 `
 let refs = pk.getRefs()
