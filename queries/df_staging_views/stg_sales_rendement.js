@@ -9,8 +9,10 @@ SELECT
   IFNULL(email_stats.deal_vestiging, deals_gemist.deal_vestiging)                     AS deal_vestiging,
   IFNULL(email_stats.gewenst_merk, deals_gemist.gewenst_merk)                         AS gewenst_merk,
   IFNULL(extra_information, deal_source)                                              AS systeem,
-  email_stats.* except(datum_bericht, deal_afsluitreden, deal_vestiging, gewenst_merk, gewenst_soort_auto, offerte_LEADTRAJECT_EERSTEKWALIFICATIE),
-  deals_gemist.* except(deal_eind_datum, deal_afsluit_reden, deal_vestiging, gewenst_merk),
+  IFNULL(email_stats.deal_id, deals_gemist.deal_id)                                   AS deal_id,
+  IFNULL(email_stats.gewenst_model, deals_gemist.gewenst_model)                       AS gewenst_model,
+  email_stats.* except(datum_bericht, deal_afsluitreden, deal_vestiging, gewenst_merk, gewenst_soort_auto, offerte_LEADTRAJECT_EERSTEKWALIFICATIE, deal_id, gewenst_model, type_flow),
+  deals_gemist.* except(deal_eind_datum, deal_afsluit_reden, deal_vestiging, gewenst_merk, deal_id, gewenst_model),
   CASE
     WHEN email_stats.verstuurd_bericht <> "" AND email_stats.verstuurd_bericht LIKE "%Re-activatie%" 
       THEN "Re-activatie"
