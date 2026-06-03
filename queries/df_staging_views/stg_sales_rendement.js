@@ -5,12 +5,12 @@ let query = `
 
 SELECT 
   IFNULL(datum_bericht, deal_eind_datum)                                              AS datum_bericht,
-  IFNULL(email_stats.deal_afsluitreden, deals_gemist.deal_afsluitreden)               AS deal_afsluitreden,
+  IFNULL(email_stats.deal_afsluitreden, deals_gemist.deal_afsluit_reden)              AS deal_afsluitreden,
   IFNULL(email_stats.deal_vestiging, deals_gemist.deal_vestiging)                     AS deal_vestiging,
   IFNULL(email_stats.gewenst_merk, deals_gemist.gewenst_merk)                         AS gewenst_merk,
   IFNULL(extra_information, deal_source)                                              AS systeem,
-  email_stats.* except(datum_bericht, deal_afsluitreden, deal_vestiging, gewenst_merk, gewenst_soort_auto, offerte_LEADTRAJECT_EERSTEKWALIFICATIE, segment),
-  deals_gemist.* except(deal_eind_datum, deal_afsluitreden, deal_vestiging, gewenst_merk),
+  email_stats.* except(datum_bericht, deal_afsluitreden, deal_vestiging, gewenst_merk, gewenst_soort_auto, offerte_LEADTRAJECT_EERSTEKWALIFICATIE),
+  deals_gemist.* except(deal_eind_datum, deal_afsluit_reden, deal_vestiging, gewenst_merk),
   CASE
     WHEN email_stats.verstuurd_bericht <> "" AND email_stats.verstuurd_bericht LIKE "%Re-activatie%" 
       THEN "Re-activatie"
@@ -47,13 +47,13 @@ FROM
         ifnull(email_events.gewenst_model, IFNULL (lef_leads.gewenstModel, sam_salestrajecten.offerte_AFLEVERINGMODEL_OMSCHRIJVING)) as gewenst_model
       FROM 
       (
-        SELECT 
+        SELECT
+          "HUBSPOT" as extra_information,
           datum_bericht,
           verstuurd_bericht,
           email,
           gewenst_merk,
-          sales.* EXCEPT(datum_bericht, email, gewenst_merk, segment, verstuurd_bericht),
-          segment,
+          sales.* EXCEPT(datum_bericht, email, gewenst_merk, verstuurd_bericht),
 
         FROM ${ref("df_staging_views", "stg_hubspot_sales_emailstats")} sales
       ) email_events
@@ -71,12 +71,12 @@ FROM
           kwalificatie,
           bron,
           systeem as lead_systeem,
-          vestiging,
+          vestiging AS deal_vestiging,
           resultaat,
-          afsluitreden,
+          afsluitreden AS deal_afsluitreden,
           gewenstMerk,
           gewenstModel,
-          gewenstAutoSoort,
+          gewenstAutoSoort AS gewenst_soort_auto,
           email as contactwijzen
         
         FROM ${ref("df_rawdata_views", "lef_leads")}
