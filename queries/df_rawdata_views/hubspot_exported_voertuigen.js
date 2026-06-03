@@ -8,6 +8,7 @@ SELECT
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.hs_object_id') AS hs_object_id,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.objectType') AS objectType,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.berijder_email') AS berijder_email,
+  JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.voertuig_id') AS voertuig_id,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.berijder_id') AS berijder_id,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.hs_createdate') AS hs_createdate,
   JSON_EXTRACT_SCALAR(PAYLOAD, '$.response.hs_lastmodifieddate') AS hs_lastmodifieddate,
