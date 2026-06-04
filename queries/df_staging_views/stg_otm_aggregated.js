@@ -42,13 +42,13 @@ SELECT
   status_created_at AS status_created_at_otm,
   status_updated_at AS status_updated_at_otm,
   taxation_date AS taxation_date_otm,
-  SAFE_CAST(created_at AS DATE) AS created_at_date_otm,
+  DATE(SAFE_CAST(created_at AS TIMESTAMP)) AS created_at_date_otm,
   ${ifSource("stg_openRdwData", `
     datum_tenaamstelling AS datum_tenaamstelling_otm,
-    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= SAFE_CAST(created_at AS DATE), 1,0) AS verkocht_otm,`)}
+    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= DATE(SAFE_CAST(created_at AS TIMESTAMP)), 1,0) AS verkocht_otm,`)}
   ${ifSource(["stg_openRdwData", "lef_leads"], `
-    IF(heeftOrder = "true" AND SAFE_CAST(datum_tenaamstelling AS DATE) < SAFE_CAST(created_at AS DATE), 1,0) AS in_aflevering_otm,
-    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= SAFE_CAST(created_at AS DATE) AND (lef.heeftOrder = "false" OR lef.heeftOrder IS NULL), 1,0) AS elders_verkocht_otm,`)}
+    IF(heeftOrder = "true" AND SAFE_CAST(datum_tenaamstelling AS DATE) < DATE(SAFE_CAST(created_at AS TIMESTAMP)), 1,0) AS in_aflevering_otm,
+    IF(SAFE_CAST(datum_tenaamstelling AS DATE) >= DATE(SAFE_CAST(created_at AS TIMESTAMP)) AND (lef.heeftOrder = "false" OR lef.heeftOrder IS NULL), 1,0) AS elders_verkocht_otm,`)}
     ${ifSource("lef_leads", `
     IF(lef.heeftOrder = 'true', 1,0) AS heeft_order_otm,
     IF(lef.heeftOfferte = 'true',1,0) AS heeft_offerte_otm,
@@ -139,7 +139,7 @@ ${join(`LEFT JOIN (
   FROM`, "df_rawdata_views", "lef_leads",
        `WHERE bron = "Taxatie Module Online")
   WHERE rank = 1) lef
-ON REPLACE(huidigKenteken, '-', '') = kenteken AND SAFE_CAST(created_at AS DATE) = aangemaaktDatum
+ON REPLACE(huidigKenteken, '-', '') = kenteken AND DATE(SAFE_CAST(created_at AS TIMESTAMP)) = aangemaaktDatum
 `)}
 ${join(`LEFT JOIN (SELECT
 MAX(IFNULL(session_campaign, first_user_campaign_name)) as session_campaign,
