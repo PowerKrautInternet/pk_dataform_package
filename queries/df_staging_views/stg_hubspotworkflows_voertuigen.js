@@ -22,7 +22,7 @@ LEFT JOIN
 ON
   msg.contact_object_id = contacts.hs_object_id
 WHERE
-  msg.object_type = voertuigen.objectType
+  voertuigen.hs_object_id IS NOT NULL
 
 `
 let refs = pk.getRefs()
