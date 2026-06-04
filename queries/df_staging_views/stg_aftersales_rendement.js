@@ -3,19 +3,19 @@ let pk = require("../../sources")
 let ref = pk.ref
 let query = `
 SELECT
-  "Hubspot"                                                                   AS aftersales_bron,
-  verstuurd_bericht                                                           AS aftersales_verstuurd_bericht,
-  datum_bericht                                                               AS aftersales_datum_bericht,
-  email                                                                       AS aftersales_email,
-  binnen_90_dagen                                                             AS aftersales_afspraak_na_mail,
-  IF(binnen_90_dagen = true, SAFE_CAST(factuurbedrag AS FLOAT64), 0)          AS aftersales_afspraak_factuurbedrag_na_mail,
-  werkplaatsafspraak_datum                                                    AS aftersales_werkplaatsafspraak_datum,
-  werkplaats_vestiging                                                        AS aftersales_werkplaats_vestiging,
-  kenteken                                                                    AS aftersales_kenteken,
-  merk                                                                        AS aftersales_merk,
-  model                                                                       AS aftersales_model,
-  werkplaatsafspraak_vestiging                                                AS aftersales_werkplaatsafspraak_vestiging,
-  COALESCE(werkplaatsafspraak_vestiging, werkplaats_vestiging)                AS aftersales_vestiging,
+  "Hubspot" AS aftersales_bron,
+  verstuurd_bericht AS aftersales_verstuurd_bericht,
+  datum_bericht AS aftersales_datum_bericht,
+  email AS aftersales_email,
+  binnen_90_dagen AS aftersales_afspraak_na_mail,
+  IF(binnen_90_dagen = true, SAFE_CAST(factuurbedrag AS FLOAT64), 0) AS aftersales_afspraak_factuurbedrag_na_mail,
+  werkplaatsafspraak_datum AS aftersales_werkplaatsafspraak_datum,
+  werkplaats_vestiging AS aftersales_werkplaats_vestiging,
+  kenteken AS aftersales_kenteken,
+  merk AS aftersales_merk,
+  model AS aftersales_model,
+  werkplaatsafspraak_vestiging AS aftersales_werkplaatsafspraak_vestiging,
+  COALESCE(werkplaatsafspraak_vestiging, werkplaats_vestiging) AS aftersales_vestiging,
 
 FROM (
   SELECT
