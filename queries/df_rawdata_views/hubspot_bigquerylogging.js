@@ -23,6 +23,7 @@ SELECT
     JSON_VALUE(PAYLOAD, '$.data.context.actionExecutionIndexIdentifier.actionExecutionIndex') AS context_action_execution_index,
     JSON_VALUE(PAYLOAD, '$.data.context.source') AS source,
     JSON_VALUE(PAYLOAD, '$.data.object.objectId') AS object_id,
+    JSON_VALUE(PAYLOAD, '$.data.contact.hs_object_id') AS contact_object_id,
     JSON_VALUE(PAYLOAD, '$.data.object.objectType') AS object_type,
     JSON_VALUE(PAYLOAD, '$.data.fields.associate_contact') AS fields_associate_contact,
     JSON_VALUE(PAYLOAD, '$.data.inputFields.associate_contact') AS input_fields_associate_contact,

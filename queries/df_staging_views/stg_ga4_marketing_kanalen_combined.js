@@ -33,6 +33,8 @@ ga4_ads AS (
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.bron"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.bron"),
         ifSource("stg_hubspot_workflowstats", "hs_bron"),
+        ifSource("stg_sales_rendement", "sales.sales_systeem"),
+        ifSource("stg_aftersales_rendement", "aftersales.aftersales_bron"),
         ifSource("stg_otm_aggregated", "otm.bron"),
     ])} AS bron,
     ${ifNull([
@@ -57,6 +59,8 @@ ga4_ads AS (
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_name"),
         orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.session_campaign"),
         ifSource("stg_hubspot_workflowstats", "hs.session_campaign"),
+        ifSource("stg_sales_rendement", "sales.sales_verstuurd_bericht"),
+        ifSource("stg_aftersales_rendement", "aftersales.aftersales_verstuurd_bericht"),
         ifSource("stg_otm_aggregated", "session_campaign_otm"),
     ])} AS campaign_name,
     ${ifNull([
@@ -66,6 +70,8 @@ ga4_ads AS (
         ifSource("stg_marketingdashboard_searchconsole", "searchconsole.data_date"),
         ifSource("stg_activecampaign_ga4_sheets", "ac.record_datum"),
         ifSource("stg_hubspot_workflowstats", "hs_date"),
+        ifSource("stg_sales_rendement", "sales.sales_datum_bericht"),
+        ifSource("stg_aftersales_rendement", "aftersales.aftersales_datum_bericht"),
         ifSource("stg_otm_aggregated", "created_at_date_otm")
     ])} AS record_date,
     ${ifNull([
@@ -92,6 +98,8 @@ ga4_ads AS (
         ifSource("gs_merken", "ga4.merk_event"),
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.merk"),
         orSource(["stg_lef_leads_agg", "stg_syntec_leads_orders_combined"], "crm.merk"),
+        ifSource("stg_sales_rendement", "sales.sales_gewenst_merk"),
+        ifSource("stg_aftersales_rendement", "aftersales.aftersales_merk"),
         "'Overig'"
     ], "AS merk,")}
 
@@ -240,6 +248,12 @@ ga4_ads AS (
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.hs_workflow_name"), ifSource("stg_hubspot_workflowstats", "ga4.hs_workflow_name")], "AS hs_workflow_name,")}
     ${ifNull([ifSource("stg_hubspot_workflowstats", "hs.edm_name"), ifSource("stg_hubspot_workflowstats", "ga4.edm_name")], "AS edm_name,")}
 
+    -- Sales rendement velden
+    ${ifSource("stg_sales_rendement", "sales.* EXCEPT(sales_systeem, sales_datum_bericht, sales_verstuurd_bericht, sales_gewenst_merk),")}
+
+    -- Aftersales rendement velden
+    ${ifSource("stg_aftersales_rendement", "aftersales.* EXCEPT(aftersales_bron, aftersales_datum_bericht, aftersales_verstuurd_bericht, aftersales_merk),")}
+
     -- Uitgave categorisatie
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.uitgave_categorie"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_categorie")], "AS uitgave_categorie,")}
     ${ifNull([ifSource("stg_handmatige_uitgaves_pivot", "marketing_kanalen.bron"), orSource(["gs_kostenlefmapping", "gs_kostensyntecmapping"], "crm.uitgave_bron")], "AS uitgave_bron,")}
@@ -255,6 +269,8 @@ ga4_ads AS (
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_crm_leads_combined", "AS crm ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_activecampaign_ga4_sheets", "AS ac ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_hubspot_workflowstats", "AS hs ON 1=0")}
+  ${join("FULL OUTER JOIN", "df_staging_views", "stg_sales_rendement", "AS sales ON 1=0")}
+  ${join("FULL OUTER JOIN", "df_staging_views", "stg_aftersales_rendement", "AS aftersales ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_otm_aggregated", "AS otm ON 1=0")}
 ),
 
