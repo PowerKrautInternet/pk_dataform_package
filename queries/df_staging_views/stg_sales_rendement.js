@@ -65,9 +65,9 @@ SELECT
   email_stats.* except(datum_bericht, deal_afsluitreden, deal_vestiging, gewenst_merk, gewenst_soort_auto, offerte_LEADTRAJECT_EERSTEKWALIFICATIE, deal_id, gewenst_model, type_flow),
   deals_gemist.* except(deal_eind_datum, deal_afsluit_reden, deal_vestiging, gewenst_merk, deal_id, gewenst_model),
   CASE
-    WHEN email_stats.verstuurd_bericht <> "" AND email_stats.verstuurd_bericht LIKE "%Re-activatie%"
+    WHEN email_stats.verstuurd_bericht <> "" AND LOWER(email_stats.verstuurd_bericht) LIKE "%re-activatie%"
       THEN "Re-activatie"
-    WHEN email_stats.verstuurd_bericht <> "" AND email_stats.verstuurd_bericht NOT LIKE "%Re-activatie%"
+    WHEN email_stats.verstuurd_bericht <> "" AND LOWER(email_stats.verstuurd_bericht) NOT LIKE "%re-activatie%"
       THEN "Sales"
     ELSE NULL
   END AS type_flow,
