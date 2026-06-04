@@ -69,7 +69,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency\
 
                 //SELECT ...
                 query += "\n\tSELECT "
-                query += "\n\tSAFE_CAST(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR)) AS DATE) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
+                query += "\n\tSAFE.DATE(MAX(DATE_ADD(RECEIVEDON, INTERVAL 2 HOUR))) AS MAX_RECEIVEDON, "     //MAX_RECEIVEDON
                 query += "'" + sources[s].name + "' AS BRON, "      //BRON
 
                 //KEY1 ...
