@@ -18,7 +18,8 @@ SELECT
     event_buy_kleur,
     event_buy_type,
     event_buy_item_id,
-    event_trade_in_model, 
+    vehicle_nameplate,
+    event_trade_in_model,
     event_trade_in_brand,
     event_trade_in_bouwjaar,
     event_trade_in_brandstof,
@@ -113,8 +114,9 @@ SELECT
     event_buy_type,
     event_buy_item_id,
     event_buy_bouwjaar,
-    event_trade_in_model, 
-    event_trade_in_brand, 
+    vehicle_nameplate,
+    event_trade_in_model,
+    event_trade_in_brand,
     event_trade_in_bouwjaar,
     event_trade_in_brandstof,
     privacy_analytics_storage,
@@ -176,7 +178,23 @@ SELECT
     dealer_event AS dealer_event,
     email AS email`)}
 
-FROM ${ref("ga4_events")}
+FROM (
+  SELECT e.* EXCEPT(vehicle_nameplate), vn.vehicle_nameplate
+  FROM ${ref("ga4_events")} e
+  LEFT JOIN (
+    SELECT
+      account,
+      user_pseudo_id,
+      event_ga_session_id,
+      MAX(vehicle_nameplate) AS vehicle_nameplate
+    FROM ${ref("ga4_events")}
+    WHERE vehicle_nameplate IS NOT NULL
+    GROUP BY account, user_pseudo_id, event_ga_session_id
+  ) vn
+    ON e.account = vn.account
+    AND e.user_pseudo_id = vn.user_pseudo_id
+    AND e.event_ga_session_id = vn.event_ga_session_id
+)
 
 WHERE user_pseudo_id <> "" AND CAST(event_ga_session_id AS STRING) <> ""
 AND event_name = 'session_start'
