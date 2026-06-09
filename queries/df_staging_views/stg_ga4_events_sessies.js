@@ -124,6 +124,7 @@ FROM(
     IFNULL(session_geo_continent, geo_continent) AS session_geo_continent,
     IFNULL(events.event_buy_status, sessie_assignment.event_buy_status) AS event_buy_status,
     IFNULL(events.event_buy_model, sessie_assignment.event_buy_model) AS event_buy_model,
+    IFNULL(events.vehicle_nameplate, sessie_assignment.vehicle_nameplate) AS vehicle_nameplate,
     IFNULL(events.event_buy_plaats, sessie_assignment.event_buy_plaats) AS event_buy_plaats,
     IFNULL(events.event_buy_brand, sessie_assignment.event_buy_brand) AS event_buy_brand,
     IFNULL(events.event_trade_in_model, sessie_assignment.event_trade_in_model) AS event_trade_in_model,
