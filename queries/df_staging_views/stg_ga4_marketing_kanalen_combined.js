@@ -19,7 +19,7 @@ ga4_ads AS (
     ${ifSource("stg_hubspot_workflowstats",", hs_workflow_name, edm_name")}
     ${ifSource("gs_activecampaign_ga4_mapping",", ac_campaign")}
     ),
-    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, account, advertiser_name")}
+    ${ifSource("stg_marketingkanalen_combined", "marketing_kanalen.* EXCEPT(bron, campaign_name, record_date, campaign_id, ad_group_id, ad_group_name, merk, model, account, advertiser_name")}
     ${ifSource("stg_handmatige_uitgaves_pivot", ", uitgave_categorie")}
     ${ifSource("stg_marketingkanalen_combined", "),")}
     ${ifSource("stg_marketingkanalen_combined", "advertiser_name AS account_name,")}
@@ -79,7 +79,7 @@ ga4_ads AS (
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_id")
     ], "AS campaign_id,")}
     ${ifNull(["ga4.session_google_ads_ad_group_id", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_id")], "AS ad_group_id,")}
-    ${ifNull([`IF(ga4.kanaal IN ('META', 'Microsoft Ads'), ga4.session_content, ga4.session_google_ads_ad_group_name)`, ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")], "AS ad_group_name,")}
+    ${ifNull([`IF(ga4.kanaal IN ('META', 'Microsoft Ads', 'Google Ads'), ga4.session_content, ga4.session_google_ads_ad_group_name)`, ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")], "AS ad_group_name,")}
 
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
@@ -102,6 +102,19 @@ ga4_ads AS (
         ifSource("stg_aftersales_rendement", "aftersales.aftersales_merk"),
         "'Overig'"
     ], "AS merk,")}
+
+    -- Model (gecombineerde lookup tegen gs_modellen op basis van GA4-signalen + Ads-side text)
+    ${ifSource('gs_modellen', `${ref("lookup_table_sql")}(
+        TRIM(CONCAT(
+            IFNULL(ga4.vehicle_nameplate, ''), ' ',
+            IFNULL(ga4.event_buy_model, ''), ' ',
+            IFNULL(ga4.session_content, ''), ' ',
+            IFNULL(ga4.session_campaign, ''), ' ',
+            ${ifSource("stg_marketingkanalen_combined", "IFNULL(marketing_kanalen.ads_merk_concat, ''), ' ', IFNULL(marketing_kanalen.model, ''),")}
+            ''
+        )),
+        lookup_modellen.haystack
+    )`)} AS model,
 
     -- Google Search Console metrics
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.impressions AS gsc_impressions,")}
@@ -272,6 +285,7 @@ ga4_ads AS (
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_sales_rendement", "AS sales ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_aftersales_rendement", "AS aftersales ON 1=0")}
   ${join("FULL OUTER JOIN", "df_staging_views", "stg_otm_aggregated", "AS otm ON 1=0")}
+  ${ifSource('gs_modellen', `CROSS JOIN (SELECT INITCAP(TO_JSON_STRING(ARRAY(SELECT model FROM ${ref("df_googlesheets_tables", "gs_modellen", true)}))) AS haystack) lookup_modellen`)}
 ),
 
 -- CTE 2: campagnegroep lookup + master_bu_concat opbouwen voor business unit classificatie

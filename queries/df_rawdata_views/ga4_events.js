@@ -34,6 +34,7 @@ SELECT
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'buy_kleur') as event_buy_kleur,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'buy_type') as event_buy_type,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'buy_item_id') as event_buy_item_id,
+    (SELECT value.string_value FROM unnest(event_params) WHERE key = 'vehicle_nameplate') as vehicle_nameplate,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'trade_in_model') as event_trade_in_model,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'trade_in_brand') as event_trade_in_brand,
     (SELECT value.string_value FROM unnest(event_params) WHERE key = 'trade_in_bouwjaar') as event_trade_in_bouwjaar,
