@@ -73,7 +73,7 @@ ga4_ads AS (
         ifSource("stg_marketingkanalen_combined", "marketing_kanalen.campaign_id")
     ], "AS campaign_id,")}
     ${ifNull(["ga4.session_google_ads_ad_group_id", ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_id")], "AS ad_group_id,")}
-    ${ifNull([`IF(ga4.kanaal IN ('META', 'Microsoft Ads'), ga4.session_content, ga4.session_google_ads_ad_group_name)`, ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")], "AS ad_group_name,")}
+    ${ifNull([`IF(ga4.kanaal IN ('META', 'Microsoft Ads', Google Ads), ga4.session_content, ga4.session_google_ads_ad_group_name)`, ifSource("stg_marketingkanalen_combined", "marketing_kanalen.ad_group_name")], "AS ad_group_name,")}
 
     -- Pagina & device dimensies
     ${ifNull(["ga4.session_landingpage_location",
