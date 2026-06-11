@@ -165,7 +165,7 @@ SELECT bron, key1, max_receivedon, recency_check, freshnessDays, enabledRecency 
                 if(type === "googleAds"){
                     query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
                 } else if (type === "DV360"){
-                    query += getKey1(type, name);
+                    query += getKey1(type, sources[s]);
                 } else if (type === "google_search_console"){
                     query += "site_url"
                 }
@@ -235,7 +235,7 @@ function dk_monitor(){
             } else if( type === "googleAds" ){
                 query += "'" + (sources[s].alias ?? name.split("_")[2]) + "'"
             } else if (type === "DV360"){
-                query += getKey1(type, name);
+                query += getKey1(type, sources[s]);
             } else if (type === "google_search_console"){
                 query += "site_url"
             }
@@ -309,10 +309,29 @@ function whereCrmId(source){
     return query
 }
 
-function getKey1(type, name){
+/**
+ * @brief Genereert KEY1 voor de datakwaliteit-views (dk_maxReceivedon / dk_monitor).
+ *
+ * Voor DV360 wordt KEY1 normaliter uit de legacy tabelnaam afgeleid
+ * (`Dagelijkse_BQ_Export_-_<Klant>_dv360_...`). Sinds de overstap naar een
+ * centrale DV360-dataset (`pk-datalake-powerkraut.DV360_marketingdashboard.*`)
+ * bevat de tabelnaam geen klantnaam meer; in dat geval valt deze functie terug
+ * op `source.account` (anders `source.alias`, anders `"DV360"`), zodat
+ * dk_monitor en dk_maxReceivedon per klant gesplitst blijven.
+ *
+ * @param {string} type - Het brontype zoals getypeerd door `getTypeSource()`.
+ * @param {Object} source - Het volledige bronobject uit `setSources()`.
+ * @returns {string} Een SQL-fragment dat als KEY1-waarde gebruikt kan worden.
+ */
+function getKey1(type, source){
+    let name = source.name ?? ""
     let key1_query = ""
     switch(type){
         case "DV360":
+            // Nieuwe centrale DV360-tabellen (zonder "-_" in de naam): val terug op account/alias.
+            if (name.indexOf("-_") === -1) {
+                return "'" + (source.account ?? source.alias ?? "DV360") + "'"
+            }
             key1_query = "'"
             let names = name.split("-_")[1].split("_")
             for (let i = 0; names[i] !== 'dv360' && i < 3; i++){
