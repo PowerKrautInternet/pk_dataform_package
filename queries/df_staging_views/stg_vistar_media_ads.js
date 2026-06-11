@@ -18,7 +18,7 @@ FROM(
   insertion_order,
   deal_id,
   creative_id,
-  SAFE_CAST(date AS DATE) AS date,
+  DATE(SAFE_CAST(date AS TIMESTAMP)) AS date,
   country,
   global_city,
   MAX(deal) as deal,
