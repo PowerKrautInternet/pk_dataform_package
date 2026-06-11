@@ -69,6 +69,19 @@ const sources = [
     freshnessDays: 5    //Wanneer je wilt aangeven dat de limiet van acceptable achterlopen 5 dagen is. (5 dagen is okay, 6 dagen is alarm slaan)
   },
   {
+    // Voorbeeld: centrale DV360-dataset in pk-datalake-powerkraut, automatisch
+    // gefilterd op één of meerdere advertiser_id's van deze klant.
+    // Het klantproject heeft alleen BigQuery Data Viewer nodig op pk-datalake-powerkraut.
+    database: "pk-datalake-powerkraut",
+    schema: "<centraal-dv360-schema>",
+    name: "<centrale-dv360-tabel>",
+    alias: "DV360",                       // Vereist zodat getTypeSource() de bron als DV360 herkent
+    account: "Autobedrijf Ede",
+    advertiser_id: "123456"               // string óf array: ["123456", "789012"]
+                                          // ref("DV360") injecteert hier automatisch
+                                          // WHERE advertiser_id IN (...) op
+  },
+  {
     schema: "...",
     name: "...",
     ...
