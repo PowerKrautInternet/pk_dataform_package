@@ -8,7 +8,7 @@ let query = `
         account,
         advertiser_id,
         campaign_id,
-        --MAX(campaign) AS campaign,
+        MAX(campaign) AS campaign,
         MAX(advertiser) AS advertiser,
         MAX(advertiser_currency) AS advertiser_currency,
         insertion_order_id,
@@ -26,12 +26,17 @@ let query = `
         date,
         site_id,
         MAX(site) AS site,
+        city AS dv360_city,
+        country_code AS dv360_country,
+        zip_postal_code AS dv360_zip,
+        region AS dv360_region,
+        inventory_source AS dv360_inventory_source,
         SUM(CAST(revenue_advertiser_currency AS FLOAT64)) AS revenue_advertiser_currency,
         SUM(CAST(media_cost_advertiser_currency AS FLOAT64)) AS media_cost_advertiser_currency,
         SUM(CAST(impressions AS INT64)) AS impressions,
         SUM(CAST(active_view_viewable_impressions AS INT64)) AS active_view_viewable_impressions,
         SUM(CAST(clicks AS INT64)) AS clicks,
-        SUM(CAST(total_conversions AS INT64)) AS total_conversions,
+        SUM(CAST(total_conversions AS FLOAT64)) AS total_conversions,
         SUM(CAST(view_through_conversions AS FLOAT64)) AS view_through_conversions,
         SUM(CAST(click_through_conversions AS FLOAT64)) AS click_through_conversions,
         SUM(CAST(rich_media_video_plays AS FLOAT64)) AS rich_media_video_plays,
@@ -60,7 +65,12 @@ let query = `
         line_item_id,
         creative_id,
         date,
-        site_id
+        site_id,
+        city,
+        country_code,
+        zip_postal_code,
+        region,
+        inventory_source
 
 `
 let refs = getRefs()

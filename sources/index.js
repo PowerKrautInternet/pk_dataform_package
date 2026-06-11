@@ -222,6 +222,7 @@ function ref(p1, p2, ifSource = false, dependant = true) {
             r.name = sources[s].name ?? ""
             r.query = "`" + sources[s].database + "." + sources[s].schema
             r.account = typeof sources[s].account !== "undefined" ? "'" + sources[s].account + "'" : null;
+            r.advertiser_id = sources[s].advertiser_id ?? null;
             r.noSuffix = sources[s].noSuffix ?? null;
             r.declaredSource = sources[s].declaredSource ?? false;
             //voeg een suffix voor development toe. Alleen toevoegen als het niet om brondata gaat (gedefineerd als rawdata of googleSheets)
@@ -256,6 +257,7 @@ function ref(p1, p2, ifSource = false, dependant = true) {
             refQuery += `${ref[r].declaredSource ? (ref[r].account ?? "CAST(NULL AS STRING)") + " as account," : ""} `
             refQuery += `\n-- test - ${getTypeSource(ref[r])}\n`
             refQuery += " FROM \n" + ref[r].query;
+            refQuery += buildAdvertiserFilter(ref[r]);
         }
         refQuery +=" \n)"
         return refQuery
@@ -404,6 +406,33 @@ function orSource(name, query) {
     return query;
 }
 
+
+/**
+ * @brief Bouwt een WHERE-clause die DV360-data filtert op de in `setSources()` gedeclareerde `advertiser_id`.
+ *
+ * Wordt alleen toegepast op bronnen waarvoor `getTypeSource()` "DV360" teruggeeft. Voor andere brontypes
+ * wordt `advertiser_id` genegeerd. Accepteert zowel een string als een array van strings en levert altijd
+ * een `WHERE advertiser_id IN (...)` op (met geescapete enkele quotes om injection te voorkomen).
+ *
+ * @param {Object} r - Het ref-object zoals opgebouwd in `ref()`, inclusief `advertiser_id` en herkenbaarheid voor `getTypeSource()`.
+ * @returns {string} SQL-fragment dat na FROM kan worden geplakt, of een lege string.
+ */
+function buildAdvertiserFilter(r) {
+    if (getTypeSource(r) !== "DV360") return "";
+    let id = r.advertiser_id;
+    if (id === null || typeof id === "undefined" || id === "") return "";
+    let ids = Array.isArray(id) ? id : [id];
+    // Type-aware: numbers (incl. BigInt) renderen als bare numeriek voor INT64-kolommen
+    // (clustering/partition pruning blijft werken). Strings worden ge-escaped en gequote.
+    let escaped = ids
+        .filter(v => v !== null && typeof v !== "undefined" && v !== "")
+        .map(v => {
+            if (typeof v === "number" || typeof v === "bigint") return String(v);
+            return "'" + String(v).replace(/'/g, "''") + "'";
+        });
+    if (escaped.length === 0) return "";
+    return "\nWHERE advertiser_id IN (" + escaped.join(",") + ")";
+}
 
 /**
  * @brief Bepaalt het type gegevensbron op basis van de naam of alias van de bron.
