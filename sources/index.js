@@ -418,19 +418,27 @@ function orSource(name, query) {
  * @returns {string} SQL-fragment dat na FROM kan worden geplakt, of een lege string.
  */
 function buildAdvertiserFilter(r) {
-    if (getTypeSource(r) !== "DV360") return "";
+    if (getTypeSource(r) !== "DV360") {
+        return "";
+    }
     let id = r.advertiser_id;
-    if (id === null || typeof id === "undefined" || id === "") return "";
+    if (id === null || typeof id === "undefined" || id === "") {
+        return "";
+    }
     let ids = Array.isArray(id) ? id : [id];
     // Type-aware: numbers (incl. BigInt) renderen als bare numeriek voor INT64-kolommen
     // (clustering/partition pruning blijft werken). Strings worden ge-escaped en gequote.
     let escaped = ids
         .filter(v => v !== null && typeof v !== "undefined" && v !== "")
         .map(v => {
-            if (typeof v === "number" || typeof v === "bigint") return String(v);
+            if (typeof v === "number" || typeof v === "bigint") {
+                return String(v);
+            }
             return "'" + String(v).replace(/'/g, "''") + "'";
         });
-    if (escaped.length === 0) return "";
+    if (escaped.length === 0) {
+        return "";
+    }
     return "\nWHERE advertiser_id IN (" + escaped.join(",") + ")";
 }
 
