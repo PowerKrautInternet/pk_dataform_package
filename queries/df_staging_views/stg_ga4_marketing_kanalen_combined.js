@@ -104,6 +104,8 @@ ga4_ads AS (
     ], "AS merk,")}
 
     -- Model (gecombineerde lookup tegen gs_modellen op basis van GA4-signalen + Ads-side text)
+    -- AS model, zit binnen de ifSource: zonder gs_modellen-declaratie wordt het hele
+    -- veld weggelaten i.p.v. een orphan "AS model" buiten een commented-out expressie te laten staan.
     ${ifSource('gs_modellen', `${ref("lookup_table_sql")}(
         TRIM(CONCAT(
             IFNULL(ga4.vehicle_nameplate, ''), ' ',
@@ -114,7 +116,7 @@ ga4_ads AS (
             ''
         )),
         lookup_modellen.haystack
-    )`)} AS model,
+    ) AS model,`)}
 
     -- Google Search Console metrics
     ${ifSource("stg_marketingdashboard_searchconsole", "searchconsole.impressions AS gsc_impressions,")}
